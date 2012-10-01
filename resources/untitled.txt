@@ -1,0 +1,5 @@
+The Blackness From the Stars
+
+Each vertex is a feedback synth.
+
+Audio is taken from each synth and used to set the Shade (0 - 1 (absolute, no negatives) black to white) of each point

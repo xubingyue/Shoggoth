@@ -1,0 +1,53 @@
+SHOGGOTH TO DO
+
+ShSnakeRange Crashes on buffer positions sometimes...Are they really getting deleted? Should post in the deconstructor and see
+Add master volume!
+Take out locks in ShIsland????????? (Done but is it fixing anything?)
+Send height as an argument to synths!
+Time Stream not working correctly. When networked, all time events trigger new streams during playback. However maybe this isn't too bad since new streams will be triggered via the "time quake" from the other players
+
+Change camera to use Euclidean rotation as in Entropy (LATER!)
+
+POSSIBLY DONE!?
+UPGRADEABLE LOCKS FIXED?
+All the snakes move in the Y direction after creation? Fixed?
+Are positions and corners really networking the right way?? Seems doubtful. Maybe??
+
+Time Quake!
+The time quake timer continuously ticks down, however perhaps there is a veto system that requires increasing numbers of votes to prevent
+When the time quake goes off each player is throw into a random place in time in the piece, but then they all attempt to update the server at the same time. The resulting final state will likely be some combination of the independent elements.
+
+Maybe my research question isn't about divergence, but is instead about control...chaos?...stochastic ...stuff?
+
+NETWORKING!!!!
+Add the concept of time streams
+Network "Snakes"
+
+Is this fucking crazy? Too Complicated? Unfun for the performers AND the audience? What's a good way to do this??!
+
+Audio Streaming?
+Come up with some technique for scheduling with OSCthulhu? This may require adding new functionality to it
+	
+
+OLD?
+
+1. Add lights to USER drawing... I don't remember what this was about?!?!!??!?
+2. Fix screen coordinates on FPS cam...?????
+3. Add Snake path finding (deterministic) 
+4. Fully network play
+
+otool -L libscsynth.dylib
+
+install_name_tool -id /path/to/dylib /new/path/to/dylib libscsynth.dylib
+
+// Something like: 
+install_name_tool -change /Users/curtismckinney/Documents/SuperColliderSource/SuperCollider-Source-3.5/build/server/scsynth/Release/libscsynth.dylib @executable_path/../Frameworks/libscsynth.dylib Shoggoth
+
+otool -L libscsynth.dylib to check
+
+
+// Commands for cole
+install_name_tool -change  QtOpenGL.framework/Versions/4/QtOpenGL @executable_path/../Frameworks/QtOpenGL.framework/Versions/4/QtOpenGL libtest.1.0.0.dylib
+install_name_tool -change QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui libtest.1.0.0.dylib
+install_name_tool -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore libtest.1.0.0.dylib
+otool -L libtest.1.0.0.dylib

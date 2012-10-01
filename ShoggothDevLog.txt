@@ -1,0 +1,14 @@
+Shoggoth
+A 3D Terrain based sequencer for network music
+
+05/04/2012
+Work done on sequencing.
+
+To Do:
+
+1. Priority based scheduling!! 2 different threads with different priority?  Will be loose, some other method of deferring GUI calls? elapsed time checks?
+
+2. Implement ShSeqPath sequencing!
+
+3. Implement Semaphore to close out all threads!…somehow…
+

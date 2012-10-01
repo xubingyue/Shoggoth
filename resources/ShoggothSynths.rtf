@@ -1,0 +1,56 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red96\green96\blue96;\red0\green0\blue255;\red255\green102\blue0;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs18 \cf2 // Shoggoth Synths\cf3 \
+\cf2 // Arguments and ranges:\cf3 \
+\cf2 // x: 1 to 430\cf3 \
+\cf2 // y: -200 to 200\cf3 \
+\cf2 // z: 1 to 430\cf3 \
+\cf2 // island: 0 to 4\cf3 \
+\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "ShoggothTestSine"\cf3 ,\{\
+	\cf6 |amp=0.1, freq=440|\cf3 \
+	\cf6 var\cf3  env, signal;\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.1, 5], -4), gate:1, doneAction:2);\
+	signal = \cf4 SinOsc\cf3 .ar(freq) * env * amp;\
+	\cf4 Out\cf3 .ar(0, signal.dup);\
+\}).store;\
+);\
+\
+\cf7 ~sine\cf3  = \cf4 Synth\cf3 (\cf5 "ShoggothTestSine"\cf3 );\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "ShoggothPerc"\cf3 ,\{\
+	\cf6 |amp=0.5, x=0, y=0, z=0, island=0|\cf3 \
+	\cf6 var\cf3  env, signal, mod;\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.001, 0.25], -4), gate:1, doneAction:2);\
+	mod = z.linexp(1, 430, 0.1, 1000);\
+	signal = \cf4 SinOsc\cf3 .ar(\
+			y.linexp(-200, 200, 20, 1000) \
+				+ \cf4 SinOsc\cf3 .ar(x.linexp(1, 430, 20, 1000), 0, z, z)\
+	);\
+	signal = \cf4 Pan2\cf3 .ar(signal, island.linlin(0, 3, -1 , 1)) * env * amp;\
+	\cf4 Out\cf3 .ar(0, signal);\
+\}).store;\
+);\
+\
+\cf7 ~sine\cf3  = \cf4 Synth\cf3 (\cf5 "ShoggothPerc"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430), \cf8 \\island\cf3 , 4.rand]);\
+\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "PlatedGeopede"\cf3 ,\{\
+	\cf6 |amp=0.5, x=0, y=0, z=0, island=0|\cf3 \
+	\cf6 var\cf3  env, signal, mod;\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.001, 0.25], -4), gate:1, doneAction:2);\
+	mod = z.linexp(1, 430, 0.1, 1000);\
+	signal = signal * env * amp;\
+	\cf4 Out\cf3 .ar(0, signal);\
+\}).store;\
+);\
+\
+\cf7 ~plate\cf3  = \cf4 Synth\cf3 (\cf5 "PlatedGeopede"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430)]);}
