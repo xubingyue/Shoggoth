@@ -24,7 +24,8 @@ ShSnakeRange::ShSnakeRange(snake_range_id_t id, string synthName, cinder::Vec2i 
     maxHeight(0),
     synthName(synthName),
     beatPointer(0),
-    synthNameTexture(0)
+    synthNameTexture(0),
+    synth(synthName, sc::ARGS("bufnum", island->getWaveTerrainBufferNumber()), 1)
 {
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
@@ -91,11 +92,13 @@ void ShSnakeRange::increment()
             argList.push_back(arg_pair("y", centroid.y));
             argList.push_back(arg_pair("z", centroid.z - islandPosition.z));
             argList.push_back(arg_pair("island", islandID));
+            synth.trigger(argList);
 
+            /*
             Synth::grain(
                 synthName.c_str(),
                 argList
-            );
+            );*/
         }
     }
 }

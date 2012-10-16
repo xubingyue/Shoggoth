@@ -20,6 +20,7 @@ bool ONLINE = false; // Online status of the program
 ShClient* client = 0; // Pointer to the active client, for sending
 ShPacketListener* listener = 0; // Pointer to the active listener, for receiving
 ShChat* chat = new ShChat();
+int statusCounter = 0;
 
 void sendLogin()
 {
@@ -189,6 +190,19 @@ void receiveTerrainHeights(unsigned char islandNum, int arg)
     }
 }
 
+void sendSCStatusRequest()
+{
+    if(statusCounter == 0)
+    {
+        char buffer[PACKET_BUFFER_SIZE];
+        osc::OutboundPacketStream packet( buffer, PACKET_BUFFER_SIZE );
+        packet << osc::BeginMessage("/status") << osc::EndMessage;
+        client->send("127.0.0.1", packet, 57110);
+    }
+
+    statusCounter = (statusCounter + 1) % 5;
+}
+
 const char* snakeIDtoString(std::pair<unsigned int, unsigned int> id)
 {
     std::stringstream ss;
@@ -354,8 +368,7 @@ void sendCthulhuSetIntArg(const char* object, int argNum, int value, int bounceB
 
 void receiveServerStatus(const char* serverBootStatus, int numSynths, float avgCPU, float peakCPU)
 {
-    //std::cout << "Server: " << serverBootStatus << " Number of Synths: " << numSynths << " AvgCPU: "
-    //    << avgCPU << " PeakCPU: " << peakCPU << std::endl;
+
 }
 
 void receiveChatMessage(const char* message)

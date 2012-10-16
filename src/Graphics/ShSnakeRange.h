@@ -16,6 +16,7 @@
 
 // Shoggoth includes
 #include "src/Graphics/ShSeqPath.h"
+#include "src/Audio/polyphonicsynth.h"
 
 class ShIsland;
 
@@ -80,6 +81,7 @@ private:
     boost::shared_mutex mutex;
     cinder::Vec3d islandPosition;
     int islandID;
+    PolyphonicSynth synth;
 };
 
 #endif // SHSNAKERANGE_H

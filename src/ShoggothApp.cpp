@@ -75,7 +75,7 @@ public:
         mActivePath(NULL), tempo(boost::chrono::milliseconds(100)), mSequencer(boost::chrono::milliseconds(100)),
         mRecording(false), mPickedTri(0), mSelectedIsland(0), mCurrentSelectedStepValue(1),mRootTimeStream(0),
         timeStreamScheduler(0), timeStreamTimer(0, boost::chrono::milliseconds(100)), timeStreamDisplay(0),
-        editSnakeRange(false), moveSnakeRange(false), synthMenu(0), editMode(IslandPicking), currentSynthName("ShoggothPerc"),
+        editSnakeRange(false), moveSnakeRange(false), synthMenu(0), editMode(IslandPicking), currentSynthName("ShoggothBassDrum"),
         cursorPosition(0, 0) {}
     // gameOfLife(200, 120)
     // flock(0)
@@ -194,6 +194,8 @@ ShoggothApp::~ShoggothApp()
     delete mRootTimeStream;
     delete timeStreamScheduler;
     delete synthMenu;
+
+    islands.freeWaveTerrainBuffers();
 
     //if(flock)
     //    delete flock;
@@ -342,6 +344,7 @@ void ShoggothApp::setup()
     ShGlobals::LUA_CONSOLE = &luaConsole;
     script::initialize();
     ShGlobals::TIME_QUAKE_DISPLAY = &timeQuakeDisplay;
+    mOscClient.start();
 }
 
 void ShoggothApp::quit()
@@ -364,6 +367,7 @@ void ShoggothApp::quit()
     ShShaders::unbindPhong();
 
     mServer.quit();
+    // mOscClient.stop();
     cinder::app::AppBasic::quit();
 }
 
@@ -945,6 +949,8 @@ void ShoggothApp::update()
         islands.setSnakeRangePosition(targetSnakeRange, mPickedTri->getMapCoord());
     }
 
+    ShNetwork::sendSCStatusRequest();
+
     /*
     flock->run();
     cinder::Vec3f target = mCamera.getEye() + (mCamera.getCam().getViewDirection() * 2000);
@@ -1083,8 +1089,9 @@ void ShoggothApp::draw()
     islands.drawSnakeRangNames();
     ShAvatar::avatarMap.drawName();
     ShNetwork::chat->draw();
-    luaConsole.draw();
-    timeStreamDisplay->draw();
+    serverpanel::draw();
+    // luaConsole.draw();
+    // timeStreamDisplay->draw();
 
     if(editMode == SynthSelection)
     {
@@ -1110,7 +1117,7 @@ void ShoggothApp::draw()
         glEnd();*/
     }
 
-    timeQuakeDisplay.draw();
+    // timeQuakeDisplay.draw();
 
     //cinder::gl::disableAlphaBlending();
     //drawAutomata();
@@ -1171,7 +1178,7 @@ void ShoggothApp::play()
     else
     {
         mSequencer.play();
-        timeQuakeDisplay.startThreading();
+        // timeQuakeDisplay.startThreading();
     }
 }
 
@@ -1183,12 +1190,12 @@ void ShoggothApp::stop()
     else
         mSequencer.stop();
 
-    timeQuakeDisplay.stopThreading();
+    // timeQuakeDisplay.stopThreading();
 }
 
 void ShoggothApp::beginNetworking()
 {
-    mOscClient.start();
+    ShNetwork::ONLINE = true;
     islands.removeAllSnakeRanges(); // Cleanup before logging in
     ShNetwork::sendLogin();
 }
@@ -1197,7 +1204,7 @@ void ShoggothApp::endNetworking()
 {
     ShNetwork::sendLogout();
     ShAvatar::avatarMap.clear();
-    mOscClient.stop();
+    ShNetwork::ONLINE = false;
 }
 
 void ShoggothApp::drawAutomata()

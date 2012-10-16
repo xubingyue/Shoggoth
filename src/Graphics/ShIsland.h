@@ -34,6 +34,11 @@ class GridTri;
 class SeqTri;
 class ShTriangleGrid;
 
+namespace sc
+{
+    class Buffer;
+}
+
 class ShIsland {
 	
 public:
@@ -49,6 +54,10 @@ public:
 		TriangleFillAndFrame
 	};
 	
+    void createWaveTerrainBuffer();
+    void updateWaveTerrainBuffer(std::vector< std::vector<float> >& heightMap, float minHeight, float maxHeight);
+    void freeWaveTerrainBuffer();
+    int getWaveTerrainBufferNumber();
 	bool getTriCoord(unsigned int index, SeqTri* pickedTri);
 	void moveTo(cinder::Vec3f pos);
 	void setup(cinder::Vec3f cameraPos);
@@ -188,4 +197,5 @@ private:
 	Detail mDetail;
 	float mDistance; // Distance from camera. Used for LOD
     bool scheduleBufferColors, scheduleBufferPositions;
+    sc::Buffer* waveTerrainBuffer;
 };

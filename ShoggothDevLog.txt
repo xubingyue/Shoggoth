@@ -1,6 +1,10 @@
 Shoggoth
 A 3D Terrain based sequencer for network music
 
+10/10/2012
+Working on synths. Need to explore scanned synthesis and wave terrain synthesis with buffers filled by the terrains.
+
+
 05/04/2012
 Work done on sequencing.
 

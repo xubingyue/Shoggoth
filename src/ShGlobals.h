@@ -25,6 +25,7 @@
 #include "src/Time/ShScheduler.h"
 #include "src/Graphics/luaconsole.h"
 #include "src/Graphics/timequakedisplay.h"
+#include "src/Graphics/serverpanel.h"
 
 // Forward declaration
 namespace SLB {

@@ -21,6 +21,7 @@
 #include "src/Graphics/ShColor.h"
 //#include "include/ShTriangleGrid.h"
 #include "src/ShGlobals.h"
+#include "Buffer.h"
 
 #include "src/Graphics/shaders.h"
 using namespace ShShaders;
@@ -39,7 +40,8 @@ ShIsland::ShIsland(Vec3f pos, int id, Vec2i coord) :
 	mCoord(coord),
     mTerrain(1, kGridWidth + 1, kGridDepth + 1, 0, 999),
     scheduleBufferColors(false),
-    scheduleBufferPositions(false)
+    scheduleBufferPositions(false),
+    waveTerrainBuffer(0)
 {   
 	//mVertexCount = rand() % 9000;
 	//mTriCount = mVertexCount/3;
@@ -184,6 +186,7 @@ void ShIsland::update()
         mSurface.bufferPositions(mPositions);
         calculateNormals(mSurface, mPositions);
         bufferActivityColor();
+        updateWaveTerrainBuffer(mTerrainHeightMap, mMinHeight, mMaxHeight);
         synchronizedAnimationQueuePop();
     }
 }
@@ -865,6 +868,8 @@ void ShIsland::setTerrainHeightMap(std::vector< std::vector<float> >& heightMap,
         rebuildTriangleGrid();
         mBoundingBox = calcBoundingBox();
     }
+
+    updateWaveTerrainBuffer(heightMap, minHeight, maxHeight);
 }
 
 void ShIsland::setAnimation(std::deque<animation_frame_t>& animation)
@@ -967,6 +972,52 @@ void ShIsland::setScheduleBufferColors(bool schedule)
     // boost::upgrade_lock<boost::shared_mutex> lock(mMutex);
     // boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
     scheduleBufferColors = schedule;
+}
+
+void ShIsland::createWaveTerrainBuffer()
+{
+    waveTerrainBuffer = sc::Buffer::alloc(sc::Server::internal, ShIsland::kGridWidth * ShIsland::kGridDepth);
+}
+
+void ShIsland::updateWaveTerrainBuffer(std::vector< std::vector<float> >& heightMap, float minHeight, float maxHeight)
+{
+    if(waveTerrainBuffer)
+    {
+        std::vector<double> collection;
+
+        for(int x = 0; x < heightMap.size(); ++x)
+        {
+            for(int y = 0; y < heightMap.at(x).size(); ++y)
+            {
+                collection.push_back(shmath::linlin(heightMap[x][y], minHeight, maxHeight, -1, 1));
+            }
+        }
+
+        waveTerrainBuffer->sendCollection(collection);
+    }
+}
+
+void ShIsland::freeWaveTerrainBuffer()
+{
+    if(waveTerrainBuffer)
+    {
+        delete waveTerrainBuffer;
+        waveTerrainBuffer = 0;
+    }
+}
+
+int ShIsland::getWaveTerrainBufferNumber()
+{
+    if(waveTerrainBuffer)
+    {
+        return waveTerrainBuffer->getBufNum();
+    }
+
+    else
+    {
+        std::cerr << "ShIsland::getWaveTerrainBufferNumber() called but waveTerrainBuffer is not defined. Returning 0." << std::endl;
+        return 0;
+    }
 }
 
 bool ShIsland::getTriCoord(unsigned int index, SeqTri* pickedTri)

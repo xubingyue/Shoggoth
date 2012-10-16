@@ -21,7 +21,7 @@ ShClient::ShClient(const char *ipAddress, int receivePort) :
 
 ShClient::~ShClient()
 {
-    if(ShNetwork::ONLINE)
+    if(oscThread)
     {
         stop();
     }
@@ -66,18 +66,18 @@ void ShClient::sendCthulhu(osc::OutboundPacketStream packetStream)
 
 void ShClient::start()
 {
-    ShNetwork::ONLINE = true;
+    // ShNetwork::ONLINE = true;
     oscThread = new boost::thread(boost::bind(&ShClient::run, this));
 }
 
 void ShClient::stop()
 {
     quitConnection();
-    ShNetwork::ONLINE = false;
+    // ShNetwork::ONLINE = false;
 }
 
 void ShClient::run() {
-    mux.AttachSocketListener(receiveSocket,&listener);
+    mux.AttachSocketListener(receiveSocket, &listener);
     mux.Run();
     //exec();
     //mux.RunUntilSigInt();

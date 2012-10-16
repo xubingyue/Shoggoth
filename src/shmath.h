@@ -46,6 +46,16 @@ namespace shmath
 	{
         return shmath::mod<float>(angle, 360);
 	}
+
+    inline double linlin(double value, double inMin, double inMax, double outMin, double outMax)
+    {
+        if(value <= inMin)
+            return outMin;
+        else if(value >= inMax)
+            return outMax;
+        else
+            return ((value - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
+    }
 	
 	// Map a number from a linear range to an exponential range
 	inline float linexp(float val, float inMin, float inMax, float outMin, float outMax)

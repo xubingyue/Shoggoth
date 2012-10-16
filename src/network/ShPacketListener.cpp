@@ -16,9 +16,9 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
 {
 
     try {
-        /*
+
         // Status Reply from SCSynth
-        if( strcmp( message.AddressPattern(), "/status.reply" ) == 0 ){
+        if( strcmp( message.AddressPattern(), "/status.reply" ) == 0 ) {
 
             osc::ReceivedMessageArgumentStream args = message.ArgumentStream();
             osc::int32 un, numUGens, numSynths, numGroups, numSynthDefs;
@@ -27,19 +27,20 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
             double nominalSR,actualSR;
 
             args >> un >> numUGens >> numSynths >> numGroups >> numSynthDefs
-                    >> avgCPU >> peakCPU >> nominalSR >> actualSR >> osc::EndMessage;
+                    >> avgCPU >> peakCPU >> nominalSR >> actualSR;
 
-            ShNetwork::receiveServerStatus("running", numSynths, avgCPU, peakCPU);
+            // ShNetwork::receiveServerStatus("running", numSynths, avgCPU, peakCPU);
+            serverpanel::update(numUGens, numSynths, avgCPU, peakCPU);
 
-
+            /*
             std::cout << "Number Of Ugens: " << numUGens << " Number Of Synths: " << numSynths
                       << " Number Of Groups: " <<  numGroups << " Number Of Synth Defs: " << numSynthDefs
                       << " Avg CPU: " << avgCPU << " PeakCPU: " << peakCPU
                       << " Nominal Sample Rate: " << nominalSR << " Actual Sample Rate: " << actualSR
-                      << std::endl;
+                      << std::endl;*/
 
 
-        }*/
+        }
 
         if(ShNetwork::ONLINE)
         {
@@ -210,7 +211,7 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
 
             } else if( strcmp( message.AddressPattern(), "/ports" ) == 0 ) {
 
-            } else {
+            } else if( strcmp( message.AddressPattern(), "/status.reply") != 0) {
 
                 std::cout << "OSC message not understood: " << message.AddressPattern() << std::endl;
             }

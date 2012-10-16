@@ -1,7 +1,8 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
 {\fonttbl\f0\fnil\fcharset0 Monaco;}
 {\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
-\red96\green96\blue96;\red0\green0\blue255;\red255\green102\blue0;\red0\green115\blue0;}
+\red96\green96\blue96;\red0\green0\blue255;\red255\green102\blue0;\red0\green115\blue0;\red0\green0\blue191;
+}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\fs18 \cf2 // Shoggoth Synths\cf3 \
@@ -26,31 +27,221 @@
 \
 (\
 \cf4 SynthDef\cf3 .new(\cf5 "ShoggothPerc"\cf3 ,\{\
-	\cf6 |amp=0.5, x=0, y=0, z=0, island=0|\cf3 \
-	\cf6 var\cf3  env, signal, mod;\
-	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.001, 0.25], -4), gate:1, doneAction:2);\
+	\cf6 |amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0|\cf3 \
+	\cf6 var\cf3  env, signal, mod, gateEnv;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 1, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 0.1], -4), gate:t_trig, doneAction:0);\
 	mod = z.linexp(1, 430, 0.1, 1000);\
-	signal = \cf4 SinOsc\cf3 .ar(\
-			y.linexp(-200, 200, 20, 1000) \
-				+ \cf4 SinOsc\cf3 .ar(x.linexp(1, 430, 20, 1000), 0, z, z)\
-	);\
+	signal = \cf4 SinOsc\cf3 .ar(55 * y.linexp(-200, 200, 1, 4).round(1)).clip2(\cf4 Saw\cf3 .ar(x.linexp(1, 430, 20, 80), z/860/2, z/860/2));\
 	signal = \cf4 Pan2\cf3 .ar(signal, island.linlin(0, 3, -1 , 1)) * env * amp;\
 	\cf4 Out\cf3 .ar(0, signal);\
 \}).store;\
 );\
 \
-\cf7 ~sine\cf3  = \cf4 Synth\cf3 (\cf5 "ShoggothPerc"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430), \cf8 \\island\cf3 , 4.rand]);\
+\cf7 ~sine\cf3  = \cf4 Synth\cf3 (\cf5 "ShoggothPerc"\cf3 );\
+\cf7 ~sine\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~sine\cf3 .set(\cf8 \\gate\cf3 , 0);\
 \
 \
 (\
 \cf4 SynthDef\cf3 .new(\cf5 "PlatedGeopede"\cf3 ,\{\
-	\cf6 |amp=0.5, x=0, y=0, z=0, island=0|\cf3 \
-	\cf6 var\cf3  env, signal, mod;\
-	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.001, 0.25], -4), gate:1, doneAction:2);\
-	mod = z.linexp(1, 430, 0.1, 1000);\
-	signal = signal * env * amp;\
+	\cf6 |amp=0.5, x=0, y=0, z=0, island=0, gate=1, t_trig=0|\cf3 \
+	\cf6 var\cf3  env, signal, mod, feedIn, feedOut, spring, damp, springs, sel, modX, modY, modZ, sawFreq;\
+	\cf6 var\cf3  sel2, scale, matrix, matrixFreq, env3, gateEnv;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 4, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.1, 4], -4), gate:t_trig, doneAction:0);\
+	env3 = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[1.5, 2.6], -4), gate:t_trig, doneAction:0);\
+	modX = x.linlin(1, 430, 0, 1);\
+	modY = y.linlin(-200, 200, 0, 1);\
+	modZ = z.linlin(1, 430, 0, 1);\
+	spring = (0.107421875).dup(10);\
+	damp = (0.0537109375).dup(10);\
+	scale = [9, 12, 14, 16, 19, 21, 24, 26, 28, 31, 33].midicps * 2;\
+	matrix = \cf4 Array\cf3 .fill2D(430 / 5, 430 / 5, \{ \cf6 |x, y|\cf3  scale[(x + y) % scale.size] * 2.pow(y % 3) \});\
+	matrixFreq = \cf4 Select\cf3 .kr(z / 5, \cf4 Select\cf3 .kr(x / 5, matrix));\
+	\
+	feedIn = \cf4 LPF\cf3 .ar(\cf4 LocalIn\cf3 .ar(1), matrixFreq)\
+		+ \cf4 LPF\cf3 .ar(\cf4 Saw\cf3 .ar(matrixFreq, env / 2) + \cf4 WhiteNoise\cf3 .ar(env3 * 0.1), matrixFreq * 2.pow(modY.linexp(0, 1, 1, 5).round(1)));\
+	feedIn = \cf4 HPF\cf3 .ar(feedIn, 20);\
+	feedOut = feedIn;\
+	\
+	springs = spring.collect\{ \cf6 |spr, i|\cf3 \
+		feedOut = \cf4 Spring\cf3 .ar(feedOut, spr, damp[i]);\
+		\cf2 // feedOut = CombC.ar(feedOut, spr, spr, damp[i]);\cf3 \
+	\};\
+	\
+	\cf4 LocalOut\cf3 .ar(feedOut);\
+	\
+	sel = \cf4 LFTri\cf3 .ar(matrixFreq, 0, 0.5, 0.5) * spring.size;\
+	\cf2 //sel2 = Slew.ar(Saw.ar(matrixFreq * 2, 0.5, 0.5), SampleRate.ir / 10, SampleRate.ir) * spring.size;\cf3 \
+	signal = \cf4 Splay\cf3 .ar(\cf4 SelectX\cf3 .ar(sel, springs), 1);\
+	signal = \cf4 Limiter\cf3 .ar(signal);\
+	signal = \cf4 Pan2\cf3 .ar(signal, island.linlin(0, 3, -1 , 1)) * env * amp * gateEnv;\
 	\cf4 Out\cf3 .ar(0, signal);\
 \}).store;\
 );\
 \
-\cf7 ~plate\cf3  = \cf4 Synth\cf3 (\cf5 "PlatedGeopede"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430)]);}
+\cf7 ~plate\cf3  = \cf4 Synth\cf3 (\cf5 "PlatedGeopede"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430)]);\
+\cf7 ~plate\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~plate\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+(\
+\cf4 SynthDef\cf3 (\cf5 "ShogSnare"\cf3 ,\{\
+		\cf6 |out = 0, t_trig = 0, freq = 440, amp=0.6, pan = 0, x, y, z, island, gate=1\
+		freqLo= 0, freqHi= 0, pwLo= 0, pwHi= 0, ctrl= 65, atkDcy= 5, susRel= 5, fcLo= 0, fcHi= 0, res= 0, mode= 15, rate= 1|\cf3 \
+		\cf6 var\cf3  modX, modY, modZ;\
+		\cf6 var\cf3  env, signal, osc, attackEnv,noteFreq;\
+		modX = x.linlin(1, 430, 0, 1);\
+		modY = y.linlin(-200, 200, 0, 1);\
+		modZ = z.linlin(1, 430, 0, 1);\
+		noteFreq = freq.linlin(0,127,127,0).midicps;\
+		attackEnv = \cf4 EnvGen\cf3 .ar(\
+			\cf4 Env\cf3 .new(\
+				[0.0,1,0.1,0],\
+				[0.0001,modX * 0.125, modY * 0.125],\
+				-4),\
+			gate:t_trig,\
+			doneAction:0);\
+		env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0.001,0.25,1,-4),gate:gate,doneAction:2);\
+		osc = \cf4 WhiteNoise\cf3 .ar(1);\
+		\cf2 //osc = RLPF.ar( osc, attackEnv.range( TExpRand.kr(500,10000,t_trig), TExpRand.kr(100,10000,t_trig) ), TRand.kr(0.01,1) );\cf3 \
+		osc = \cf4 BMoog\cf3 .ar(\
+			attackEnv+osc,\
+			\cf4 Lag\cf3 .kr(modY.linexp(0, 1, 1000, 10000), modX.linexp(0, 1, 0.0001, 0.1)),\
+			modZ,\
+			attackEnv.range( modX * 2, modZ * 2),\
+			\cf4 Lag\cf3 .kr( modY, modZ * 0.1)\
+			);\
+		osc = (modX * 8 *osc).clip2(\cf4 Lag\cf3 .kr(modY / 2 + 0.5, modZ * 0.1));\
+		signal = \cf4 Pan2\cf3 .ar( osc, 0.5 );\
+		\cf4 Out\cf3 .ar(out, signal * amp * attackEnv / 4);\
+	\}).store;\
+)\
+\
+\cf7 ~snare\cf3  = \cf4 Synth\cf3 (\cf5 "ShogSnare"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430)]);\
+\cf7 ~snare\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~snare\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+(\
+\cf4 SynthDef\cf3 (\cf5 "ShoggothBassDrum"\cf3 ,\{\
+		\cf6 |out = 0, t_trig = 0, freq = 440, gate = 1, amp=0.75, pan = 0, x, y, z, island,\
+		freqLo= 0, freqHi= 0, pwLo= 0, pwHi= 0, ctrl= 65, atkDcy= 5, susRel= 5, fcLo= 0, fcHi= 0, res= 0, mode= 15, rate= 1|\cf3 \
+		\cf6 var\cf3  modX, modY, modZ;\
+		\cf6 var\cf3  env, signal, osc, attackEnv,noteFreq,fmSine, imp, gateEnv;\
+		imp = t_trig;\
+		modX = x.linlin(1, 430, 0, 1);\
+		modY = y.linlin(-200, 200, 0, 1);\
+		modZ = z.linlin(1, 430, 0, 1);\
+		gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 1, -4), gate:gate, doneAction:2);\
+		attackEnv = \cf4 EnvGen\cf3 .ar(\
+			\cf4 Env\cf3 .new(\
+				[0.0,1,0.1,0],\
+				[0.0001,modX * 0.25, modY * 2.5 + 0.5],\
+				-4),\
+			gate:imp,\
+			doneAction:0);\
+		env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0.0001,1,1,-4),gate:imp,doneAction:0);\
+		osc = \cf4 SinOsc\cf3 .ar(47,modZ * 0.8 + 0.1,0.5,0.5);\
+		\cf2 //osc = RLPF.ar( osc, attackEnv.range( TExpRand.kr(500,10000,t_trig), TExpRand.kr(100,10000,t_trig) ), TRand.kr(0.01,1) );\cf3 \
+		osc = \cf4 RLPF\cf3 .ar(\
+			imp+osc,\
+			\cf4 Select\cf3 .kr(modY * 3,[27.5, 55, 43]),\
+			modZ.linexp(0, 1, 0.01, 0.9)\
+			).softclip*0.5 + osc;\
+		osc = \cf4 LPF\cf3 .ar( osc, 400 );\
+		fmSine = \cf4 SinOsc\cf3 .ar(modY.linexp(0, 1, 1, 5000), 0, 0.5, 0.5 ).range(modX.linlin(0, 1, -500, 500), modZ.linlin(0, 1, -1000, 10000));\
+		osc = osc + \cf4 SinOsc\cf3 .ar(15000+fmSine,0,0.05);\
+		signal = \cf4 Pan2\cf3 .ar( osc, 0 );\
+		\cf4 Out\cf3 .ar( out, signal * amp * attackEnv * gateEnv);\
+	\}).store;\
+)\
+\
+\cf7 ~bassdrum\cf3  = \cf4 Synth\cf3 (\cf5 "ShoggothBassDrum"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430)]);\
+\cf7 ~bassdrum\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~bassdrum\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+(\
+\cf4 SynthDef\cf3 (\cf5 "ShogHiHat"\cf3 ,\{\
+		\cf6 |out = 0, t_trig = 0, freq = 440, gate = 1, amp=0.4, pan = 0, x, y, z, island, \
+		freqLo= 0, freqHi= 0, pwLo= 0, pwHi= 0, ctrl= 65, atkDcy= 5, susRel= 5, fcLo= 0, fcHi= 0, res= 0, mode= 15, rate= 1|\cf3 \
+		\cf6 var\cf3  env, signal, osc, attackEnv,noteFreq, gateEnv;\
+		\cf6 var\cf3  modX, modY, modZ, imp;\
+		noteFreq = freq.linlin(0,127,127,0).midicps;\
+		imp = t_trig;\
+		modX = x.linlin(1, 430, 0, 1);\
+		modY = y.linlin(-200, 200, 0, 1);\
+		modZ = z.linlin(1, 430, 0, 1);\
+		gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 2, -4), gate:gate, doneAction:2);\
+		attackEnv = \cf4 EnvGen\cf3 .ar(\
+			\cf4 Env\cf3 .new(\
+				[0.0,1,0.1,0],\
+				[0.0001, modX.linexp(0, 1, 0.0001, 0.075), modZ.linexp(0, 1, 0.01, 0.125)],\
+				-4),\
+			gate:imp,\
+			doneAction:0);\
+		env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0.001,0.125,1,-4),gate:imp,doneAction:0);\
+		osc = \cf4 WhiteNoise\cf3 .ar(1);\
+		\cf2 //osc = RLPF.ar( osc, attackEnv.range( TExpRand.kr(500,10000,t_trig), TExpRand.kr(100,10000,t_trig) ), TRand.kr(0.01,1) );\cf3 \
+		osc = \cf4 BMoog\cf3 .ar(\
+			attackEnv+osc,\
+			\cf4 TWChoose\cf3 .kr(\
+				imp,\
+				[\
+					modY.linexp(0, 1, 5000, 20000),\
+					modY.linexp(0, 1, 5000, 5200)\
+				],\
+				[\
+					0.2,\
+					0.8 \
+				].normalizeSum),\
+			modX.linlin(0, 1, 0.7, 0.99),\
+			2.9\
+			);\
+		signal = \cf4 Pan2\cf3 .ar( osc, -0.5 );\
+		\cf4 Out\cf3 .ar( out, signal * amp * attackEnv * gateEnv / 4);\
+	\}).store;\
+)\
+\
+\cf7 ~hihat\cf3  = \cf4 Synth\cf3 (\cf5 "ShogHiHat"\cf3 , [\cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430)]);\
+\cf7 ~hihat\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~hihat\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+( \cf2 // Create the buffer for testing\cf3 \
+\cf7 ~wasteland\cf3  = \cf4 Buffer\cf3 .new(s, 5184, 1, 0);\
+\cf7 ~wasteland\cf3 .alloc();\
+\cf7 ~wasteland\cf3 .sendCollection(\cf4 Array\cf3 .fill(5184, \{ rrand(-1, 1) \}), 0, 0);\
+\cf7 ~wasteland\cf3 .plot;\
+)\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "BlastedWasteland"\cf3 ,\{\
+	\cf6 |amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
+	\cf6 var\cf3  env, signal, modY, gateEnv;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);\
+	modY = y.linlin(-200, 200, 0, 0.5);\
+	signal = \cf4 WaveTerrain\cf3 .ar(\
+				bufnum, \
+				\cf4 SinOsc\cf3 .ar(x.linexp(1, 430, 1, 2000), 0, 0.5, 0.5) * 72, \
+				\cf9 SinOsc\cf3 .ar(z.linexp(1, 430, 1, 2000), 0, 0.5, 0.5) * 72, \
+				72, \
+				72\
+	);\
+	signal = \cf4 Pan2\cf3 .ar(signal, island.linlin(0, 3, -1 , 1)) * amp * gateEnv;\
+	\cf4 Out\cf3 .ar(0, signal);\
+\}).store;\
+);\
+\
+\cf7 ~blasted\cf3  = \cf4 Synth\cf3 (\cf5 "BlastedWasteland"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
+\cf7 ~blasted\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~blasted\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+\
+b = \cf4 Buffer\cf3 .readChannel(s, \cf5 "/Users/curtismckinney/Documents/SC Files/hanafuda/hanafuda sounds/geese3.wav"\cf3 , 1, 44100, 1);\
+c = \cf4 Buffer\cf3 .readChannel(s, \cf5 "/Users/curtismckinney/Documents/SC Files/hanafuda/hanafuda sounds/fullmoon1.wav"\cf3 , 1, 44100, 1);\
+\{\
+\cf6 var\cf3  rows = 10; \
+\cf4 WaveTerrain\cf3 .ar(c, \cf4 SinOsc\cf3 .ar(\cf4 MouseX\cf3 .kr(20000, 44100, 1)), \cf4 SinOsc\cf3 .ar(\cf4 MouseX\cf3 .kr(20000, 44100, 1)), 210, 210)\
+\}.play\
+\
+}

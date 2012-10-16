@@ -251,7 +251,9 @@ SOURCES += oscpack/osc/OscOutboundPacketStream.cpp \
     src/Graphics/ShSnakeRange.cpp \
     src/Graphics/synthmenu.cpp \
     kdtree/kdtree.c \
-    src/Graphics/timequakedisplay.cpp
+    src/Graphics/timequakedisplay.cpp \
+    src/Audio/polyphonicsynth.cpp \
+    src/Graphics/serverpanel.cpp
 
 
 HEADERS += oscpack/osc/OscException.h \
@@ -326,7 +328,9 @@ HEADERS += oscpack/osc/OscException.h \
     src/Graphics/synthmenu.h \
     kdtree/kdtree.h \
     src/Math/Euler.h \
-    src/Graphics/timequakedisplay.h
+    src/Graphics/timequakedisplay.h \
+    src/Audio/polyphonicsynth.h \
+    src/Graphics/serverpanel.h
 
 RESOURCES += \
 

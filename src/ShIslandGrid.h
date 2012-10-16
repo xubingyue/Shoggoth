@@ -44,6 +44,8 @@ public:
     void drawBoundingBox(int id);
 	void setup(cinder::Vec3f cameraPos);
     void update();
+    void createWaveTerrainBuffers();
+    void freeWaveTerrainBuffers();
     bool getTriCoor(int id, unsigned int index, SeqTri* pickedTri);
     snake_range_id_t addShSnakeRange(int islandID, std::string synthName, cinder::Vec2i corner1,
                                      cinder::Vec2i corner2, bool addTimeEvent = true, bool sendToNetwork = false);

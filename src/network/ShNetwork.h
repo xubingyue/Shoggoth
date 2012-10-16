@@ -80,6 +80,7 @@ namespace ShNetwork {
     /** receive terrain height map update from the network */
     void receiveTerrainHeights(unsigned char islandNum, int arg);
 
+    void sendSCStatusRequest();
     const char* snakeIDtoString(std::pair<unsigned int, unsigned int> id);
     std::pair<unsigned int, unsigned int> snakeStringToID(const char* id);
     void sendAddSnakeRange(std::pair<unsigned int, unsigned int> id, std::string synthName, cinder::Vec2i corner1,

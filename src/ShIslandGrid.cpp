@@ -171,6 +171,28 @@ void ShIslandGrid::update()
 	}
 }
 
+void ShIslandGrid::createWaveTerrainBuffers()
+{
+    boost::upgrade_lock<boost::shared_mutex> lock(mutex);
+    boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
+
+    for(int i = 0; i < NUM_ISLANDS; ++i)
+    {
+        islands[i]->createWaveTerrainBuffer();
+    }
+}
+
+void ShIslandGrid::freeWaveTerrainBuffers()
+{
+    boost::upgrade_lock<boost::shared_mutex> lock(mutex);
+    boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
+
+    for(int i = 0; i < NUM_ISLANDS; ++i)
+    {
+        islands[i]->freeWaveTerrainBuffer();
+    }
+}
+
 bool ShIslandGrid::getTriCoor(int id, unsigned int index, SeqTri* pickedTri)
 {
     boost::shared_lock<boost::shared_mutex> lock(mutex);
