@@ -81,7 +81,7 @@ private:
     boost::shared_mutex mutex;
     cinder::Vec3d islandPosition;
     int islandID;
-    PolyphonicSynth synth;
+    PolyphonicSynth* synth;
 };
 
 #endif // SHSNAKERANGE_H

@@ -1010,6 +1010,7 @@ int ShIsland::getWaveTerrainBufferNumber()
 {
     if(waveTerrainBuffer)
     {
+        std::cout << "ShIsland::getWaveTerrainBufferNumber(): " << waveTerrainBuffer->getBufNum() << std::endl;
         return waveTerrainBuffer->getBufNum();
     }
 
