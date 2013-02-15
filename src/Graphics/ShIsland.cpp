@@ -319,7 +319,7 @@ void ShIsland::createIsland(Vec3f pos)
 	
 	float sinWave;
 	
-	VboMesh::VertexIter iter = mSurface.mapVertexBuffer();
+    VboMesh::VertexIter iter = mSurface.mapVertexBuffer();
 	for(int x = 0; x < mVertexCount; ++x)
 	{
 		sinWave = (float) ((sin(mID) + 1)/2.5)+0.2;
@@ -1063,41 +1063,44 @@ void ShIsland::createCustomStaticData(gl::VboMesh::Layout* layout)
 void ShIsland::populateCustomData(cinder::gl::VboMesh& mesh, std::vector<cinder::Vec3f>& positionVector)
 {	
     initialPickingIndex = ShIsland::globalPickingIndex;
-    std::cout << "Island:: " << this->mID << " initial picking index: " << initialPickingIndex << std::endl;
-	gl::VboMesh::VertexIter surfaceIter = mesh.mapVertexBuffer();
+    // std::cout << "Island:: " << this->mID << " initial picking index: " << initialPickingIndex << std::endl;
+    gl::VboMesh::VertexIter surfaceIter = mesh.mapVertexBuffer();
 	for(int i = 0; i < positionVector.size(); i += 3)
 	{
-		/*
-		surfaceIter.setCustomFloat(0, 0);
-		surfaceIter.setCustomVec4f(1, Vec4f(positionVector[i+1].x, positionVector[i+1].y, positionVector[i+1].z, 1));
-		surfaceIter.setCustomVec4f(2, Vec4f(positionVector[i+2].x, positionVector[i+2].y, positionVector[i+2].z, 1)); 
-		surfaceIter.setTexCoord3d0(shcolor::intToVec3f(i));
-		//surfaceIter.setCustomVec4f(3, shcolor::intToVec4f(i));
-		++surfaceIter;
-		
-		surfaceIter.setCustomFloat(0, 1);
-		surfaceIter.setCustomVec4f(1, Vec4f(positionVector[i+2].x, positionVector[i+2].y, positionVector[i+2].z, 1));
-		surfaceIter.setCustomVec4f(2, Vec4f(positionVector[i].x,   positionVector[i].y,   positionVector[i].z,   1));
-		surfaceIter.setTexCoord3d0(shcolor::intToVec3f(i));
-		//surfaceIter.setCustomVec4f(3, shcolor::intToVec4f(i));
-		++surfaceIter;*/
+        /*
+        surfaceIter.setCustomFloat(0, 0);
+        surfaceIter.setCustomVec4f(1, Vec4f(positionVector[i+1].x, positionVector[i+1].y, positionVector[i+1].z, 1));
+        surfaceIter.setCustomVec4f(2, Vec4f(positionVector[i+2].x, positionVector[i+2].y, positionVector[i+2].z, 1));
+        surfaceIter.setTexCoord3d0(shcolor::intToVec3f(i));
+        //surfaceIter.setCustomVec4f(3, shcolor::intToVec4f(i));
+        ++surfaceIter;
+
+        surfaceIter.setCustomFloat(0, 1);
+        surfaceIter.setCustomVec4f(1, Vec4f(positionVector[i+2].x, positionVector[i+2].y, positionVector[i+2].z, 1));
+        surfaceIter.setCustomVec4f(2, Vec4f(positionVector[i].x,   positionVector[i].y,   positionVector[i].z,   1));
+        surfaceIter.setTexCoord3d0(shcolor::intToVec3f(i));
+        //surfaceIter.setCustomVec4f(3, shcolor::intToVec4f(i));
+        ++surfaceIter;*/
 		
 		//surfaceIter.setCustomFloat(0, 2);
 		//surfaceIter.setCustomVec4f(1, Vec4f(positionVector[i].x,   positionVector[i].y,   positionVector[i].z,   1));
 		//surfaceIter.setCustomVec4f(2, Vec4f(positionVector[i+1].x, positionVector[i+1].y, positionVector[i+1].z, 1));
 		//surfaceIter.setTexCoord3d0(shcolor::intToVec3f(i));
 
+        // void	setCustomVec4f( size_t index, const Vec4f &v ) { *(reinterpret_cast<Vec4f*>( &mPtr[mObj->mCustomOffsets[index]] )) = v; }
+        // surfaceIter.getPointer();
+
         surfaceIter.setCustomVec4f(0, shcolor::intToVec4f(ShIsland::globalPickingIndex));
 		++surfaceIter;
         surfaceIter.setCustomVec4f(0, shcolor::intToVec4f(ShIsland::globalPickingIndex));
-		++surfaceIter;
+        ++surfaceIter;
         surfaceIter.setCustomVec4f(0, shcolor::intToVec4f(ShIsland::globalPickingIndex));
-		++surfaceIter;
+        ++surfaceIter;
 
         ++ShIsland::globalPickingIndex;
         ++ShIsland::globalPickingIndex;
         ++ShIsland::globalPickingIndex;
-	}
+    }
 }
 
 void ShIsland::bindCustomData(cinder::gl::VboMesh& mesh)

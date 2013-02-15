@@ -176,7 +176,11 @@ bool ShData::createDocument()
     // Make a new JSON document for the configuration. Preserve original comments.
     std::string outputConfig = mWriter.write(mRoot);
 
+#ifdef __APPLE__
     std::string fileName("../../../Logs/");
+#else
+    std::string fileName("Logs/");
+#endif
     fileName.append(time);
 
     size_t found = fileName.find(":");

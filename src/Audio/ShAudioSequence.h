@@ -14,7 +14,7 @@ class ShAudioSequence : public ShAbstractSequence {
 	
 public: 
 	
-	ShAudioSequence(const char* _synthDefName, std::set<uint32_t> _eventSet);
+    ShAudioSequence(const char* _synthDefName, std::set<unsigned int> _eventSet);
 	
 	// step forward (positive) or backward (negative)
 	void step(int stepDirection = 1);
@@ -27,8 +27,8 @@ private:
 	// play a synth with the settings for the given step
 	void play();
 	
-	std::set<uint32_t> eventSet;
-	uint32_t currentStep;
+    std::set<unsigned int> eventSet;
+    unsigned int currentStep;
 	const char* synthDefName;
-	uint32_t finalStep;
+    unsigned int finalStep;
 };

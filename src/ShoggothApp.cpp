@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #define GetCurrentDir getcwd
+#ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
+#endif
 
 // Local includes
 #include "cinder/app/AppBasic.h"
@@ -55,6 +57,11 @@
 #include "Node.h"
 
 #include "src/Graphics/shaders.h"
+
+#ifdef __LINUX__
+#include "X11/Xlib.h"
+#include "qapplication.h"
+#endif
 
 using namespace ci;
 using namespace gl;
@@ -119,8 +126,12 @@ public:
     ShCamera mCamera;
     bool wDown, aDown, sDown, dDown, qDown, eDown, mPickMode,spaceDown, mMouseMove, mDrawPick, mChainEdit;
     ShSeqPath* mActivePath;
-
+#ifdef __APPLE__
     CGPoint mCenterPoint;
+#elif __LINUX__
+    _XDisplay* display;
+    Window rootWindow;
+#endif
     sc::Server mServer;
     sc::Synth* testSine;
     ShSequencer mSequencer;
@@ -197,16 +208,20 @@ ShoggothApp::~ShoggothApp()
 
     islands.freeWaveTerrainBuffers();
 
+#ifdef __LINUX__
+    XCloseDisplay(display);
+#endif
+
     //if(flock)
     //    delete flock;
 }
 
 void ShoggothApp::prepareSettings(Settings *settings)
 {
-    // settings->setFullScreen(true);
+    settings->setFullScreen(true);
     float screenX = getDisplay().getWidth();
     float screenY = getDisplay().getHeight();
-    settings->setWindowSize(screenX, screenY);
+    //settings->setWindowSize(screenX, screenY);
     mScreenCenter = Vec2f(screenX / 2, screenY / 2);
 
     //mScreenCenter = Vec2f(584, 365);
@@ -220,9 +235,15 @@ void ShoggothApp::setup()
     ShGlobals::SCREEN_SIZE = Vec2i(this->getDisplay().getWidth(), this->getDisplay().getHeight());
     ShGlobals::CAMERA = &mCamera;
     ShShaders::loadShaders(this);
+#ifdef __APPLE__
     ShGlobals::FONT = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+#else
+    // ShGlobals::FONT = cinder::Font(cinder::app::loadResource("./resources/OCRAEXT.ttf", 134, "TTF"), 12);
+    ShGlobals::FONT = cinder::Font("Ubuntu", 12);
+#endif
     hideCursor();
     std::cout << "Screen Center Vec: (" << mScreenCenter.x << ", " << mScreenCenter.y << ")" << std::endl;
+#ifdef __APPLE__
     CGSetLocalEventsSuppressionInterval(0);
     //CGEventSourceRef evsrc = CGEventSourceCreate(kCGEventSourceStateCombinedSessionState);
     //CGEventSourceSetLocalEventsSuppressionInterval(evsrc, 0);
@@ -231,6 +252,12 @@ void ShoggothApp::setup()
     mCenterPoint.y = mScreenCenter.y;
 
     CGWarpMouseCursorPosition(mCenterPoint);
+#elif __LINUX__
+    display = XOpenDisplay(0);
+    rootWindow = DefaultRootWindow(display);
+    XWarpPointer(display, None, rootWindow, 0, 0, 0, 0, mScreenCenter.x, mScreenCenter.y);
+    qApp->setOverrideCursor(QCursor(Qt::BlankCursor));
+#endif
     direction = Vec2f(0.0f, 0.0f);
     //srand(666);
     mMouseMove = false;
@@ -271,6 +298,9 @@ void ShoggothApp::setup()
     //glClearDepth(1);
     //glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
+    glEnable(GL_MULTISAMPLE);
+
+#ifdef __APPLE__
 
     // Change the working directory
     CFBundleRef mainBundle = CFBundleGetMainBundle();
@@ -286,6 +316,7 @@ void ShoggothApp::setup()
     std::string workingDirectory(cCurrentPath);
     workingDirectory.append("/Contents/MacOS/");
     chdir(workingDirectory.c_str());
+#endif
 
     //std::string resourcePath(workingDirectory);
     //resourcePath.append("../Resources/entropy_resources.cfg");
@@ -395,6 +426,12 @@ void ShoggothApp::keyDown(KeyEvent event)
 
         case KeyEvent::KEY_q:
             qDown = true;
+
+            if(event.isControlDown() || event.isMetaDown())
+            {
+                this->quit();
+            }
+
             break;
 
         case KeyEvent::KEY_e:
@@ -505,7 +542,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             srand(time(0) + shmath::randomRange(0, 255));
 
-            if(event.isShiftDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::DiamondSquare, shmath::randomRange(0, 255));
@@ -530,7 +567,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             srand(time(0) + shmath::randomRange(0, 255));
 
-            if(event.isShiftDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::Wolfram, shmath::randomRange(0, 255));
@@ -560,7 +597,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             srand(time(0) + shmath::randomRange(0, 255));
 
-            if(event.isShiftDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::StrangeAttractor,
@@ -587,7 +624,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             srand(time(0) + shmath::randomRange(0, 255));
 
-            if(event.isShiftDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::LSystem,
@@ -613,7 +650,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             srand(time(0) + shmath::randomRange(0, 255));
 
-            if(event.isShiftDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::Flocking,
@@ -637,7 +674,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
         case KeyEvent::KEY_0:
 
-            if(event.isShiftDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isAltDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::Empty, 0);
@@ -665,7 +702,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
         case KeyEvent::KEY_x:
 
-            if(event.isMetaDown())
+            if(event.isMetaDown() || event.isControlDown())
                 islands.removeCurrentlySelectedSnakeRange();
 
             break;
@@ -697,6 +734,13 @@ void ShoggothApp::keyDown(KeyEvent event)
 
     //gameOfLife.update();
     mData.queueKeyStore(event, ShData::Pressed);
+    /*
+    std::cout << "KeyDown Number: " << event.getCode()
+              << std::endl << "is accel Down" << event.isAccelDown() << std::endl
+              << std::endl << "is alt Down" << event.isAltDown() << std::endl
+              << std::endl << "is control Down" << event.isControlDown() << std::endl
+              << std::endl << "is meta Down" << event.isMetaDown() << std::endl
+              << std::endl << "is shift Down" << event.isShiftDown() << std::endl;*/
 }
 
 void ShoggothApp::keyUp(KeyEvent event)
@@ -848,8 +892,13 @@ void ShoggothApp::mouseDown(MouseEvent event)
             {
                 currentSynthName = synthMenu->getCurrentlySelectedSynth();
             }
-
+#ifdef __APPLE__
             CGWarpMouseCursorPosition(mCenterPoint);
+#elif __LINUX__
+            XSelectInput(display, rootWindow, KeyReleaseMask);
+            XWarpPointer(display, None, rootWindow, 0, 0, 0, 0, mScreenCenter.x, mScreenCenter.y);
+            XFlush(display);
+#endif
             editMode = IslandPicking;
         }
 
@@ -894,8 +943,14 @@ void ShoggothApp::mouseMove(MouseEvent event)
     {
         mCamera.mouseInput(event.getPos() - mScreenCenter);
         // reposition the mouse in the center of the screen so we don't have to deal with screen clipping of mouse coordinates
+#ifdef __APPLE__
         CGWarpMouseCursorPosition(mCenterPoint);
         //CGDisplayMoveCursorToPoint(mCenterPoint);
+#elif __LINUX__
+        XSelectInput(display, rootWindow, KeyReleaseMask);
+        XWarpPointer(display, None, rootWindow, 0, 0, 0, 0, mScreenCenter.x, mScreenCenter.y);
+        XFlush(display);
+#endif
         mMouseMove = true;
         //CFRelease(evsrc);
         if(ShNetwork::ONLINE)
@@ -967,9 +1022,15 @@ void ShoggothApp::initRender()
     gl::setMatrices(mCamera.getCam());
 
     gl::Light light(gl::Light::POINT, 0);
+#ifdef __APPLE__
     light.setAmbient(Color(0.9f, 0.9f, 0.9f));
     light.setDiffuse(Color::white());
     light.setSpecular(Color::white());
+#elif __LINUX__
+    light.setAmbient(Color(0.5, 0.5f, 0.5f));
+    light.setDiffuse(Color(0.7, 0.7, 0.7));
+    light.setSpecular(Color(0.7, 0.7, 0.7));
+#endif
     light.setPosition(mCamera.getCam().getEyePoint());
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);

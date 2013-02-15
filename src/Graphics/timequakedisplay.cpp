@@ -17,7 +17,12 @@ TimeQuakeDisplay::TimeQuakeDisplay() :
     running(false),
     countDownTime(30)
 {
+#ifdef __APPLE__
     mFont = cinder::Font(cinder::app::loadResource(TIME_QUAKE_TEXT), 75);
+#else
+    // mFont = cinder::Font(cinder::app::loadResource("./resources/allusedup.ttf", 135, "TTF"), 75);
+    mFont = cinder::Font("Ubuntu", 75);
+#endif
 }
 
 TimeQuakeDisplay::~TimeQuakeDisplay()

@@ -374,7 +374,12 @@ void ShAvatar::createNameTexture()
     cinder::TextLayout layout;
     layout.clear(cinder::ColorA(0, 0, 0, 1));
     layout.setColor(cinder::ColorA(1, 1, 1, 1));
+#ifdef __APPLE__
     layout.setFont(cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12));
+#else
+    // layout.setFont(cinder::Font(cinder::app::loadResource("./resources/OCRAEXT.ttf", 134, "TTF"), 12));
+    layout.setFont(cinder::Font("Ubuntu", 12));
+#endif
     layout.addLine(mUserName);
 
     cinder::Surface8u rendered = layout.render(true);

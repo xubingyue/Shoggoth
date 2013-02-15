@@ -1,8 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
 {\fonttbl\f0\fnil\fcharset0 Monaco;}
 {\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
-\red96\green96\blue96;\red0\green0\blue255;\red255\green102\blue0;\red0\green115\blue0;\red0\green0\blue191;
-}
+\red96\green96\blue96;\red0\green0\blue255;\red255\green102\blue0;\red0\green115\blue0;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
 
 \f0\fs18 \cf2 // Shoggoth Synths\cf3 \
@@ -206,8 +205,8 @@
 \cf7 ~hihat\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
 \cf7 ~hihat\cf3 .set(\cf8 \\gate\cf3 , 0);\
 \
-( \cf2 // Create the buffer for testing\cf3 \
-\cf7 ~wasteland\cf3  = \cf4 Buffer\cf3 .new(s, 5184, 1, 0);\
+( \cf2 // Create the buffer for testing only\cf3 \
+\cf7 ~wasteland\cf3  = \cf4 Buffer\cf3 .new(s, 5184, 1, 1);\
 \cf7 ~wasteland\cf3 .alloc();\
 \cf7 ~wasteland\cf3 .sendCollection(\cf4 Array\cf3 .fill(5184, \{ rrand(-1, 1) \}), 0, 0);\
 \cf7 ~wasteland\cf3 .plot;\
@@ -216,32 +215,253 @@
 (\
 \cf4 SynthDef\cf3 .new(\cf5 "BlastedWasteland"\cf3 ,\{\
 	\cf6 |amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
-	\cf6 var\cf3  env, signal, modY, gateEnv;\
+	\cf6 var\cf3  env, signal, modY, gateEnv, phase;\
 	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
-	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);\
-	modY = y.linlin(-200, 200, 0, 0.5);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 0.3], -4), gate:t_trig, doneAction:0);\
+	modY = y.linlin(-200, 200, 0, 0.999);\
+	\
+	phase = [\
+		\cf4 Saw\cf3 .ar(x.linexp(1, 430, 0.1, \cf4 SampleRate\cf3 .ir), 0.5, 0.5) * 72,\
+		\cf4 Saw\cf3 .ar(z.linexp(1, 430, 0.1, \cf4 SampleRate\cf3 .ir), 0.5, 0.5) * 72\
+	];\
+\
 	signal = \cf4 WaveTerrain\cf3 .ar(\
 				bufnum, \
-				\cf4 SinOsc\cf3 .ar(x.linexp(1, 430, 1, 2000), 0, 0.5, 0.5) * 72, \
-				\cf9 SinOsc\cf3 .ar(z.linexp(1, 430, 1, 2000), 0, 0.5, 0.5) * 72, \
+				phase[0], \
+				phase[1], \
 				72, \
 				72\
 	);\
-	signal = \cf4 Pan2\cf3 .ar(signal, island.linlin(0, 3, -1 , 1)) * amp * gateEnv;\
+	\
+	\cf2 // signal = LeakDC.ar(signal);\cf3 \
+	signal = \cf4 BufCombC\cf3 .ar(\cf4 LocalBuf\cf3 (\cf4 SampleRate\cf3 .ir), signal, modY.linexp(0, 1, 1, 80).reciprocal, 0.1 * env);\
+	signal = signal.dup * amp * gateEnv;\
+	\cf2 // signal = Pan2.ar(signal, island.linlin(0, 3, -1 , 1)) * amp * gateEnv;\cf3 \
 	\cf4 Out\cf3 .ar(0, signal);\
-\}).store;\
+\}).store.add;\
 );\
 \
 \cf7 ~blasted\cf3  = \cf4 Synth\cf3 (\cf5 "BlastedWasteland"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
 \cf7 ~blasted\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
 \cf7 ~blasted\cf3 .set(\cf8 \\gate\cf3 , 0);\
 \
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "SkyrimBelongsToTheNords"\cf3 ,\{\
+	\cf6 |amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
+	\cf6 var\cf3  env, signal, modY, gateEnv, phase, feedIn;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 0.3], -4), gate:t_trig, doneAction:0);\
+	modY = y.linlin(-200, 200, 0, 0.999);\
+	feedIn = \cf4 LocalIn\cf3 .ar(2).linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72);\
+	\
+	\cf2 /*\
+	phase = [\
+		Saw.ar(x.linexp(1, 430, 0.1, SampleRate.ir), 0.5, 0.5) * 72,\
+		Saw.ar(z.linexp(1, 430, 0.1, SampleRate.ir), 0.5, 0.5) * 72\
+	];\
+	\
+	feedIn = feedIn + phase;*/\cf3 \
 \
-b = \cf4 Buffer\cf3 .readChannel(s, \cf5 "/Users/curtismckinney/Documents/SC Files/hanafuda/hanafuda sounds/geese3.wav"\cf3 , 1, 44100, 1);\
-c = \cf4 Buffer\cf3 .readChannel(s, \cf5 "/Users/curtismckinney/Documents/SC Files/hanafuda/hanafuda sounds/fullmoon1.wav"\cf3 , 1, 44100, 1);\
-\{\
-\cf6 var\cf3  rows = 10; \
-\cf4 WaveTerrain\cf3 .ar(c, \cf4 SinOsc\cf3 .ar(\cf4 MouseX\cf3 .kr(20000, 44100, 1)), \cf4 SinOsc\cf3 .ar(\cf4 MouseX\cf3 .kr(20000, 44100, 1)), 210, 210)\
-\}.play\
+	signal = \cf4 WaveTerrain\cf3 .ar(\
+				bufnum, \
+				feedIn[0], \
+				feedIn[1], \
+				72, \
+				72\
+	);\
+	\
+	\cf2 // signal = BufCombC.ar(LocalBuf(SampleRate.ir), signal, modY.linexp(0, 1, 1, 80).reciprocal, 0.1 * env);\cf3 \
+	signal = signal * amp * gateEnv;\
+	\
+	signal = \cf4 Select\cf3 .ar(\
+		\cf4 Rand\cf3 (0, 2),\
+		[\
+			[\
+				signal, \
+				\cf4 BufCombC\cf3 .ar(\cf4 LocalBuf\cf3 (\cf4 SampleRate\cf3 .ir), signal, modY.linexp(0, 1, 1, 20).reciprocal, 0.1 * env)\
+			],\
+			\
+			[\
+				signal, \
+				signal\
+			]\cf2 /*,\
+			\
+			[\
+				BufCombC.ar(LocalBuf(SampleRate.ir), signal, x.linexp(1, 430, 1, 80).reciprocal, 0.1 * env), \
+				BufCombC.ar(LocalBuf(SampleRate.ir), signal, z.linexp(1, 430, 1, 80).reciprocal, 0.1 * env)\
+			],\
+			\
+			[\
+				LPF.ar(signal, modY.linexp(0, 1, 20, 20000)), \
+				LPF.ar(signal, modY.linexp(0, 1, 20, 20000))\
+			],*/\cf3 \
+		]\
+	);\
+\
+	\cf4 Out\cf3 .ar(0, signal);\
+	\
+	signal = \cf4 Select\cf3 .ar(\
+		\cf4 Rand\cf3 (0, 1),\
+		[\
+			[\
+				signal, \
+				signal.reciprocal\
+			]\
+		]\
+	);\
+	\
+	\cf4 LocalOut\cf3 .ar(signal);\
+\}).store.add;\
+);\
+\
+\cf7 ~skyrim\cf3  = \cf4 Synth\cf3 (\cf5 "SkyrimBelongsToTheNords"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
+\cf7 ~skyrim\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~skyrim\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "LunchBoxMonster"\cf3 ,\{\
+	\cf6 |amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
+	\cf6 var\cf3  env, signal, modY, gateEnv, phase, feedIn, feedAmp;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);\
+	modY = y.linlin(-200, 200, 0, 0.999);\
+	feedIn = \cf4 LocalIn\cf3 .ar(2);\
+	feedAmp = 0.49;\
+	signal = \cf4 WaveTerrain\cf3 .ar(\
+				bufnum, \
+				feedIn[0].linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				feedIn[1].linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				72, \
+				72\
+	);\
+	\
+	signal = \cf4 SinOsc\cf3 .ar(signal, signal * 8pi);\
+	signal = signal * gateEnv;\
+\
+	\cf4 Out\cf3 .ar(0, signal * amp);\
+	\cf4 LocalOut\cf3 .ar(\
+		\cf4 BufDelayC\cf3 .ar(\
+			\cf4 LocalBuf\cf3 (\cf4 SampleRate\cf3 .ir), \
+			(signal * feedAmp).reverse.reciprocal, \
+			[x / 430, z / 430].linlin(0, 1, 1, 2000) / \cf4 SampleRate\cf3 .ir\
+		)\
+	);\
+	\
+\}).store.add;\
+);\
+\
+\cf7 ~lunchbox\cf3  = \cf4 Synth\cf3 (\cf5 "LunchBoxMonster"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
+\cf7 ~lunchbox\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~lunchbox\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "LunchBoxMonster"\cf3 ,\{\
+	\cf6 |amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
+	\cf6 var\cf3  env, signal, modY, gateEnv, phase, feedIn, feedAmp;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);\
+	modY = y.linlin(-200, 200, 0, 0.999);\
+	feedIn = \cf4 LocalIn\cf3 .ar(2);\
+	feedAmp = 0.49;\
+	signal = \cf4 WaveTerrain\cf3 .ar(\
+				bufnum, \
+				feedIn[0].linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				feedIn[1].linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				72, \
+				72\
+	);\
+	\
+	signal = \cf4 SinOsc\cf3 .ar(signal, signal * 8pi);\
+	signal = signal * gateEnv;\
+\
+	\cf4 Out\cf3 .ar(0, signal * amp);\
+	\cf4 LocalOut\cf3 .ar(\
+		\cf4 BufDelayC\cf3 .ar(\
+			\cf4 LocalBuf\cf3 (\cf4 SampleRate\cf3 .ir), \
+			(signal * feedAmp).reverse.reciprocal, \
+			[x / 430, z / 430].linlin(0, 1, 1, 2000) / \cf4 SampleRate\cf3 .ir\
+		)\
+	);\
+	\
+\}).store.add;\
+);\
+\
+\cf7 ~lunchbox\cf3  = \cf4 Synth\cf3 (\cf5 "LunchBoxMonster"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
+\cf7 ~lunchbox\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~lunchbox\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "StalagmiteFight"\cf3 ,\{\
+	\cf6 |amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
+	\cf6 var\cf3  env, signal, modY, gateEnv, phase, feedIn;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);\
+	modY = y.linlin(-200, 200, 0, 0.999);\
+	feedIn = \cf4 LocalIn\cf3 .ar(2);\
+\
+	signal = \cf4 WaveTerrain\cf3 .ar(\
+				bufnum, \
+				feedIn[0].linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				feedIn[1].linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				72, \
+				72\
+	);\
+	\
+	signal = \cf4 Decay\cf3 .ar(\cf4 Trig\cf3 .ar(signal), modY.linlin(0, 1, 1, 2000) / \cf4 SampleRate\cf3 .ir, signal);\
+	signal = signal * amp * gateEnv;\
+\
+	\cf4 Out\cf3 .ar(0, \cf4 Limiter\cf3 .ar(\cf4 LeakDC\cf3 .ar(signal * 0.9), 1, 0.001));\
+	\
+	\cf4 LocalOut\cf3 .ar(\
+		\cf4 BufDelayC\cf3 .ar(\
+			\cf4 LocalBuf\cf3 (\cf4 SampleRate\cf3 .ir), \
+			signal.reverse, \
+			[x / 430, z / 430].linlin(0, 1, 1, 2000) / \cf4 SampleRate\cf3 .ir\
+		)\
+	);\
+	\
+\}).store.add;\
+);\
+\
+\cf7 ~lunchbox\cf3  = \cf4 Synth\cf3 (\cf5 "StalagmiteFight"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
+\cf7 ~lunchbox\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~lunchbox\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
+\
+(\
+\cf4 SynthDef\cf3 .new(\cf5 "AllMyFriendsAreAquatic"\cf3 ,\{\
+	\cf6 |amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|\cf3 \
+	\cf6 var\cf3  env, signal, modY, gateEnv, phase, feedIn, step, offset, wave;\
+	gateEnv = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .asr(0, 1, 0.001, -4), gate:gate, doneAction:2);\
+	modY = y.linlin(-200, 200, 0, 0.999);\
+	env = \cf4 EnvGen\cf3 .ar(\cf4 Env\cf3 .new([0, 1, 0],[0.0001, 0.1], -4), gate:t_trig, doneAction:0);\
+	feedIn = \cf4 LeakDC\cf3 .ar(\cf4 LocalIn\cf3 .ar(2));\
+	wave = \cf4 WaveTerrain\cf3 .ar(\
+				bufnum, \
+				feedIn[1].clip2(1).linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				feedIn[1].clip2(1).linlin(-1, 1, [x / 430 * 72, z / 43 * 72], modY * 72), \
+				72, \
+				72\
+	);\
+	\
+	\cf2 // offset = (Pitch.kr(wave)[0] * 2).reciprocal;\cf3 \
+	\cf2 // signal = LeakDC.ar(wave + DelayC.ar(wave.neg, 0.2, offset)); \cf3 \
+	\
+	signal = \cf4 LPF\cf3 .ar(\cf4 PinkNoise\cf3 .ar(env / 2), (env + 0.01).linexp(0.01, 1.01, 20, 20000));\
+\
+	\cf4 Out\cf3 .ar(0, \cf4 Limiter\cf3 .ar(\cf4 LeakDC\cf3 .ar(signal + wave * 4) * amp * gateEnv, 1, 0.001));\
+	\
+	\cf4 LocalOut\cf3 .ar(\
+		\cf4 Ringz\cf3 .ar(\cf4 Latch\cf3 .ar(t_trig, wave) + signal, \cf4 Decay\cf3 .ar(wave, 5 / \cf4 SampleRate\cf3 .ir).linexp(-1, 1, 20, 20000), 0.05 * modY)\
+	);\
+	\
+\}).store.add;\
+);\
+\
+\cf7 ~aquatic\cf3  = \cf4 Synth\cf3 (\cf5 "AllMyFriendsAreAquatic"\cf3 , [\cf8 \\bufnum\cf3 , \cf7 ~wasteland\cf3 .bufnum]);\
+\cf7 ~aquatic\cf3 .set(\cf8 \\t_trig\cf3 , 1, \cf8 \\x\cf3 , rrand(1, 430), \cf8 \\y\cf3 , rrand(-200, 200), \cf8 \\z\cf3 , rrand(1, 430));\
+\cf7 ~aquatic\cf3 .set(\cf8 \\gate\cf3 , 0);\
+\
 \
 }

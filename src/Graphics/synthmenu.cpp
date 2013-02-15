@@ -22,7 +22,7 @@ SynthMenuItem::SynthMenuItem(std::string synthName, cinder::Rectf bounds) :
         cinder::TextLayout layout;
         //layout.clear(cinder::ColorA(0, 0, 0, 0));
         layout.setColor(cinder::Color::white());
-        layout.setFont(ShGlobals::FONT);
+        layout.setFont(cinder::Font("Ubuntu Condensed", 10));
         layout.addLine(synthName);
 
         cinder::Surface8u rendered = layout.render(true);
@@ -43,8 +43,10 @@ void SynthMenuItem::draw()
 {
     cinder::gl::color(cinder::ColorA(0, 0, 0, 0.75));
     cinder::gl::drawSolidRect(bounds);
-    cinder::gl::color(cinder::Color::white());
-    cinder::gl::draw(synthNameTexture, bounds.getUpperLeft() + cinder::Vec2i(4, 4));
+    // cinder::gl::color(cinder::Color::white());
+    // cinder::gl::draw(synthNameTexture, bounds.getUpperLeft() + cinder::Vec2i(4, 4));
+    cinder::gl::drawString(synthName, bounds.getUpperLeft() + cinder::Vec2i(4, 4),
+                           cinder::Color::white(), cinder::Font("Ubuntu", 9));
 }
 
 void SynthMenuItem::drawHighlight()
@@ -143,8 +145,11 @@ std::string SynthMenu::getCurrentlySelectedSynth()
 void SynthMenu::createSynthMenuItems()
 {
     synthItemTree = kd_create(kDimensions);
-
+#ifdef __APPLE__
     const char* fileName = "../Resources/Synths.shog";
+#elif __LINUX__
+    const char* fileName = "./resources/Synths.shog";
+#endif
 
     ifstream fileStream(fileName);
 

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <set>
 #include <cmath>
+#include <cstdarg>
+#include <cstring>
 
 namespace alife {
 

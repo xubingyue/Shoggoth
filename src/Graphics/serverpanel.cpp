@@ -28,6 +28,6 @@ namespace serverpanel
 
     void draw()
     {
-        cinder::gl::drawString(status, pos, cinder::Color(0.7, 0, 0), ShGlobals::FONT);
+        cinder::gl::drawString(status, pos, cinder::ColorA(0, 0, 0, 0.75), ShGlobals::FONT);
     }
 } // Server Panel

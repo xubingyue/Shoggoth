@@ -14,9 +14,9 @@
 #include "cinder/Quaternion.h"
 
 #include "libraries/jsoncpp/include/json/json.h"
-#include "libraries/jsoncpp/include/json/value.h"
-#include "libraries/jsoncpp/include/json/writer.h"
-#include "libraries/jsoncpp/include/json/reader.h"
+#include "libraries/jsoncpp/include/json/jsonvalue.h"
+#include "libraries/jsoncpp/include/json/jsonwriter.h"
+#include "libraries/jsoncpp/include/json/jsonreader.h"
 
 // Used to store information about usage in a JSON format
 class ShData
