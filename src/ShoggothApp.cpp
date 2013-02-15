@@ -221,7 +221,7 @@ void ShoggothApp::prepareSettings(Settings *settings)
     settings->setFullScreen(true);
     float screenX = getDisplay().getWidth();
     float screenY = getDisplay().getHeight();
-    //settings->setWindowSize(screenX, screenY);
+    // settings->setWindowSize(screenX, screenY);
     mScreenCenter = Vec2f(screenX / 2, screenY / 2);
 
     //mScreenCenter = Vec2f(584, 365);
@@ -466,7 +466,7 @@ void ShoggothApp::keyDown(KeyEvent event)
             break;
 
         case KeyEvent::KEY_o:
-            finishSequence();
+            // finishSequence();
             break;
 
         case KeyEvent::KEY_UP:

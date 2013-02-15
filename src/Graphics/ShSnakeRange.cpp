@@ -25,7 +25,7 @@ ShSnakeRange::ShSnakeRange(snake_range_id_t id, string synthName, cinder::Vec2i 
     synthName(synthName),
     beatPointer(0),
     synthNameTexture(0),
-    synth(synthName, sc::ARGS("bufnum", island->getWaveTerrainBufferNumber()), 1)
+    synth(0)
 {
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
@@ -61,6 +61,11 @@ ShSnakeRange::ShSnakeRange(snake_range_id_t id, string synthName, cinder::Vec2i 
         changeQueued = false;
         populateRangeVector(true);
     }
+
+    node_arg_list argList;
+    argList.push_back(arg_pair("island", islandID));
+    argList.push_back(arg_pair("bufnum", island->getWaveTerrainBufferNumber()));
+    synth = new PolyphonicSynth(synthName, argList, 1);
 }
 
 ShSnakeRange::~ShSnakeRange()
@@ -70,6 +75,9 @@ ShSnakeRange::~ShSnakeRange()
 
     if(synthNameTexture)
         delete synthNameTexture;
+
+    if(synth)
+        delete synth;
 }
 
 void ShSnakeRange::increment()
@@ -91,8 +99,9 @@ void ShSnakeRange::increment()
             argList.push_back(arg_pair("x", centroid.x - islandPosition.x));
             argList.push_back(arg_pair("y", centroid.y));
             argList.push_back(arg_pair("z", centroid.z - islandPosition.z));
-            argList.push_back(arg_pair("island", islandID));
-            synth.trigger(argList);
+            // argList.push_back(arg_pair("island", islandID));
+            // argList.push_back(arg_pair("bufnum", island->getWaveTerrainBufferNumber()));
+            synth->trigger(argList);
 
             /*
             Synth::grain(
