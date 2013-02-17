@@ -47,14 +47,22 @@ float kWireRatio = 0.25;
 
 void loadFile(std::string name, std::string* contents)
 {
-    std::ifstream fileStream(name.c_str());
+    try
+    {
+        std::ifstream fileStream(name.c_str());
 
-    fileStream.seekg(0, std::ios::end);
-    contents->reserve(fileStream.tellg());
-    fileStream.seekg(0, std::ios::beg);
+        fileStream.seekg(0, std::ios::end);
+        contents->reserve(fileStream.tellg());
+        fileStream.seekg(0, std::ios::beg);
 
-    contents->assign((std::istreambuf_iterator<char>(fileStream)),
-                              (std::istreambuf_iterator<char>()));
+        contents->assign((std::istreambuf_iterator<char>(fileStream)),
+                                  (std::istreambuf_iterator<char>()));
+    }
+
+    catch(std::exception& e)
+    {
+        std::cout << e.what() <<  std::endl << "Unable to load file: " << name << std::endl;
+    }
 }
 
 void loadShaders(cinder::app::AppBasic* app)

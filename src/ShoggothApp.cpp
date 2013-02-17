@@ -59,8 +59,12 @@
 #include "src/Graphics/shaders.h"
 
 #ifdef __LINUX__
+#include <qapplication.h>
 #include "X11/Xlib.h"
-#include "qapplication.h"
+// Ubuntu Macro problem fix
+//#undef CursorShape
+#include <GL/gl.h>
+#include <GL/glu.h>
 #endif
 
 using namespace ci;
@@ -221,7 +225,7 @@ void ShoggothApp::prepareSettings(Settings *settings)
     settings->setFullScreen(true);
     float screenX = getDisplay().getWidth();
     float screenY = getDisplay().getHeight();
-    // settings->setWindowSize(screenX, screenY);
+    //settings->setWindowSize(screenX, screenY);
     mScreenCenter = Vec2f(screenX / 2, screenY / 2);
 
     //mScreenCenter = Vec2f(584, 365);
@@ -544,6 +548,8 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
+                std::cout << "SHIFT DOWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::DiamondSquare, shmath::randomRange(0, 255));
                 else

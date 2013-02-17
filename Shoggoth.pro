@@ -11,7 +11,10 @@ mac {
 }
 
 linux-g++ {
+    TEMPLATE = app
     QT += core gui opengl
+    CONFIG += qt
+    #CONFIG -= qt
 }
 
 TARGET = Shoggoth
@@ -20,12 +23,11 @@ TARGET = Shoggoth
 # libsc++ vars. CHANGE THESE TO THE CORRECT PATHS AND VERSIONS
 ###########################################################################################################################
 
-LIBSCPP_INCLUDE = /home/octopian/Documents/source/libsc++/libscpp
-LIBSCPP_LIB = /home/octopian/Documents/source/libsc++/libscpp-build-desktop
-# Currently these should be from SC version 3.5.0
-SUPERCOLLIDER_SOURCE = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6-beta/supercollider
-LIBSCSYNTH = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6-beta/supercollider/noqtbuild/server/scsynth
-LIBSCLANG = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6-beta/supercollider/noqtbuild/lang
+LIBSCPP_INCLUDE = /home/octopian/Documents/source/QtDev/libscpp
+LIBSCPP_LIB = /home/octopian/Documents/source/QtDev/libscpp-build-desktop
+SUPERCOLLIDER_SOURCE = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/
+LIBSCSYNTH = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/NoQtBuild/server/scsynth
+LIBSCLANG = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/NoQtBuild/lang
 # Currently this MUST be boost 1.49
 BOOST = /usr/include
 BOOST_LIBS = /usr/lib
@@ -66,8 +68,8 @@ CINDER_HOME = /home/octopian/Documents/source/libraries/QtCinder/Cinder
 
 #SLBINCLUDE = /Users/curtismckinney/Documents/source/SimpleLuaBind/slb/include
 #SLBLIBS = /Users/curtismckinney/Documents/source/SimpleLuaBind/slb/build/bin/static/
-SLBINCLUDE = /home/octopian/Documents/source/OgreDev/Entropy/libraries/slb/include
-SLBLIBS = /home/octopian/Documents/source/OgreDev/Entropy/libraries/slb/build/bin/static
+SLBINCLUDE = /home/octopian/Documents/source/libraries/slb/include
+SLBLIBS = /home/octopian/Documents/source/libraries/slb/build/bin/static
 
 ############################################################################################################################
 
@@ -215,7 +217,7 @@ linux-g++ {
     # DEFINES += PURE_GL_SHADER_SETUP
 
     LIBS += -lpthread
-    LIBS += $${CINDER_HOME}/build/cinder/libcinder.a
+    LIBS += $${CINDER_HOME}/lib/cinder/libcinder.a
     #LIBS += $${CINDER_HOME}/scons/libcinder.a
     LIBS += /usr/lib/x86_64-linux-gnu/libz.a
     LIBS += /usr/lib/x86_64-linux-gnu/libpng.a
@@ -262,7 +264,7 @@ linux-g++ {
 LIBS += $${BOOST_LIBS}/libboost_date_time.a
 #PRE_TARGETDEPS += $${BOOST_LIBS}/libboost_date_time.a
 #LIBS += $${BOOST_LIBS}/build/libboost_test.a
-LIBS += $${SUPERCOLLIDER_SOURCE}/build/external_libraries/libtlsf.a
+LIBS += $${LIBSCSYNTH}/../../external_libraries/libtlsf.a
 LIBS += $${BOOST_LIBS}/libboost_filesystem.a
 LIBS += $${BOOST_LIBS}/libboost_system.a
 #LIBS += $${SUPERCOLLIDER_SOURCE}/build/external_libraries/liboscpack.a
@@ -279,9 +281,14 @@ LIBS += $${FFTWF}/libfftw3f.a
 #PRE_TARGETDEPS += $${FFTWF}/libfftw3f.a
 
 # Jack
-LIBS += $${JACK}/libjack.a
+mac {
+    LIBS += $${JACK}/libjack.a
 #PRE_TARGETDEPS += $${JACK}/libjack.a
+}
 
+linux-g++ {
+    LIBS += $${JACK}/libjack.so
+}
 # FLAC
 LIBS += $${FLAC}/libFLAC.a
 #PRE_TARGETDEPS += $${FLAC}/libFLAC.a
@@ -308,7 +315,7 @@ LIBS += -lcurl
 LIBS += -lasound
 
 # yaml
-LIBS += /usr/lib/x86_64-linux-gnu/libyaml-cpp.a
+LIBS += $${LIBSCSYNTH}/../../external_libraries/libyaml.a
 
 # Bluetooth
 LIBS += /usr/lib/x86_64-linux-gnu/libbluetooth.a
