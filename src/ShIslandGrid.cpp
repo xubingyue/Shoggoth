@@ -225,7 +225,7 @@ snake_range_id_t ShIslandGrid::addShSnakeRange(int islandID, string synthName, V
                         synthName,
                         corner1,
                         corner2,
-                        cinder::ColorA(0.25, 0, 0, 0.05),
+                        cinder::ColorA(0.35, 0, 0, 0.05),
                         islands[islandID],
                         ShNetwork::ONLINE
             );
@@ -243,7 +243,7 @@ snake_range_id_t ShIslandGrid::addShSnakeRange(int islandID, string synthName, V
                                 synthName,
                                 corner1,
                                 corner2,
-                                cinder::ColorA(0.25, 0, 0, 0.05),
+                                cinder::ColorA(0.35, 0, 0, 0.05),
                                 islands[islandID],
                                 ShGlobals::TIME_STREAM_TIMER->getTime()
                             )

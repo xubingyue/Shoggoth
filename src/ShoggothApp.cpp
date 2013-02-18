@@ -63,6 +63,7 @@
 #include "X11/Xlib.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <cinder/app/AppImplQtBasic.h>
 #endif
 
 using namespace ci;
@@ -211,6 +212,7 @@ ShoggothApp::~ShoggothApp()
     islands.freeWaveTerrainBuffers();
 
 #ifdef __LINUX__
+    // XUngrabKeyboard(display, CurrentTime);
     XCloseDisplay(display);
 #endif
 
@@ -220,18 +222,19 @@ ShoggothApp::~ShoggothApp()
 
 void ShoggothApp::prepareSettings(Settings *settings)
 {
-    settings->setFullScreen(true);
     float screenX = getDisplay().getWidth();
     float screenY = getDisplay().getHeight();
-    //settings->setWindowSize(screenX, screenY);
+    settings->setWindowSize(screenX, screenY);
     mScreenCenter = Vec2f(screenX / 2, screenY / 2);
 
     //mScreenCenter = Vec2f(584, 365);
+    //settings->setFullScreen(true);
     settings->setFrameRate(30.0f);
 }
 
 void ShoggothApp::setup()
 {
+    setFullScreen(true);
     // STARTUP SC
     //sc::startup();
     ShGlobals::SCREEN_SIZE = Vec2i(this->getDisplay().getWidth(), this->getDisplay().getHeight());
@@ -259,6 +262,8 @@ void ShoggothApp::setup()
     rootWindow = DefaultRootWindow(display);
     XWarpPointer(display, None, rootWindow, 0, 0, 0, 0, mScreenCenter.x, mScreenCenter.y);
     qApp->setOverrideCursor(QCursor(Qt::BlankCursor));
+    // qApp->focusWidget();
+    // XGrabKeyboard(display, rootWindow, 1, GrabModeAsync, GrabModeAsync, CurrentTime);
 #endif
     direction = Vec2f(0.0f, 0.0f);
     //srand(666);
@@ -331,7 +336,7 @@ void ShoggothApp::setup()
     //mPluginsCfg = pluginPath.c_str();
     //sc::ServerOptions serverOptions;
 
-    //mServer = sc::Server();
+    sc::startup();
     mServer.boot();
     synthMenu = new SynthMenu();
     // Initialize Networking
@@ -1031,15 +1036,16 @@ void ShoggothApp::initRender()
     light.setAmbient(Color(0.9f, 0.9f, 0.9f));
     light.setDiffuse(Color::white());
     light.setSpecular(Color::white());*/
-    light.setAmbient(Color(0.5, 0.5f, 0.5f));
-    light.setDiffuse(Color(0.7, 0.7, 0.7));
-    light.setSpecular(Color(0.7, 0.7, 0.7));
+    light.setAmbient(Color(0.6, 0.6f, 0.6f));
+    light.setDiffuse(Color(0.8, 0.8, 0.8));
+    light.setSpecular(Color(0.8, 0.8, 0.8));
 #elif __LINUX__
-    light.setAmbient(Color(0.5, 0.5f, 0.5f));
-    light.setDiffuse(Color(0.7, 0.7, 0.7));
-    light.setSpecular(Color(0.7, 0.7, 0.7));
+    light.setAmbient(Color(0.6, 0.6f, 0.6f));
+    light.setDiffuse(Color(0.8, 0.8, 0.8));
+    light.setSpecular(Color(0.8, 0.8, 0.8));
 #endif
-    light.setPosition(mCamera.getCam().getEyePoint());
+    // light.setPosition(mCamera.getCam().getEyePoint());
+    light.setPosition(Vec3f(500.0f, 500.0f, 500.0f));
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
     gl::enableDepthRead();
@@ -1140,6 +1146,8 @@ void ShoggothApp::draw()
 
     initRender();
     renderScene();
+    // cinder::gl::color(cinder::Color(0, 0, 255));
+    // cinder::gl::drawSphere(mCamera.frustumSphere.getCenter(), mCamera.frustumSphere.getRadius());
 
     gl::color(cinder::ColorA(0, 0, 0, 1));
 

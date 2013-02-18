@@ -237,17 +237,20 @@ void ShSnakeRange::drawName()
     {
         cinder::Vec3f pos = rangeVector[0]->getCentroid();
         pos.y = maxHeight;
-        cinder::gl::color(cinder::Color::white());
 
-        cinder::Vec2f texturePos = ShGlobals::CAMERA->getCam().worldToScreen(
-                    pos,
-                    ShGlobals::SCREEN_SIZE.x,
-                    ShGlobals::SCREEN_SIZE.y
-        );
-
-        if(texturePos.x > 0 && texturePos.y > 0)
+        if(ShGlobals::CAMERA->canView(pos))
         {
-            cinder::gl::draw(*synthNameTexture, texturePos);
+            cinder::gl::color(cinder::Color::white());
+            cinder::Vec2f texturePos = ShGlobals::CAMERA->getCam().worldToScreen(
+                        pos,
+                        ShGlobals::SCREEN_SIZE.x,
+                        ShGlobals::SCREEN_SIZE.y
+            );
+
+            if(texturePos.x > 0 && texturePos.y > 0)
+            {
+                cinder::gl::draw(*synthNameTexture, texturePos);
+            }
         }
     }
 

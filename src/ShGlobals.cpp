@@ -16,7 +16,7 @@ namespace ShGlobals {
     ShCamera* CAMERA = 0;
     ShSequencer* SEQUENCER = 0;
     ShData* DATA = 0;
-    cinder::ColorA COLOR_OFF = cinder::ColorA(0.125, 0.125, 0.125, 1);
+    cinder::ColorA COLOR_OFF = cinder::ColorA(0.05, 0.05, 0.05, 1);
     cinder::ColorA COLOR_ON = cinder::ColorA(0.9, 0.9, 0.9, 1);
     cinder::ColorA COLOR0 = cinder::ColorA(0.25, 0.25, 0.25, 1);
     cinder::ColorA COLOR1 = cinder::ColorA(0.0, 0.5, 0.5, 1);

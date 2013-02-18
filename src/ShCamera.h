@@ -16,6 +16,7 @@
 #include "cinder/gl/gl.h"
 #include "cinder/Camera.h"
 #include "cinder/Vector.h"
+#include "cinder/Sphere.h"
 
 class ShCamera {
 
@@ -35,6 +36,8 @@ public:
 	cinder::Quatf getRotation();
     cinder::Vec3f getEye();
     cinder::Vec3f getRotationVector();
+    bool canView(cinder::Vec3f point);
+    cinder::Sphere frustumSphere;
 	
 private:
 	

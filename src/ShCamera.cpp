@@ -12,8 +12,7 @@
 // Local includes
 #include "src/ShCamera.h"
 #include "src/shmath.h"
-
-
+#include "src/Graphics/ShSeqPath.h"
 
 using namespace cinder;
 using namespace gl;
@@ -137,6 +136,7 @@ void ShCamera::moveTo(Vec3f pos)
 void ShCamera::update()
 {
 	updateViewMatrix();
+    frustumSphere = cinder::Sphere(mCam.getCenterOfInterestPoint(), mEye.distance(mCam.getCenterOfInterestPoint()) * 0.7);
 }
 
 void ShCamera::setup(float windowAspectRatio)
@@ -150,7 +150,7 @@ void ShCamera::setup(float windowAspectRatio)
     //					Quatf(Vec3f(0, 1, 0), mYaw).normalized() *
     //					Quatf(Vec3f(0, 0, -1), mRoll).normalized();
     //mCam.lookAt(Vec3f(6,4,4),Vec3f(0,0,2),Vec3f(0,0,1));
-	updateViewMatrix();
+    update();
 }
 
 const CameraPersp& ShCamera::getCam()
@@ -168,6 +168,11 @@ cinder::Vec3f ShCamera::getRotationVector()
     //return Vec3f(mCameraRotation[1], mCameraRotation[2], mCameraRotation[3]);
     //return Vec3f(mCameraRotation.getPitch(), mCameraRotation.getYaw(), mCameraRotation.getRoll());
     return mCam.getViewDirection();
+}
+
+bool ShCamera::canView(Vec3f point)
+{
+    return frustumSphere.intersects(cinder::Ray(mEye, (point - mEye).normalized()));
 }
 
 cinder::Vec3f ShCamera::getEye()

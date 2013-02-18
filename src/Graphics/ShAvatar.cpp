@@ -354,7 +354,7 @@ void ShAvatar::draw()
 void ShAvatar::drawName()
 {
     boost::shared_lock<boost::shared_mutex> lock(mMutex);
-    if(nameTextureGenerated)
+    if(nameTextureGenerated && ShGlobals::CAMERA->canView(mPos))
     {
         //glEnable(GL_BLEND);
         //glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ONE_MINUS_SRC_COLOR);
