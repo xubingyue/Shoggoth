@@ -61,8 +61,6 @@
 #ifdef __LINUX__
 #include <qapplication.h>
 #include "X11/Xlib.h"
-// Ubuntu Macro problem fix
-//#undef CursorShape
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
@@ -1029,9 +1027,13 @@ void ShoggothApp::initRender()
 
     gl::Light light(gl::Light::POINT, 0);
 #ifdef __APPLE__
+    /*
     light.setAmbient(Color(0.9f, 0.9f, 0.9f));
     light.setDiffuse(Color::white());
-    light.setSpecular(Color::white());
+    light.setSpecular(Color::white());*/
+    light.setAmbient(Color(0.5, 0.5f, 0.5f));
+    light.setDiffuse(Color(0.7, 0.7, 0.7));
+    light.setSpecular(Color(0.7, 0.7, 0.7));
 #elif __LINUX__
     light.setAmbient(Color(0.5, 0.5f, 0.5f));
     light.setDiffuse(Color(0.7, 0.7, 0.7));

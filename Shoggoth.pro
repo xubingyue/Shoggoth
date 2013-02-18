@@ -217,7 +217,7 @@ linux-g++ {
     # DEFINES += PURE_GL_SHADER_SETUP
 
     LIBS += -lpthread
-    LIBS += $${CINDER_HOME}/lib/cinder/libcinder.a
+    LIBS += $${CINDER_HOME}/lib/libcinder.a
     #LIBS += $${CINDER_HOME}/scons/libcinder.a
     LIBS += /usr/lib/x86_64-linux-gnu/libz.a
     LIBS += /usr/lib/x86_64-linux-gnu/libpng.a
