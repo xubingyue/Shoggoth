@@ -1030,22 +1030,23 @@ void ShoggothApp::initRender()
     gl::pushMatrices();
     gl::setMatrices(mCamera.getCam());
 
-    gl::Light light(gl::Light::POINT, 0);
+    gl::Light light(gl::Light::SPOTLIGHT, 0);
 #ifdef __APPLE__
     /*
     light.setAmbient(Color(0.9f, 0.9f, 0.9f));
     light.setDiffuse(Color::white());
     light.setSpecular(Color::white());*/
-    light.setAmbient(Color(0.6, 0.6f, 0.6f));
+    light.setAmbient(Color(0.5f, 0.5f, 0.5f));
     light.setDiffuse(Color(0.8, 0.8, 0.8));
-    light.setSpecular(Color(0.8, 0.8, 0.8));
+    light.setSpecular(Color(0.9, 0.9, 0.9));
 #elif __LINUX__
-    light.setAmbient(Color(0.6, 0.6f, 0.6f));
+    light.setAmbient(Color(0.5, 0.5f, 0.5f));
     light.setDiffuse(Color(0.8, 0.8, 0.8));
-    light.setSpecular(Color(0.8, 0.8, 0.8));
+    light.setSpecular(Color(0.9, 0.9, 0.9));
 #endif
-    // light.setPosition(mCamera.getCam().getEyePoint());
-    light.setPosition(Vec3f(500.0f, 500.0f, 500.0f));
+    light.setPosition(mCamera.getCam().getEyePoint());
+    light.setDirection(mCamera.getCam().getViewDirection());
+    // light.setPosition(Vec3f(500.0f, 500.0f, 500.0f));
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
     gl::enableDepthRead();

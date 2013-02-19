@@ -8,6 +8,8 @@
 
 mac {
     QT     -= core gui opengl
+    # Change to your OS version (and make sure its there!)
+    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
 }
 
 linux-g++ {
@@ -17,61 +19,13 @@ linux-g++ {
     #CONFIG -= qt
 }
 
-TARGET = Shoggoth
-
-###########################################################################################################################
-# libsc++ vars. CHANGE THESE TO THE CORRECT PATHS AND VERSIONS
-###########################################################################################################################
-
-LIBSCPP_INCLUDE = /home/octopian/Documents/source/QtDev/libscpp
-LIBSCPP_LIB = /home/octopian/Documents/source/QtDev/libscpp-build-desktop
-SUPERCOLLIDER_SOURCE = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/
-LIBSCSYNTH = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/NoQtBuild/server/scsynth
-LIBSCLANG = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/NoQtBuild/lang
-# Currently this MUST be boost 1.49
-BOOST = /usr/include
-BOOST_LIBS = /usr/lib
-LIBSNDFILE = /usr/lib/x86_64-linux-gnu
-AVAHI_COMMON = /usr/lib/x86_64-linux-gnu
-AVAHI_CLIENT = /usr/lib/x86_64-linux-gnu
-FFTWF = /usr/lib/x86_64-linux-gnu
-JACK = /usr/lib/x86_64-linux-gnu
-FLAC = /usr/lib/x86_64-linux-gnu
-OGG = /usr/lib/x86_64-linux-gnu
-VORBIS = /usr/lib/x86_64-linux-gnu
-
-mac {
-    # Change to your OS version (and make sure its there!)
-    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
-}
-
 # currently 64bit. If you want i386 you will need to build above libraries yourself for i386 first
 CONFIG += x86_64
+TARGET = Shoggoth
 
-###########################################################################################################################
-
-
-###########################################################################################################################
-# Cinder path variable CHANGE THIS TO THE CORRECT PATHS
-###########################################################################################################################
-
-# Point to your cinder folder so that we know where everything is
-#CINDER_HOME = /Users/curtismckinney/Documents/Cinder/cinder_0.8.3_mac
-CINDER_HOME = /home/octopian/Documents/source/libraries/QtCinder/Cinder
-
-############################################################################################################################
+include(QMakeVars.pri)
 
 
-############################################################################################################################
-# Simple Lua Binder CHANGE THESE TO THE CORRECT PATHS
-############################################################################################################################
-
-#SLBINCLUDE = /Users/curtismckinney/Documents/source/SimpleLuaBind/slb/include
-#SLBLIBS = /Users/curtismckinney/Documents/source/SimpleLuaBind/slb/build/bin/static/
-SLBINCLUDE = /home/octopian/Documents/source/libraries/slb/include
-SLBLIBS = /home/octopian/Documents/source/libraries/slb/build/bin/static
-
-############################################################################################################################
 
 INCLUDEPATH += $${CINDER_HOME}/include
 INCLUDEPATH += $${CINDER_HOME}/lib
@@ -473,7 +427,8 @@ OTHER_FILES += \
     shaders/picking_vert.glsl \
     shaders/picking_frag.glsl \
     shaders/phong_vert.glsl \
-    shaders/phong_frag.glsl
+    shaders/phong_frag.glsl \
+    QMakeVars.pri
 
 
 INCLUDEPATH += $${BOOST} \

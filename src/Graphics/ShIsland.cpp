@@ -31,7 +31,7 @@ using namespace gl;
 
 uint16_t ShIsland::kTriGridWidth = kGridWidth * 2;
 uint16_t ShIsland::kTriGridHeight = ShIsland::kGridDepth;
-Material ShIsland::material = Material(Color(0.6, 0.6, 0.6), Color(0.6f, 0.6f, 0.6f), Color(0.5, 0.5, 0.5), 0.75);
+Material ShIsland::material = Material(Color(0.6, 0.6, 0.6), Color(0.8f, 0.8f, 0.8f), Color(0.5, 0.5, 0.5), 0.75);
 uint32_t ShIsland::globalPickingIndex = 0;
 
 ShIsland::ShIsland(Vec3f pos, int id, Vec2i coord) :
