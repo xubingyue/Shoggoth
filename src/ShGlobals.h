@@ -44,7 +44,7 @@ namespace ShGlobals {
     extern cinder::Vec2i SCREEN_SIZE;
     extern ShCamera* CAMERA;
     extern ShSequencer* SEQUENCER;
-    extern ShData* DATA;
+    // extern ShData* DATA;
     extern cinder::ColorA COLOR_ON, COLOR_OFF, COLOR0, COLOR1, COLOR2, COLOR3;
     extern ShIslandGrid* ISLAND_GRID;
     extern ShTimer* TIME_STREAM_TIMER;
@@ -52,7 +52,13 @@ namespace ShGlobals {
     extern TimeQuakeDisplay* TIME_QUAKE_DISPLAY;
     extern LuaConsole* LUA_CONSOLE;
     void luaPrintCallback(SLB::ShoggothScript *s, const char *str, size_t length);
-    extern
+    extern int SECTION_NUMBER;
+    extern unsigned int NUM_SECTIONS;
+    extern bool DRAW_WIREFRAMES;
+    extern cinder::ColorA BACKGROUND_COLOR;
+    void setSectionNumber(int sectionNumber);
+    void incrementSectionNumber();
+    void decrementSectionNumber();
 
     void addTimeStream(std::string key, ShTimeStream* timeStream);
     std::map<std::string, ShTimeStream*>& getTimeStreamMap();

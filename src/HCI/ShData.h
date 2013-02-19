@@ -1,6 +1,6 @@
 #ifndef SHDATA_H
 #define SHDATA_H
-
+/*
 #include <deque>
 #include <string>
 #include <cstdio>
@@ -131,5 +131,5 @@ private:
     FILE* file; // Actual file that is written to
     bool writing; // Writing bool for thread
 };
-
+*/
 #endif // SHDATA_H

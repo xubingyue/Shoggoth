@@ -151,7 +151,7 @@ public:
     Material stepMaterial;
     ShSnakePit snakePit;
     ShClient mOscClient;
-    ShData mData;
+    // ShData mData;
     uint8_t mSelectedIsland;
     //alife::cell::GameOfLife gameOfLife;
     alife::cell::WolframCA* ca;
@@ -715,6 +715,14 @@ void ShoggothApp::keyDown(KeyEvent event)
                 islands.removeCurrentlySelectedSnakeRange();
 
             break;
+
+        case KeyEvent::KEY_PLUS:
+            ShGlobals::incrementSectionNumber();
+            break;
+
+        case KeyEvent::KEY_MINUS:
+            ShGlobals::decrementSectionNumber();
+            break;
         }
     }
 
@@ -742,7 +750,7 @@ void ShoggothApp::keyDown(KeyEvent event)
     }
 
     //gameOfLife.update();
-    mData.queueKeyStore(event, ShData::Pressed);
+    // mData.queueKeyStore(event, ShData::Pressed);
     /*
     std::cout << "KeyDown Number: " << event.getCode()
               << std::endl << "is accel Down" << event.isAccelDown() << std::endl
@@ -785,7 +793,7 @@ void ShoggothApp::keyUp(KeyEvent event)
         break;
     }
 
-    mData.queueKeyStore(event, ShData::Released);
+    // mData.queueKeyStore(event, ShData::Released);
 }
 
 void ShoggothApp::resize(ResizeEvent event)
@@ -919,20 +927,20 @@ void ShoggothApp::mouseDown(MouseEvent event)
         */
     }
 
-    if(event.isLeft())
-        mData.queueMouseButtonStore(ShData::Left, ShData::Down);
-    else
-        mData.queueMouseButtonStore(ShData::Right, ShData::Down);
+    // if(event.isLeft())
+        // mData.queueMouseButtonStore(ShData::Left, ShData::Down);
+    // else
+        // mData.queueMouseButtonStore(ShData::Right, ShData::Down);
 
     //flock->addBoid(geometry::Vec3d(event.getX(), event.getY(), 0));
 }
 
 void ShoggothApp::mouseUp(MouseEvent event)
 {
-    if(event.isLeft())
-        mData.queueMouseButtonStore(ShData::Left, ShData::Up);
-    else
-        mData.queueMouseButtonStore(ShData::Right, ShData::Up);
+    // if(event.isLeft())
+        // mData.queueMouseButtonStore(ShData::Left, ShData::Up);
+    // else
+        // mData.queueMouseButtonStore(ShData::Right, ShData::Up);
 }
 
 void ShoggothApp::mouseMove(MouseEvent event)
@@ -966,7 +974,7 @@ void ShoggothApp::mouseMove(MouseEvent event)
             ShNetwork::sendRotateAvatar(mCamera.getCam().getOrientation());
     }
 
-    mData.queueMouseMoveStore(event.getPos());
+    // mData.queueMouseMoveStore(event.getPos());
 }
 
 void ShoggothApp::update()
@@ -1025,7 +1033,7 @@ void ShoggothApp::update()
 
 void ShoggothApp::initRender()
 {
-    gl::clear(Color(1, 1, 1));
+    gl::clear(ShGlobals::BACKGROUND_COLOR);
 
     gl::pushMatrices();
     gl::setMatrices(mCamera.getCam());
@@ -1081,8 +1089,13 @@ void ShoggothApp::renderPicking()
 void ShoggothApp::renderScene()
 {
     ShShaders::bindPhong();
-
     ShIsland::material.apply();
+
+    if(ShGlobals::DRAW_WIREFRAMES)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    }
+
     renderIslands();
     islands.drawSnakeRanges(true);
 
@@ -1109,6 +1122,11 @@ void ShoggothApp::renderScene()
 
         gl::color(Color(0, 0, 0));
         islands.drawBoundingBox(mSelectedIsland);
+    }
+
+    if(ShGlobals::DRAW_WIREFRAMES)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 
     //snakePit.draw();

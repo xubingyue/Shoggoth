@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <stdlib.h>
 
@@ -203,4 +204,4 @@ bool ShData::createDocument()
     fputs(outputConfig.c_str(), file);
     fclose(file);
     return true;
-}
+}*/

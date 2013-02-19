@@ -316,7 +316,7 @@ void ShAvatar::setRotW(float w)
 {
     boost::shared_lock<boost::shared_mutex> lock(mMutex);
     mRot.w = w;
-    ShGlobals::DATA->queueAvatarPosition(mUserName, mPos, mRot);
+    // ShGlobals::DATA->queueAvatarPosition(mUserName, mPos, mRot);
 }
 
 cinder::Vec3f ShAvatar::getPos()

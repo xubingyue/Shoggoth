@@ -304,9 +304,9 @@ SOURCES += src/ShSnakePit.cpp \
     src/ShGlobals.cpp \
     src/Graphics/ShAvatar.cpp \
     src/ShChat.cpp \
-    libraries/jsoncpp/src/lib_json/json_writer.cpp \
-    libraries/jsoncpp/src/lib_json/json_value.cpp \
-    libraries/jsoncpp/src/lib_json/json_reader.cpp \
+    # libraries/jsoncpp/src/lib_json/json_writer.cpp \
+    # libraries/jsoncpp/src/lib_json/json_value.cpp \
+    # libraries/jsoncpp/src/lib_json/json_reader.cpp \
     src/HCI/ShData.cpp \
     src/ArtificialLife/wolframca.cpp \
     src/ArtificialLife/abstractca.cpp \
@@ -377,11 +377,11 @@ HEADERS += oscpack/osc/OscException.h \
     src/network/ShNetwork.h \
     src/Graphics/ShAvatar.h \
     src/ShChat.h \
-    libraries/jsoncpp/include/json/json.h \
-    libraries/jsoncpp/include/json/forwards.h \
-    libraries/jsoncpp/include/json/config.h \
-    libraries/jsoncpp/include/json/autolink.h \
-    libraries/jsoncpp/src/lib_json/json_batchallocator.h \
+    # libraries/jsoncpp/include/json/json.h \
+    # libraries/jsoncpp/include/json/forwards.h \
+    # libraries/jsoncpp/include/json/config.h \
+    # libraries/jsoncpp/include/json/autolink.h \
+    # libraries/jsoncpp/src/lib_json/json_batchallocator.h \
     src/HCI/ShData.h \
     src/ArtificialLife/CellularAutomata.h \
     src/ArtificialLife/ArtificialLife.h \
@@ -414,10 +414,10 @@ HEADERS += oscpack/osc/OscException.h \
     src/Graphics/timequakedisplay.h \
     src/Audio/polyphonicsynth.h \
     src/Graphics/serverpanel.h \
-    libraries/jsoncpp/include/json/jsonfeatures.h \
-    libraries/jsoncpp/include/json/jsonvalue.h \
-    libraries/jsoncpp/include/json/jsonwriter.h \
-    libraries/jsoncpp/include/json/jsonreader.h
+    # libraries/jsoncpp/include/json/jsonfeatures.h \
+    # libraries/jsoncpp/include/json/jsonvalue.h \
+    # libraries/jsoncpp/include/json/jsonwriter.h \
+    # libraries/jsoncpp/include/json/jsonreader.h
 
 RESOURCES += \
 
@@ -450,13 +450,13 @@ INCLUDEPATH += $${BOOST} \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/nova-tt \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/oscpack \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/pycxx-6.22 \
-    $${SUPERCOLLIDER_SOURCE}/external_libraries/simplejson-2.3.2 \
+    # $${SUPERCOLLIDER_SOURCE}/external_libraries/simplejson-2.3.2 \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/threadpool \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/TLSF-2.4.6/src \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/yaml-cpp-0.3.0 \
-    libraries/jsoncpp/include \
-    libraries/jsoncpp/include/json \
-    libraries/jsoncpp/src/lib_son
+    # libraries/jsoncpp/include \
+    # libraries/jsoncpp/include/json \
+    # libraries/jsoncpp/src/lib_son
 
 DEPENDPATH += $${BOOST} \
     $${LIBSCPP_INCLUDE} \
@@ -477,13 +477,13 @@ DEPENDPATH += $${BOOST} \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/nova-tt \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/oscpack \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/pycxx-6.22 \
-    $${SUPERCOLLIDER_SOURCE}/external_libraries/simplejson-2.3.2 \
+    # $${SUPERCOLLIDER_SOURCE}/external_libraries/simplejson-2.3.2 \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/threadpool \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/TLSF-2.4.6/src \
     $${SUPERCOLLIDER_SOURCE}/external_libraries/yaml-cpp-0.3.0 \
-    libraries/jsoncpp/include \
-    libraries/jsoncpp/include/json \
-    libraries/jsoncpp/src/lib_son
+    # libraries/jsoncpp/include \
+    # libraries/jsoncpp/include/json \
+    # libraries/jsoncpp/src/lib_son
 
 
 

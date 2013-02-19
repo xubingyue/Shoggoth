@@ -376,17 +376,17 @@ void receiveChatMessage(const char* message)
     if(chat != 0)
         chat->queueMessage(message);
 
-    ShGlobals::DATA->queueChatStore(message);
+    // ShGlobals::DATA->queueChatStore(message);
 }
 
 void receiveAddPeer(const char* userName)
 {
-    ShGlobals::DATA->queueUserLogin(userName);
+    // ShGlobals::DATA->queueUserLogin(userName);
 }
 
 void receiveRemovePeer(std::string userName)
 {
-    ShGlobals::DATA->queueUserLogout(userName);
+    // ShGlobals::DATA->queueUserLogout(userName);
 }
 
 void receiveUserNameReply(std::string userName)
