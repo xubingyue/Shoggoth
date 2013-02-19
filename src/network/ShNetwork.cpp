@@ -262,7 +262,7 @@ void sendSnakeRangeCorner(std::pair<unsigned int, unsigned int> id, cinder::Vec2
 
 void sendCreateTimeStream(const char* id, long time)
 {
-    sendCthulhuAddIntObject(id, "TimeSteam", time);
+    // sendCthulhuAddIntObject(id, "TimeSteam", time);
 }
 
 void sendSetTempo(int milliseconds)
@@ -461,13 +461,13 @@ void receiveSetSequencing(int sequencing)
     if(sequencing == 1 && !ShGlobals::SEQUENCER->isPlaying)
     {
         ShGlobals::SEQUENCER->play();
-        ShGlobals::TIME_QUAKE_DISPLAY->startThreading();
+        // ShGlobals::TIME_QUAKE_DISPLAY->startThreading();
     }
 
     else if(sequencing == 0 && ShGlobals::SEQUENCER->isPlaying)
     {
         ShGlobals::SEQUENCER->stop();
-        ShGlobals::TIME_QUAKE_DISPLAY->stopThreading();
+        // ShGlobals::TIME_QUAKE_DISPLAY->stopThreading();
     }
 }
 
@@ -502,7 +502,7 @@ void receiveSetTempo(int milliseconds)
 {
     boost::chrono::milliseconds tempo(milliseconds);
     ShGlobals::SEQUENCER->setStepQuant(tempo);
-    ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
+    // ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
 }
 
 } // Close out ShNetwork namespace

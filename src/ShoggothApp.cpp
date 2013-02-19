@@ -373,7 +373,7 @@ void ShoggothApp::setup()
     ShGlobals::TIME_STREAM_SCHEDULER = timeStreamScheduler;
     timeStreamTimer.setScheduler(timeStreamScheduler);
     ShGlobals::TIME_STREAM_TIMER = &timeStreamTimer;
-    timeStreamTimer.start();
+    //timeStreamTimer.start();
     timeStreamDisplay = new ShTimeStreamDisplay();
     targetSnakeRange = std::make_pair(0, 0);
     islands.setSelectedSnakeRange(targetSnakeRange.second);
@@ -482,7 +482,7 @@ void ShoggothApp::keyDown(KeyEvent event)
             {
                 tempo = mSequencer.getStepQuant() - boost::chrono::milliseconds(15);
                 mSequencer.setStepQuant(tempo);
-                ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
+                // ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
             }
 
             else
@@ -498,7 +498,7 @@ void ShoggothApp::keyDown(KeyEvent event)
             {
                 tempo = mSequencer.getStepQuant() + boost::chrono::milliseconds(15);
                 mSequencer.setStepQuant(tempo);
-                ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
+                // ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
             }
 
             else

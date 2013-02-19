@@ -235,7 +235,7 @@ snake_range_id_t ShIslandGrid::addShSnakeRange(int islandID, string synthName, V
             selectedSnakeRange = snakeID.second;
             ++snakeRangeIDCounter;
 
-            if(addTimeEvent)
+            if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                             new SnakeAddEvent(
@@ -289,7 +289,7 @@ void ShIslandGrid::addShSnakeRange(snake_range_id_t snakeID, std::string synthNa
             selectedSnakeRange = snakeID.second;
             ++snakeRangeIDCounter;
 
-            if(addTimeEvent)
+            if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                             new SnakeAddEvent(
@@ -335,7 +335,7 @@ void ShIslandGrid::removeSnakeRange(snake_range_id_t snakeID, bool addTimeEvent,
                 }
             }
 
-            if(addTimeEvent)
+            if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                             new SnakeRemoveEvent(
@@ -402,7 +402,7 @@ void ShIslandGrid::setSnakeRangePosition(snake_range_id_t snakeID, cinder::Vec2i
         {
             snakeRange->move(corner, (!addTimeEvent) || ShNetwork::ONLINE);
 
-            if(addTimeEvent)
+            if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                             new SnakeMoveEvent(
@@ -436,7 +436,7 @@ void ShIslandGrid::setSnakeRangeCorner(snake_range_id_t snakeID, cinder::Vec2i c
             cinder::Vec2i previousCorner = snakeRange->getCorner2();
             snakeRange->setCorner2(corner, (!addTimeEvent) || ShNetwork::ONLINE);
 
-            if(addTimeEvent)
+            if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                             new SnakeResizeEvent(
@@ -584,7 +584,7 @@ void ShIslandGrid::emptySteps(int id, bool addTimeEvent) // Turn off all the ste
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainStepsEvent(
@@ -648,7 +648,7 @@ void ShIslandGrid::diamondSquareSteps(int id, unsigned char seed, bool addTimeEv
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainStepsEvent(
@@ -712,7 +712,7 @@ void ShIslandGrid::wolframCASteps(int id, unsigned char ruleSet, bool addTimeEve
         delete ca;
         islands[id]->setStepGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainStepsEvent(
@@ -787,7 +787,7 @@ void ShIslandGrid::strangeSteps(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainStepsEvent(
@@ -1006,7 +1006,7 @@ void ShIslandGrid::lSystemSteps(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainStepsEvent(
@@ -1099,7 +1099,7 @@ void ShIslandGrid::flockingSteps(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainStepsEvent(
@@ -1173,7 +1173,7 @@ void ShIslandGrid::emptyHeights(int id, bool addTimeEvent)
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainHeightsEvent(
@@ -1224,7 +1224,7 @@ void ShIslandGrid::diamondSquareHeights(int id, unsigned char seed, bool addTime
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainHeightsEvent(
@@ -1305,7 +1305,7 @@ void ShIslandGrid::wolframHeights(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setTerrainGen(newGen);
         delete ca;
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainHeightsEvent(
@@ -1394,7 +1394,7 @@ void ShIslandGrid::strangeHeights(int id, unsigned char seed, bool addTimeEvent)
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainHeightsEvent(
@@ -1611,7 +1611,7 @@ void ShIslandGrid::lSystemHeights(int id, unsigned char seed, bool addTimeEvent)
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainHeightsEvent(
@@ -1718,7 +1718,7 @@ void ShIslandGrid::flockingHeights(int id, unsigned char seed, bool addTimeEvent
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
-        if(addTimeEvent)
+        if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
                         new TerrainHeightsEvent(
