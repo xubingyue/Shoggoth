@@ -81,10 +81,10 @@ mac {
     LIBS += $${CINDER_HOME}/lib/macosx/libpng14.a
     LIBS += $${CINDER_HOME}/lib/macosx/libpixman-1.a
     LIBS += $${CINDER_HOME}/lib/macosx/libcairo.a
-    LIBS += $${CINDER_HOME}/lib/macosx/libboost_thread.a
-    LIBS += $${CINDER_HOME}/lib/macosx/libboost_system.a
-    LIBS += $${CINDER_HOME}/lib/macosx/libboost_filesystem.a
-    LIBS += $${CINDER_HOME}/lib/macosx/libboost_date_time.a
+    #LIBS += $${CINDER_HOME}/lib/macosx/libboost_thread.a
+    #LIBS += $${CINDER_HOME}/lib/macosx/libboost_system.a
+    #LIBS += $${CINDER_HOME}/lib/macosx/libboost_filesystem.a
+    #LIBS += $${CINDER_HOME}/lib/macosx/libboost_date_time.a
     #LIBS += $${CINDER_HOME}/blocks/opencv/lib/macosx/libcv.a
     #LIBS += $${CINDER_HOME}/blocks/opencv/lib/macosx/libcxcore.a
 
@@ -95,10 +95,10 @@ PRE_TARGETDEPS += $${CINDER_HOME}/lib/libcinder.a \
     $${CINDER_HOME}/lib/macosx/libpng14.a \
     $${CINDER_HOME}/lib/macosx/libpixman-1.a \
     #$${CINDER_HOME}/lib/macosx/libcairo.a \
-    $${CINDER_HOME}/lib/macosx/libboost_thread.a \
-    $${CINDER_HOME}/lib/macosx/libboost_system.a \
-    $${CINDER_HOME}/lib/macosx/libboost_filesystem.a \
-    $${CINDER_HOME}/lib/macosx/libboost_date_time.a \
+    #$${CINDER_HOME}/lib/macosx/libboost_thread.a \
+    #$${CINDER_HOME}/lib/macosx/libboost_system.a \
+    #$${CINDER_HOME}/lib/macosx/libboost_filesystem.a \
+    #$${CINDER_HOME}/lib/macosx/libboost_date_time.a \
     #$${CINDER_HOME}/blocks/opencv/lib/macosx/libcv.a \
     #$${CINDER_HOME}/blocks/opencv/lib/macosx/libcxcore.a
 
