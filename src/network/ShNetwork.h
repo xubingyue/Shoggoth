@@ -93,6 +93,8 @@ namespace ShNetwork {
     /** set tempo */
     void sendSetTempo(int milliseconds);
 
+    void sendSetSection(int sectionNumber);
+
     /**
     *   sendCthulhu sends takes a command, packages it as an osc packet and gives it to the client to send to OSCthulhu
     *   @param cont char* command The command as a string to be sent to the local OSCthulhu client over osc
@@ -222,6 +224,7 @@ namespace ShNetwork {
     void receiveSnakeRangePosition(const char* id, int position);
     void receiveSnakeRangeCorner(const char* id, int corner);
     void receiveSetTempo(int milliseconds);
+    void receiveSetSectionNumber(int sectionNumber);
 }
 
 #endif // SHNETWORK_H

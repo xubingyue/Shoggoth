@@ -53,16 +53,24 @@ namespace ShGlobals {
         std::cout << "SECTION NUMBER: " << SECTION_NUMBER << std::endl;
     }
 
-    void setSectionNumber(int sectionNumber)
+    void setSectionNumber(int sectionNumber, bool setFromNetwork)
     {
-        SECTION_NUMBER = sectionNumber % NUM_SECTIONS;
-
-        if(SECTION_NUMBER < 0)
+        if(ShNetwork::ONLINE && !setFromNetwork)
         {
-            SECTION_NUMBER = NUM_SECTIONS - 1;
+            ShNetwork::sendSetSection(sectionNumber);
         }
 
-        updateSectionVars();
+        else
+        {
+            SECTION_NUMBER = sectionNumber % NUM_SECTIONS;
+
+            if(SECTION_NUMBER < 0)
+            {
+                SECTION_NUMBER = NUM_SECTIONS - 1;
+            }
+
+            updateSectionVars();
+        }
     }
 
     void incrementSectionNumber()

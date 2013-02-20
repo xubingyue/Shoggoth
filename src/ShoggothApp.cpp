@@ -716,7 +716,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             break;
 
-        case KeyEvent::KEY_PLUS:
+        case KeyEvent::KEY_EQUALS:
             ShGlobals::incrementSectionNumber();
             break;
 

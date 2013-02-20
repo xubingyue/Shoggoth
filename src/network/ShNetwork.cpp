@@ -29,6 +29,7 @@ void sendLogin()
     sendChatMessage("Shoggoth client logging into OSCthulhu");
     sendCthulhuAddObject("Sequencing", "ShGlobal", 0);
     sendCthulhuAddObject("Tempo", "ShGlobal", 100);
+    sendCthulhuAddObject("SectionNumber", "ShGlobal", 0);
 
     std::vector<int> islandArgs;
     islandArgs.push_back(0); // Terrain Steps
@@ -270,6 +271,11 @@ void sendSetTempo(int milliseconds)
     sendCthulhuSetIntArg("Tempo", 0, milliseconds);
 }
 
+void sendSetSection(int sectionNumber)
+{
+    sendCthulhuSetIntArg("SectionNumber", 0, sectionNumber);
+}
+
 void sendCthulhu(const char *command)
 {
     char buffer[PACKET_BUFFER_SIZE];
@@ -503,6 +509,11 @@ void receiveSetTempo(int milliseconds)
     boost::chrono::milliseconds tempo(milliseconds);
     ShGlobals::SEQUENCER->setStepQuant(tempo);
     // ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(new TempoEvent(tempo, ShGlobals::TIME_STREAM_TIMER->getTime()));
+}
+
+void receiveSetSectionNumber(int sectionNumber)
+{
+    ShGlobals::setSectionNumber(sectionNumber, true);
 }
 
 } // Close out ShNetwork namespace

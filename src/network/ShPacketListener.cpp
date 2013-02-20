@@ -163,6 +163,12 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
                         int val = (arg++)->AsInt32();
                         ShNetwork::receiveSetSequencing(val);
                     }
+
+                    else if(strcmp(objectName, "SectionNumber") == 0)
+                    {
+                        int val = (arg++)->AsInt32();
+                        ShNetwork::receiveSetSectionNumber(val);
+                    }
                 }
 
                 else if(strcmp(objectSubType, "Islands") == 0)
