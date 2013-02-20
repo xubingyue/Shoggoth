@@ -82,11 +82,11 @@ public:
 
     ShoggothApp() : wDown(false), aDown(false), sDown(false), dDown(false), qDown(false), eDown(false), mPickMode(true),
         spaceDown(false), mCamera(Vec3f(500.0f, 500.0f, 500.0f)), mChainEdit(false), testSine(false),
-        mActivePath(NULL), tempo(boost::chrono::milliseconds(100)), mSequencer(boost::chrono::milliseconds(100)),
+        mActivePath(NULL), tempo(boost::chrono::milliseconds(80)), mSequencer(boost::chrono::milliseconds(100)),
         mRecording(false), mPickedTri(0), mSelectedIsland(0), mCurrentSelectedStepValue(1),mRootTimeStream(0),
         timeStreamScheduler(0), timeStreamTimer(0, boost::chrono::milliseconds(100)), timeStreamDisplay(0),
         editSnakeRange(false), moveSnakeRange(false), synthMenu(0), editMode(IslandPicking), currentSynthName("ShoggothBassDrum"),
-        cursorPosition(0, 0) {}
+        cursorPosition(0, 0), terrainSynths(0), masterOut(0) {}
     // gameOfLife(200, 120)
     // flock(0)
 
@@ -137,6 +137,8 @@ public:
 #endif
     sc::Server mServer;
     sc::Synth* testSine;
+    sc::Group* terrainSynths;
+    sc::Group* masterOut;
     ShSequencer mSequencer;
     boost::chrono::milliseconds tempo;
     std::list<ShAudioSequence*> audioSequences;
@@ -199,6 +201,16 @@ ShoggothApp::~ShoggothApp()
     }
 
     audioSequences.clear();
+
+    if(terrainSynths)
+    {
+        delete terrainSynths;
+    }
+
+    if(masterOut)
+    {
+        delete masterOut;
+    }
 
     if(mPickedTri)
         delete mPickedTri;
@@ -307,15 +319,20 @@ void ShoggothApp::setup()
     //glEnable(GL_CULL_FACE);
     glEnable(GL_MULTISAMPLE);
 
+    //INITIALIZE AND BOOT SC
 #ifdef __APPLE__
 
-    // Change the working directory
+    sc::ServerOptions options;
+
     CFBundleRef mainBundle = CFBundleGetMainBundle();
+    //CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
     CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
     char cCurrentPath[PATH_MAX];
+
     if (!CFURLGetFileSystemRepresentation(mainBundleURL, TRUE, (UInt8 *)cCurrentPath, PATH_MAX))
     {
-        std::cerr << "ShoggothApp::setup - CURRENT DIRECTORY NOT FOUND." << std::endl;
+        std::cerr << pieceName << " ERROR"<< std::endl;
+        std::cout << "CURRENT DIRECTORY NOT FOUND." << std::endl;
         return;
     }
 
@@ -323,6 +340,16 @@ void ShoggothApp::setup()
     std::string workingDirectory(cCurrentPath);
     workingDirectory.append("/Contents/MacOS/");
     chdir(workingDirectory.c_str());
+
+    std::string resourcePath(workingDirectory);
+    std::string pluginsPath(resourcePath);
+    std::string synthDefsPath(resourcePath);
+    options.pluginPath = (pluginsPath.append("plugins")).c_str(); // Path in our app bundle
+    options.synthDefPath = (synthDefsPath.append("synthdefs")).c_str(); // Path in our app bundle
+
+    sc::startup();
+    mServer = sc::Server(options);
+    sc::Server::internal = &mServer;
 #endif
 
     //std::string resourcePath(workingDirectory);
@@ -338,6 +365,10 @@ void ShoggothApp::setup()
 
     sc::startup();
     mServer.boot();
+    terrainSynths = new sc::Group(&mServer);
+    ShGlobals::TERRAIN_SYNTHS = terrainSynths;
+    masterOut = sc::Group::after(terrainSynths);
+    sc::Synth::grain("ShoggothMasterOut", sc::node_arg_list(), masterOut);
     synthMenu = new SynthMenu();
     // Initialize Networking
     ShNetwork::chat->loadTexture(this);
@@ -383,6 +414,7 @@ void ShoggothApp::setup()
     script::initialize();
     ShGlobals::TIME_QUAKE_DISPLAY = &timeQuakeDisplay;
     mOscClient.start();
+    mSequencer.play();
 }
 
 void ShoggothApp::quit()

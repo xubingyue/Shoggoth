@@ -1,4 +1,5 @@
 #include "polyphonicsynth.h"
+#include "src/ShGlobals.h"
 
 PolyphonicSynth::PolyphonicSynth(std::string synthName, sc::node_arg_list defaultArgs, int numberOfVoices, sc::Group *target,
                                  sc::AddAction addAction) :
@@ -66,7 +67,7 @@ void PolyphonicSynth::setNumberOfVoices(int numberOfVoices)
         {
             while(difference > 0)
             {
-                synths.push_back(new sc::Synth(synthName.c_str(), defaultArgs, sc::Server::internal));
+                synths.push_back(new sc::Synth(synthName.c_str(), defaultArgs, ShGlobals::TERRAIN_SYNTHS));
                 --difference;
             }
         }

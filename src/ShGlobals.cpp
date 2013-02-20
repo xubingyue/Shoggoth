@@ -15,6 +15,7 @@ namespace ShGlobals {
     cinder::Vec2i SCREEN_SIZE = cinder::Vec2i(0, 0);
     ShCamera* CAMERA = 0;
     ShSequencer* SEQUENCER = 0;
+    sc::Group* TERRAIN_SYNTHS = 0;
     // ShData* DATA = 0;
     cinder::ColorA COLOR_OFF = cinder::ColorA(0.075, 0.075, 0.075, 1);
     cinder::ColorA COLOR_ON = cinder::ColorA(0.9, 0.9, 0.9, 1);

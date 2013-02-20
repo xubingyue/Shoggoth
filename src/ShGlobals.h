@@ -44,6 +44,7 @@ namespace ShGlobals {
     extern cinder::Vec2i SCREEN_SIZE;
     extern ShCamera* CAMERA;
     extern ShSequencer* SEQUENCER;
+    extern sc::Group* TERRAIN_SYNTHS;
     // extern ShData* DATA;
     extern cinder::ColorA COLOR_ON, COLOR_OFF, COLOR0, COLOR1, COLOR2, COLOR3;
     extern ShIslandGrid* ISLAND_GRID;

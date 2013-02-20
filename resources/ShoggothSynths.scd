@@ -7,6 +7,17 @@
 // z: 1 to 430
 // island: 0 to 4
 
+(
+
+(
+SynthDef.new("ShoggothMasterOut", {
+	|amp=1.0, preAmp=1.0, in=50, out=0|
+	var inputSignal, limit;
+	inputSignal = In.ar(in, 2);
+	limit = Limiter.ar(LeakDC.ar(inputSignal * preAmp));
+	Out.ar(0, limit);
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
+);
 
 (
 SynthDef.new("ShoggothTestSine",{
@@ -14,11 +25,11 @@ SynthDef.new("ShoggothTestSine",{
 	var env, signal;
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.1, 5], -4), gate:1, doneAction:2);
 	signal = SinOsc.ar(freq) * env * amp;
-	Out.ar(0, signal.dup);
-}).store;
+	Out.ar(50, signal.dup);
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
 );
 
-~sine = Synth("ShoggothTestSine");
+// ~sine = Synth("ShoggothTestSine");
 
 (
 SynthDef.new("ShoggothPerc",{
@@ -29,13 +40,13 @@ SynthDef.new("ShoggothPerc",{
 	mod = z.linexp(1, 430, 0.1, 1000);
 	signal = SinOsc.ar(55 * y.linexp(-200, 200, 1, 4).round(1)).clip2(Saw.ar(x.linexp(1, 430, 20, 80), z/860/2, z/860/2));
 	signal = Pan2.ar(signal, island.linlin(0, 3, -1 , 1)) * env * amp;
-	Out.ar(0, signal);
-}).store;
+	Out.ar(50, signal);
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
 );
 
-~sine = Synth("ShoggothPerc");
-~sine.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~sine.set(\gate, 0);
+// ~sine = Synth("ShoggothPerc");
+// ~sine.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~sine.set(\gate, 0);
 
 
 (
@@ -72,13 +83,14 @@ SynthDef.new("PlatedGeopede",{
 	signal = Splay.ar(SelectX.ar(sel, springs), 1);
 	signal = Limiter.ar(signal);
 	signal = Pan2.ar(signal, island.linlin(0, 3, -1 , 1)) * env * amp * gateEnv;
-	Out.ar(0, signal);
-}).store;
+	Out.ar(50, signal);
+	Out.ar(80 + island, signal * 4);
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
 );
 
-~plate = Synth("PlatedGeopede", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
-~plate.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~plate.set(\gate, 0);
+// ~plate = Synth("PlatedGeopede", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
+// ~plate.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~plate.set(\gate, 0);
 
 (
 SynthDef("ShogSnare",{
@@ -110,12 +122,13 @@ SynthDef("ShogSnare",{
 		osc = (modX * 8 *osc).clip2(Lag.kr(modY / 2 + 0.5, modZ * 0.1));
 		signal = Pan2.ar( osc, 0.5 );
 		Out.ar(out, signal * amp * attackEnv / 4);
-	}).store;
-)
+	    Out.ar(80 + island, signal * 4);
+	}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
+);
 
-~snare = Synth("ShogSnare", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
-~snare.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~snare.set(\gate, 0);
+// ~snare = Synth("ShogSnare", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
+// ~snare.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~snare.set(\gate, 0);
 
 (
 SynthDef("ShoggothBassDrum",{
@@ -148,12 +161,13 @@ SynthDef("ShoggothBassDrum",{
 		osc = osc + SinOsc.ar(15000+fmSine,0,0.05);
 		signal = Pan2.ar( osc, 0 );
 		Out.ar( out, signal * amp * attackEnv * gateEnv);
-	}).store;
-)
+	    Out.ar(80 + island, signal * 4);
+	}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
+);
 
-~bassdrum = Synth("ShoggothBassDrum", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
-~bassdrum.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~bassdrum.set(\gate, 0);
+// ~bassdrum = Synth("ShoggothBassDrum", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
+// ~bassdrum.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~bassdrum.set(\gate, 0);
 
 (
 SynthDef("ShogHiHat",{
@@ -194,34 +208,37 @@ SynthDef("ShogHiHat",{
 			);
 		signal = Pan2.ar( osc, -0.5 );
 		Out.ar( out, signal * amp * attackEnv * gateEnv / 4);
-	}).store;
-)
+	    Out.ar(80 + island, signal * 4);
+	}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
+);
 
-~hihat = Synth("ShogHiHat", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
-~hihat.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~hihat.set(\gate, 0);
+// ~hihat = Synth("ShogHiHat", [\x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430)]);
+// ~hihat.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~hihat.set(\gate, 0);
 
 ( // Create the buffer for testing only
-~wasteland = Buffer.new(s, 5184, 1, 1);
-~wasteland.alloc();
-~wasteland.sendCollection(Array.fill(5184, { rrand(-1, 1) }), 0, 0);
-~wasteland.plot;
-)
+// ~wasteland = Buffer.new(s, 5184, 1, 1);
+// ~wasteland.alloc();
+// ~wasteland.sendCollection(Array.fill(5184, { rrand(-1, 1) }), 0, 0);
+// ~wasteland.plot;
+);
 
 (
 SynthDef.new("BlastedWasteland",{
 	|amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
-	var env, signal, modY, gateEnv, phase;
+	var env, signal, modY, gateEnv, phase, wave, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
-	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.3], -4), gate:t_trig, doneAction:0);
+	env = EnvGen.ar(Env.new([0, 1, 0],[0.1, 0.5], 0), gate:t_trig, doneAction:0);
 	modY = y.linlin(-200, 200, 0, 0.999);
+
+	in = InFeedback.ar(80 + island, 2);
 
 	phase = [
 		Saw.ar(x.linexp(1, 430, 0.1, SampleRate.ir), 0.5, 0.5) * 72,
 		Saw.ar(z.linexp(1, 430, 0.1, SampleRate.ir), 0.5, 0.5) * 72
 	];
 
-	signal = WaveTerrain.ar(
+	wave = WaveTerrain.ar(
 				bufnum,
 				phase[0],
 				phase[1],
@@ -230,16 +247,20 @@ SynthDef.new("BlastedWasteland",{
 	);
 
 	// signal = LeakDC.ar(signal);
-	signal = BufCombC.ar(LocalBuf(SampleRate.ir), signal, modY.linexp(0, 1, 1, 80).reciprocal, 0.1 * env);
-	signal = signal.dup * amp * gateEnv;
+	// wave = BufCombC.ar(LocalBuf(SampleRate.ir), wave, modY.linexp(0, 1, 1, 10).reciprocal, [x / 430, z / 430]);
+	wave = signal = Integrator.ar(wave + (in / 2), [x, z] / 430);
+	signal = Pulse.ar(Latch.kr(phase, CoinGate.kr(0.1, t_trig)).linexp(0, 72, 1, 4) * 20 + 20, env) thresh: wave.dup * amp * gateEnv;
+	signal = BLowShelf.ar(LeakDC.ar(signal), 40, 0.3, 3);
+	signal = Integrator.ar(signal, modY);
 	// signal = Pan2.ar(signal, island.linlin(0, 3, -1 , 1)) * amp * gateEnv;
-	Out.ar(0, signal);
-}).store.add;
+	Out.ar(50, signal);
+	Out.ar(80 + island, signal * 4);
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
-~blasted = Synth("BlastedWasteland", [\bufnum, ~wasteland.bufnum]);
-~blasted.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~blasted.set(\gate, 0);
+// ~blasted = Synth("BlastedWasteland", [\bufnum, // ~wasteland.bufnum]);
+// ~blasted.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~blasted.set(\gate, 0);
 
 (
 SynthDef.new("SkyrimBelongsToTheNords",{
@@ -294,7 +315,8 @@ SynthDef.new("SkyrimBelongsToTheNords",{
 		]
 	);
 
-	Out.ar(0, signal);
+	Out.ar(50, signal);
+	Out.ar(80 + island, signal * 4);
 
 	signal = Select.ar(
 		Rand(0, 1),
@@ -307,12 +329,12 @@ SynthDef.new("SkyrimBelongsToTheNords",{
 	);
 
 	LocalOut.ar(signal);
-}).store.add;
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
-~skyrim = Synth("SkyrimBelongsToTheNords", [\bufnum, ~wasteland.bufnum]);
-~skyrim.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~skyrim.set(\gate, 0);
+// ~skyrim = Synth("SkyrimBelongsToTheNords", [\bufnum, // ~wasteland.bufnum]);
+// ~skyrim.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~skyrim.set(\gate, 0);
 
 
 (
@@ -335,7 +357,8 @@ SynthDef.new("LunchBoxMonster",{
 	signal = SinOsc.ar(signal, signal * 8pi);
 	signal = signal * gateEnv;
 
-	Out.ar(0, signal * amp);
+	Out.ar(50, signal * amp);
+	Out.ar(80 + island, signal * 4);
 	LocalOut.ar(
 		BufDelayC.ar(
 			LocalBuf(SampleRate.ir),
@@ -344,12 +367,12 @@ SynthDef.new("LunchBoxMonster",{
 		)
 	);
 
-}).store.add;
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
-~lunchbox = Synth("LunchBoxMonster", [\bufnum, ~wasteland.bufnum]);
-~lunchbox.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~lunchbox.set(\gate, 0);
+// ~lunchbox = Synth("LunchBoxMonster", [\bufnum, // ~wasteland.bufnum]);
+// ~lunchbox.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~lunchbox.set(\gate, 0);
 
 (
 SynthDef.new("LunchBoxMonster",{
@@ -371,7 +394,8 @@ SynthDef.new("LunchBoxMonster",{
 	signal = SinOsc.ar(signal, signal * 8pi);
 	signal = signal * gateEnv;
 
-	Out.ar(0, signal * amp);
+	Out.ar(50, signal * amp);
+	Out.ar(80 + island, signal * 4);
 	LocalOut.ar(
 		BufDelayC.ar(
 			LocalBuf(SampleRate.ir),
@@ -380,12 +404,12 @@ SynthDef.new("LunchBoxMonster",{
 		)
 	);
 
-}).store.add;
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
-~lunchbox = Synth("LunchBoxMonster", [\bufnum, ~wasteland.bufnum]);
-~lunchbox.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~lunchbox.set(\gate, 0);
+// ~lunchbox = Synth("LunchBoxMonster", [\bufnum, // ~wasteland.bufnum]);
+// ~lunchbox.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~lunchbox.set(\gate, 0);
 
 (
 SynthDef.new("StalagmiteFight",{
@@ -407,7 +431,8 @@ SynthDef.new("StalagmiteFight",{
 	signal = Decay.ar(Trig.ar(signal), modY.linlin(0, 1, 1, 2000) / SampleRate.ir, signal);
 	signal = signal * amp * gateEnv;
 
-	Out.ar(0, Limiter.ar(LeakDC.ar(signal * 0.9), 1, 0.001));
+	Out.ar(50, Limiter.ar(LeakDC.ar(signal * 0.9), 1, 0.001));
+	Out.ar(80 + island, signal * 4);
 
 	LocalOut.ar(
 		BufDelayC.ar(
@@ -417,12 +442,12 @@ SynthDef.new("StalagmiteFight",{
 		)
 	);
 
-}).store.add;
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
-~lunchbox = Synth("StalagmiteFight", [\bufnum, ~wasteland.bufnum]);
-~lunchbox.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~lunchbox.set(\gate, 0);
+// ~lunchbox = Synth("StalagmiteFight", [\bufnum, // ~wasteland.bufnum]);
+// ~lunchbox.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~lunchbox.set(\gate, 0);
 
 
 (
@@ -446,17 +471,18 @@ SynthDef.new("AllMyFriendsAreAquatic",{
 
 	signal = LPF.ar(PinkNoise.ar(env / 2), (env + 0.01).linexp(0.01, 1.01, 20, 20000));
 
-	Out.ar(0, Limiter.ar(LeakDC.ar(signal + wave * 4) * amp * gateEnv, 1, 0.001));
+	Out.ar(50, Limiter.ar(LeakDC.ar(signal + wave * 4) * amp * gateEnv, 1, 0.001));
+	Out.ar(80 + island, signal * 4);
 
 	LocalOut.ar(
 		Ringz.ar(Latch.ar(t_trig, wave) + signal, Decay.ar(wave, 5 / SampleRate.ir).linexp(-1, 1, 20, 20000), 0.05 * modY)
 	);
 
-}).store.add;
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
-~aquatic = Synth("AllMyFriendsAreAquatic", [\bufnum, ~wasteland.bufnum]);
-~aquatic.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
-~aquatic.set(\gate, 0);
+// ~aquatic = Synth("AllMyFriendsAreAquatic", [\bufnum, // ~wasteland.bufnum]);
+// ~aquatic.set(\t_trig, 1, \x, rrand(1, 430), \y, rrand(-200, 200), \z, rrand(1, 430));
+// ~aquatic.set(\gate, 0);
 
-
+)
