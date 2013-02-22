@@ -127,12 +127,26 @@ void ShSnakeRange::draw(bool drawActive)
 
     if(changeQueued)
     {
-        resetPositionAndSize();
-        populateRangeVector(true);
-        changeQueued = false;
+        try
+        {
+            resetPositionAndSize();
+            populateRangeVector(true);
+            changeQueued = false;
+        }
+
+        catch(std::exception& e)
+        {
+            std::cout << "ShSnakeRange::draw ERROR: " << e.what() << std::endl;
+            changeQueued = true;
+        }
     }
 
-    if(mesh.getNumIndices() > 0)
+    if(size.x <= 0 || changeQueued)
+    {
+        return;
+    }
+
+    else if(mesh.getNumIndices() > 0)
     {
         // Draw range
         cinder::gl::draw(mesh);
@@ -208,6 +222,11 @@ void ShSnakeRange::drawHighlight()
 {
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
 
+    if(size.x <= 0 || changeQueued)
+    {
+        return;
+    }
+
     cinder::gl::color(color * 10);
 
     glBegin(GL_LINE_LOOP);
@@ -232,6 +251,11 @@ void ShSnakeRange::drawHighlight()
 void ShSnakeRange::drawName()
 {
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
+
+    if(size.x <= 0 || changeQueued)
+    {
+        return;
+    }
 
     if(synthNameTexture)
     {
@@ -504,49 +528,76 @@ snake_range_id_t ShSnakeRange::getID()
 void ShSnakeRange::populateRangeVector(bool rebuildMesh)
 {
     // Populate the range vector using a looping gather: right, down, left, up
-    rangeVector.clear();
 
-    // Right
-    for(int i = 0; i < size.x; ++i)
+    try
     {
-        rangeVector.push_back(island->getTriPointer(position.x + i, position.y));
+        if(size.x <= 0)
+        {
+            changeQueued = true;
+            return;
+        }
+
+        if(island)
+        {
+            rangeVector.clear();
+            // Right
+            for(int i = 0; i < size.x; ++i)
+            {
+                rangeVector.push_back(island->getTriPointer(position.x + i, position.y));
+            }
+
+            if(rangeVector.front() && rangeVector.back())
+            {
+
+                fourCorners[0] = rangeVector.front()->getv1(); // Populate first corner
+                fourCorners[1] = rangeVector.back()->getv2(); // Populate second corner
+
+                // Down
+                for(int i = 1; i < size.y; ++i)
+                {
+                    rangeVector.push_back(island->getTriPointer(position.x + size.x - 1, position.y + i));
+                }
+
+                fourCorners[2] = rangeVector.back()->getv1(); // Populate thid corner
+
+                // Left
+                for(int i = size.x - 2; i >= 0; --i)
+                {
+                    rangeVector.push_back(island->getTriPointer(position.x + i, position.y + size.y - 1));
+                }
+
+                fourCorners[3] = rangeVector.back()->getv2(); // Populate fourth corner
+
+                // Up
+                for(int i = size.y - 2; i > 0; --i)
+                {
+                    rangeVector.push_back(island->getTriPointer(position.x, position.y + i));
+                }
+
+                minAndMaxHeights();
+
+                rebuildPositions();
+
+                if(rebuildMesh)
+                {
+                    createMesh();
+                }
+
+                bufferPositions();
+            }
+
+            else
+            {
+                changeQueued = true;
+            }
+        }
     }
 
-    fourCorners[0] = rangeVector.front()->getv1(); // Populate first corner
-    fourCorners[1] = rangeVector.back()->getv2(); // Populate second corner
-
-    // Down
-    for(int i = 1; i < size.y; ++i)
+    catch(std::exception& e)
     {
-        rangeVector.push_back(island->getTriPointer(position.x + size.x - 1, position.y + i));
+        std::cout << "ShSnakeRange::populateRangeVector ERROR: " << e.what() << std::endl;
+        changeQueued = true;
     }
-
-    fourCorners[2] = rangeVector.back()->getv1(); // Populate thid corner
-
-    // Left
-    for(int i = size.x - 2; i >= 0; --i)
-    {
-        rangeVector.push_back(island->getTriPointer(position.x + i, position.y + size.y - 1));
-    }
-
-    fourCorners[3] = rangeVector.back()->getv2(); // Populate fourth corner
-
-    // Up
-    for(int i = size.y - 2; i > 0; --i)
-    {
-        rangeVector.push_back(island->getTriPointer(position.x, position.y + i));
-    }
-
-    minAndMaxHeights();
-
-    rebuildPositions();
-
-    if(rebuildMesh)
-    {
-        createMesh();
-    }
-
-    bufferPositions();
 }
 
 void ShSnakeRange::minAndMaxHeights()
@@ -639,7 +690,8 @@ void ShSnakeRange::rebuildPositions()
 
 void ShSnakeRange::bufferPositions()
 {
-    mesh.bufferPositions(meshPositions);
+    if(mesh)
+        mesh.bufferPositions(meshPositions);
 }
 
 void ShSnakeRange::resetPositionAndSize()

@@ -816,7 +816,10 @@ GridTri ShIsland::getTri(int x, int y)
 
     if(x >= 0 && y >= 0 && x < kTriangleGridWidth && y < kTriangleGridHeight)
     {
-        return *triangleGrid[x][y];
+        if(triangleGrid[x][y])
+            return *triangleGrid[x][y];
+        else
+            return *triangleGrid[0][0];
     }
 
     else
@@ -832,14 +835,22 @@ GridTri* ShIsland::getTriPointer(int x, int y)
 
     if(x >= 0 && y >= 0 && x < kTriangleGridWidth && y < kTriangleGridHeight)
     {
-        return triangleGrid[x][y];
+        if(triangleGrid[x][y])
+            return triangleGrid[x][y];
+        else if(triangleGrid[0][0])
+            return triangleGrid[0][0];
+        else
+            return 0;
     }
 
-    else
+    else if(triangleGrid[0][0])
     {
         std::cout << "Out of Bounds Triangle Grid Request: getTri(" << x << ", " << y << ");" << std::endl;
         return triangleGrid[0][0];
     }
+
+    else
+        return 0;
 }
 
 std::vector<unsigned char> ShIsland::getStepVector()
