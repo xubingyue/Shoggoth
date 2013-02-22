@@ -50,17 +50,17 @@ void sendLogout()
 
 void sendMoveAvatar(cinder::Vec3f pos)
 {
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 0, pos.x, 1);
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 1, pos.y, 1);
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 2, pos.z, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 0, pos.x, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 1, pos.y, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 2, pos.z, 1);
 }
 
 void sendRotateAvatar(cinder::Quatf rot)
 {
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 3, rot.v.x, 1);
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 4, rot.v.y, 1);
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 5, rot.v.z, 1);
-    sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 6, rot.w, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 3, rot.v.x, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 4, rot.v.y, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 5, rot.v.z, 1);
+    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 6, rot.w, 1);
 }
 
 void sendSetRandomSeed()
@@ -405,7 +405,7 @@ void receiveUserNameReply(std::string userName)
         dimensions.push_back(0);
     }
 
-    sendCthulhuAddObject(ShGlobals::USER_NAME.c_str(), "Avatars", dimensions);
+    // sendCthulhuAddObject(ShGlobals::USER_NAME.c_str(), "Avatars", dimensions);
 }
 
 void receiveAddAvatar(const char* avatar, float x, float y, float z)
