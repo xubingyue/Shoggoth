@@ -1200,12 +1200,14 @@ SynthDef.new("Demipenteract", {
 	var loopBuf3, loopBuf4, fftDelayBuf1, fftDelayBuf2, fftFeedBuf1, fftFeedBuf2;
 	var param1, param2, param3, param4, bufNum, bufNum2;
 
-	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
-	env = EnvGen.ar(Env.new([0, 1, 0.1],[0.0001, 0.1, 0.5], -4), gate:t_trig, doneAction:0);
-
 	modY = y.linlin(-200, 200, 0, 0.999);
 	modX = x / 430;
 	modZ = y / 430;
+
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	env = EnvGen.ar(Env.new([0, 1, 0.1],[0.01, 0.1], -4), gate:t_trig, doneAction:0);
+
+
 	in = InFeedback.ar(80 + (island * 2), 2);
 
 	wave = WaveTerrain.ar(
@@ -1283,22 +1285,21 @@ SynthDef.new("Demipenteract", {
 		scale
 	);
 
-	form = DFM1.ar(Pulse.ar(freq / 8, [0.4, 0.6]), Lag.ar(Amplitude.ar(wave, 0.1, 0.1)).linexp(0, 1, 500, 4000)) + (in / 2);
+	form = DFM1.ar(
+		Pulse.ar(freq / 8, [0.4, 0.6]),
+		Lag.ar(Amplitude.ar(wave, 0.1, 0.1)).linexp(0, 1, 200, 4000), 0.2) + (in / 2);
 
+	form = form + BufDelayC.ar(LocalBuf(SampleRate.ir * 2), form, modY * 2) / 3;
+
+	/*
 	fftBuf1 = LocalBuf(512);
-	fftBuf2 = LocalBuf(512);/*
-	fftBuf3 = LocalBuf(1024);
-	fftBuf4 = LocalBuf(1024);*/
+	fftBuf2 = LocalBuf(512);
 	fftDelayBuf1 = Array.fill(256, { arg i; 1 / (i % 512 + 1) }).as(LocalBuf);
 	fftDelayBuf2 = Array.fill(256, { arg i; 1 / (i % 512 + 1) }).as(LocalBuf);
 	fftFeedBuf1 = Array.fill(256, { arg i; 1.0.rand }).as(LocalBuf);
 	fftFeedBuf2 = Array.fill(256, { arg i; 1.0.rand }).as(LocalBuf);
-	/*loopBuf1 = LocalBuf(1024, 513);
-	loopBuf2 = LocalBuf(1024, 513);*/
+*/
 	/*
-	loopBuf3 = LocalBuf(1024, 513);
-	loopBuf4 = LocalBuf(1024, 513);*/
-
 	chain = [
 		FFT.new(fftBuf1, form[0]),
 		FFT.new(fftBuf2, form[1])
@@ -1312,9 +1313,9 @@ SynthDef.new("Demipenteract", {
 	chain = [
 		IFFT(chain[0]),
 		IFFT(chain[1])
-	];
+	];*/
 
-	input = LeakDC.ar(chain);
+	input = LeakDC.ar(form);
 
 	signal = Compander.ar(
 		input,
@@ -1331,7 +1332,7 @@ SynthDef.new("Demipenteract", {
 	signal = SanityCheck2.ar(signal);
 	Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
 	Out.ar(80 + (island * 2),
-		signal
+		signal / 2
 	);
 
 }).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;

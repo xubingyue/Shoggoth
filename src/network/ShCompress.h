@@ -26,6 +26,12 @@ bool decompressTerrain(int compressedTerrain, unsigned char& algorithm, unsigned
 int compressVec2(cinder::Vec2i vec); // Only works with numbers 0 - 65536
 cinder::Vec2i decompressVec2(int vec); // Only works with numbers 0 - 65536
 
+int compressVec3(cinder::Vec3i vec); // Only works with numbers 0 - 1024
+cinder::Vec3i decompressVec3(int vec); // Only works with numbers 0 - 1024
+
+int compressVec4(cinder::Vec4i vec); // Only works with numbers 0 - 255
+cinder::Vec4i decompressVec4(int vec); // Only works with numbers 0 - 255
+
 template <class T>
 inline int compressVec(T vec)
 {

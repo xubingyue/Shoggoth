@@ -131,4 +131,83 @@ cinder::Vec2i decompressVec2(int vec)
     return cinder::Vec2i(compressBitArray(xDeque), compressBitArray(yDeque));
 }
 
+int compressVec3(cinder::Vec3i vec)
+{
+    std::deque<unsigned char> bitDeque;
+    decompressBitArray(bitDeque, vec.x, 10);
+    decompressBitArray(bitDeque, vec.y, 10);
+    decompressBitArray(bitDeque, vec.z, 10);
+    return compressBitArray(bitDeque);
+}
+
+cinder::Vec3i decompressVec3(int vec)
+{
+    std::deque<unsigned char> bitDeque;
+    decompressBitArray(bitDeque, vec, 32);
+    std::deque<unsigned char> xDeque, yDeque, zDeque;
+
+    for(int i = 0; i < 10; ++i)
+    {
+        zDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    for(int i = 0; i < 10; ++i)
+    {
+        yDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    for(int i = 0; i < 10; ++i)
+    {
+        xDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    return cinder::Vec3i(compressBitArray(xDeque), compressBitArray(yDeque), compressBitArray(zDeque));
+}
+
+int compressVec4(cinder::Vec4i vec)
+{
+    std::deque<unsigned char> bitDeque;
+    decompressBitArray(bitDeque, vec.w, 8);
+    decompressBitArray(bitDeque, vec.x, 8);
+    decompressBitArray(bitDeque, vec.y, 8);
+    decompressBitArray(bitDeque, vec.z, 8);
+    return compressBitArray(bitDeque);
+}
+
+cinder::Vec4i decompressVec4(int vec)
+{
+    std::deque<unsigned char> bitDeque;
+    decompressBitArray(bitDeque, vec, 32);
+    std::deque<unsigned char> wDeque, xDeque, yDeque, zDeque;
+
+    for(int i = 0; i < 8; ++i)
+    {
+        zDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    for(int i = 0; i < 8; ++i)
+    {
+        yDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    for(int i = 0; i < 8; ++i)
+    {
+        xDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    for(int i = 0; i < 8; ++i)
+    {
+        wDeque.push_back(bitDeque.front());
+        bitDeque.pop_front();
+    }
+
+    return cinder::Vec4i(compressBitArray(wDeque), compressBitArray(xDeque), compressBitArray(yDeque), compressBitArray(zDeque));
+}
+
 } // ShNetwork namespace
