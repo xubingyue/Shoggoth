@@ -57,6 +57,7 @@
 #include "Node.h"
 
 #include "src/Graphics/shaders.h"
+#include "src/network/ShCompress.h"
 
 #ifdef __LINUX__
 #include <qapplication.h>
@@ -415,6 +416,8 @@ void ShoggothApp::setup()
     ShGlobals::TIME_QUAKE_DISPLAY = &timeQuakeDisplay;
     mOscClient.start();
     mSequencer.play();
+
+    // std::cout << " COMPRESS/DECOMPRESS" << ShNetwork::decompressVec<cinder::Vec3i>(ShNetwork::compressVec<cinder::Vec3i>(cinder::Vec3i(1, 1, 1)), 3);
 }
 
 void ShoggothApp::quit()
@@ -1129,6 +1132,12 @@ void ShoggothApp::renderScene()
     }
 
     renderIslands();
+
+    if(ShGlobals::DRAW_WIREFRAMES)
+    {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
+
     islands.drawSnakeRanges(true);
 
     if(editMode == SnakePicking)
@@ -1154,11 +1163,6 @@ void ShoggothApp::renderScene()
 
         gl::color(Color(0, 0, 0));
         islands.drawBoundingBox(mSelectedIsland);
-    }
-
-    if(ShGlobals::DRAW_WIREFRAMES)
-    {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 
     //snakePit.draw();

@@ -34,13 +34,15 @@ SynthDef.new("ShoggothTestSine",{
 (
 SynthDef.new("ShoggothPerc",{
 	|amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0|
-	var env, signal, mod, gateEnv;
+	var env, signal, mod, gateEnv, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 1, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.1], -4), gate:t_trig, doneAction:0);
 	mod = z.linexp(1, 430, 0.1, 1000);
-	signal = SinOsc.ar(55 * y.linexp(-200, 200, 1, 4).round(1)).clip2(Saw.ar(x.linexp(1, 430, 20, 80), z/860/2, z/860/2));
+	in = InFeedback.ar(80 + (island * 2), 2);
+	signal = in + SinOsc.ar(55 * y.linexp(-200, 200, 1, 20).round(1)).clip2(Saw.ar(x.linexp(1, 430, 20, 80), z/860/2, z/860/2));
 	signal = Pan2.ar(signal, island.linlin(0, 3, -1 , 1)) * env * amp;
 	Out.ar(50, signal);
+	Out.ar(80 + (island * 2), signal);
 }).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
 );
 
@@ -226,7 +228,7 @@ SynthDef("ShogHiHat",{
 
 (
 SynthDef.new("BlastedWasteland",{
-	|amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, wave, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.1, 0.5], 0), gate:t_trig, doneAction:0);
@@ -266,7 +268,7 @@ SynthDef.new("BlastedWasteland",{
 
 (
 SynthDef.new("SkyrimBelongsToTheNords",{
-	|amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.3], -4), gate:t_trig, doneAction:0);
@@ -342,7 +344,7 @@ SynthDef.new("SkyrimBelongsToTheNords",{
 
 (
 SynthDef.new("MyComputerAteItselfAgain",{
-	|amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, feedAmp;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);
@@ -379,7 +381,7 @@ SynthDef.new("MyComputerAteItselfAgain",{
 
 (
 SynthDef.new("LunchBoxMonster",{
-	|amp=0.125, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, feedAmp;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);
@@ -455,7 +457,7 @@ SynthDef.new("StalagmiteFight",{
 
 (
 SynthDef.new("AllMyFriendsAreAquatic",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, step, offset, wave;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	modY = y.linlin(-200, 200, 0, 0.999);
@@ -490,7 +492,7 @@ SynthDef.new("AllMyFriendsAreAquatic",{
 
 (
 SynthDef.new("PumpkinHeadIII",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, step, offset, wave, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	modY = y.linlin(-200, 200, 0, 0.999);
@@ -525,7 +527,7 @@ SynthDef.new("PumpkinHeadIII",{
 
 (
 SynthDef.new("MyLittlePony",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, step, offset, wave, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	modY = y.linlin(-200, 200, 0, 0.999);
@@ -554,7 +556,7 @@ SynthDef.new("MyLittlePony",{
 
 (
 SynthDef.new("SecretOfTheOoze",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, step, offset, wave, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	modY = y.linlin(-200, 200, 0, 0.999);
@@ -571,7 +573,7 @@ SynthDef.new("SecretOfTheOoze",{
 	);
 
 	signal = wave + (in * 0.5) * env * 0.25;
-	signal = BufCombC.ar(LocalBuf(SampleRate.ir, 2), signal, (80 - (modY * 5).round(1)).reciprocal, in.abs.linexp(0, 1, 0.1, 1));
+	signal = BufCombC.ar(LocalBuf(SampleRate.ir, 2), signal, (80 - (modY * 40).round(5)).reciprocal, in.abs.linexp(0, 1, 0.1, 1));
 	signal = SanityCheck2.ar(signal);
 	Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
 
@@ -583,7 +585,7 @@ SynthDef.new("SecretOfTheOoze",{
 
 (
 SynthDef.new("GutsBrainz",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);
@@ -618,7 +620,7 @@ SynthDef.new("GutsBrainz",{
 
 (
 SynthDef.new("SludgeMyEyesAreSludge",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.15, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);
@@ -653,7 +655,7 @@ SynthDef.new("SludgeMyEyesAreSludge",{
 
 (
 SynthDef.new("SkullClamp",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 1], -4), gate:t_trig, doneAction:0);
@@ -673,7 +675,7 @@ SynthDef.new("SkullClamp",{
 	signal = signal * amp * gateEnv;
 	signal = SanityCheck2.ar(signal);
 	Out.ar(50, Limiter.ar(LeakDC.ar(signal * 0.9), 1, 0.001));
-	Out.ar(80 + (island * 2), signal * 4);
+	Out.ar(80 + (island * 2), signal);
 
 	LocalOut.ar(
 		OnePole.ar(
@@ -687,7 +689,7 @@ SynthDef.new("SkullClamp",{
 
 (
 SynthDef.new("ElectricSheepDream",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0.25],[0.0001, 0.25, 0.75], -4), gate:t_trig, doneAction:0);
@@ -717,7 +719,7 @@ SynthDef.new("ElectricSheepDream",{
 
 (
 SynthDef.new("H.P.Hatecraft",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0.125, 0],[0.0001, 0.25, 0.25], -4), gate:t_trig, doneAction:0);
@@ -779,7 +781,7 @@ SynthDef.new("Trogdor",{
 
 (
 SynthDef.new("IHateGlitchLich",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.4, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 1, 0],[0.0001, 0.25, 0], -4), gate:t_trig, doneAction:0);
@@ -796,7 +798,7 @@ SynthDef.new("IHateGlitchLich",{
 		72
 	);
 
-	chain = Osc.ar(bufnum, wave.abs.linexp(0, 1, 0.00001, 0.0001), [modX, modZ]) + in;
+	chain = Osc.ar(bufnum, wave.abs.linlin(0, 1, 0.00001, 0.1), [modX, modZ]) + in;
 
 	chain = [
 		FFT.new(LocalBuf(1024), chain[0]),
@@ -820,7 +822,7 @@ SynthDef.new("IHateGlitchLich",{
 
 (
 SynthDef.new("MantisRigorMortis",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain, env2;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 1, 0],[0.0001, 0.25, 0], -4), gate:t_trig, doneAction:0);
@@ -863,7 +865,7 @@ SynthDef.new("MantisRigorMortis",{
 
 (
 SynthDef.new("AllOurBaseAreBelongToYou",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain, env2, chain2;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 1, 0],[0.0001, 0.25, 0], -4), gate:t_trig, doneAction:0);
@@ -911,7 +913,7 @@ SynthDef.new("AllOurBaseAreBelongToYou",{
 
 (
 SynthDef.new("WhyCantWeBeEnemies?",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain, env2, chain2;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 1, 0],[0, 0.2, 0.2], -4), gate:t_trig, doneAction:0);
@@ -973,7 +975,7 @@ SynthDef.new("YouDontHaveAnyRealFriends",{
 
 (
 SynthDef.new("SlimeTimeSlimeTimeSlimeTimeSlimeTimeSlimeTimeSlimeTimeSlimeTimeSlimeTime",{
-	|amp=0.1, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
 	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain, env2, chain2;
 	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
 	env = EnvGen.ar(Env.new([0, 1, 0],[0.1, 0.5, 0], -4), gate:t_trig, doneAction:0);
@@ -1183,6 +1185,321 @@ SynthDef.new("StealThisSynth",{
 	Out.ar(80 + (island * 2),
 		Ringz.ar(Latch.ar(t_trig, wave) + signal, Decay.ar(wave, 5 / SampleRate.ir).linexp(-1, 1, 20, 20000), 0.05 * modY)
 	);
+
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
+);
+
+(
+SynthDef.new("Demipenteract", {
+	|amp=0.75, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	var signal, modY, gateEnv, phase, in, modX, modZ, wave, chain;
+	var imp,imp2,freq,freq2,env,rd,rd2,delay,delay2,input,input2,numFrames,buffer5,buffer6;
+	var buffer,buffer2,wr,wr2,duty,trig,trig2,buffer3,buffer4,env2,buffer7,buffer8,feed;
+	var env3,duty2,drd,drd2,wr3,wr4,drd3,drd4,chain2,phasor,phasor2,fftNumFrames, feedIn;
+	var form,form2, fund, scale, fftBuf1, fftBuf2, fftBuf3, fftBuf4, loopBuf1, loopBuf2;
+	var loopBuf3, loopBuf4, fftDelayBuf1, fftDelayBuf2, fftFeedBuf1, fftFeedBuf2;
+	var param1, param2, param3, param4, bufNum, bufNum2;
+
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	env = EnvGen.ar(Env.new([0, 1, 0.1],[0.0001, 0.1, 0.5], -4), gate:t_trig, doneAction:0);
+
+	modY = y.linlin(-200, 200, 0, 0.999);
+	modX = x / 430;
+	modZ = y / 430;
+	in = InFeedback.ar(80 + (island * 2), 2);
+
+	wave = WaveTerrain.ar(
+		bufnum,
+		(Phasor.ar(0, 0.25, 0, 72)).wrap2(72),
+		(Phasor.ar(0, 1, 0, 72)).wrap2(72),
+		72,
+		72
+	);
+
+
+
+	//param1 = MouseX.kr;
+	//param2 = MouseY.kr;
+	param1 = modX;
+	param2 = modY;
+	param3 = modZ;
+	param4 = Latch.ar(wave.abs, t_trig);
+
+	fund = 51.midicps * 4;
+
+	//Just Intonated Minor
+	scale = [
+		/*fund / 4,
+		fund / 4 / 27/25,*/
+		fund / 2,
+		fund*27/25,
+		fund*6/5,
+		fund*4/3,
+		fund,
+		fund*2,
+		fund*2*27/25,
+		fund*2*6/5,
+		fund*2*4/3,
+		fund*2*27/20,
+		fund*2*8/5,
+		fund*2*9/5,
+		fund*4,
+		// fund*4*27/25,
+		// fund*4*6/5,
+		// fund*4*4/3,
+		fund*4*27/20,
+		fund*4*8/5,
+		fund*4*9/5,
+		fund * 8,
+		fund*8*9/5,
+	].cpsmidi-12;
+
+	scale = (scale-12)++scale;
+	scale = scale.midicps;
+
+	buffer = bufNum;
+	buffer2 = bufNum2;
+
+	// feedIn = LocalIn.ar(2);
+	imp = t_trig;
+
+	trig = PulseDivider.kr(imp, 2);
+
+	imp = imp + TDelay.ar(
+		K2A.ar(imp * (param2 * 0.6).round(1)),
+		1 / (param3.linexp(0, 1, 1, 10).round(1))
+	);
+
+	env2 = EnvGen.ar(Env.new([0, 1, 0], [0.00001, 0.5], -4), gate: imp);
+
+	freq = Select.kr(
+		Stepper.ar(
+			CoinGate.ar(0.3, imp.dup) + Impulse.ar(0),
+			0,
+			TIRand.kr(0, 4, trig),
+			scale.size - TIRand.kr(1, 4, trig),
+			TIRand.kr(-1, 1, trig)
+		),
+		scale
+	);
+
+	form = DFM1.ar(Pulse.ar(freq / 8, [0.4, 0.6]), Lag.ar(Amplitude.ar(wave, 0.1, 0.1)).linexp(0, 1, 500, 4000)) + (in / 2);
+
+	fftBuf1 = LocalBuf(512);
+	fftBuf2 = LocalBuf(512);/*
+	fftBuf3 = LocalBuf(1024);
+	fftBuf4 = LocalBuf(1024);*/
+	fftDelayBuf1 = Array.fill(256, { arg i; 1 / (i % 512 + 1) }).as(LocalBuf);
+	fftDelayBuf2 = Array.fill(256, { arg i; 1 / (i % 512 + 1) }).as(LocalBuf);
+	fftFeedBuf1 = Array.fill(256, { arg i; 1.0.rand }).as(LocalBuf);
+	fftFeedBuf2 = Array.fill(256, { arg i; 1.0.rand }).as(LocalBuf);
+	/*loopBuf1 = LocalBuf(1024, 513);
+	loopBuf2 = LocalBuf(1024, 513);*/
+	/*
+	loopBuf3 = LocalBuf(1024, 513);
+	loopBuf4 = LocalBuf(1024, 513);*/
+
+	chain = [
+		FFT.new(fftBuf1, form[0]),
+		FFT.new(fftBuf2, form[1])
+	];
+
+	chain = [
+		PV_BinDelay(chain[0], 1.0, fftDelayBuf1, fftFeedBuf1),
+		PV_BinDelay(chain[1], 1.0, fftDelayBuf2, fftFeedBuf2)
+	];
+
+	chain = [
+		IFFT(chain[0]),
+		IFFT(chain[1])
+	];
+
+	input = LeakDC.ar(chain);
+
+	signal = Compander.ar(
+		input,
+		input,
+		0.2,
+		1,
+		0.1,
+		0.001,
+		0.1
+	);
+
+	signal = Limiter.ar(LeakDC.ar(signal), 0.95, 0.0001);
+	signal = input * amp * env;
+	signal = SanityCheck2.ar(signal);
+	Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+	Out.ar(80 + (island * 2),
+		signal
+	);
+
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
+);
+
+(
+SynthDef.new("BenoitAndTheMandelBratwurst",{
+	|amp=0.3, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain;
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, TExpRand.kr(0.05, 1.0, t_trig)], -4), gate:t_trig, doneAction:0);
+	modY = y.linlin(-200, 200, 0, 0.999);
+	modX = x / 430;
+	modZ = y / 430;
+	in = InFeedback.ar(80 + (island * 2), 2);
+
+	wave = WaveTerrain.ar(
+		bufnum,
+		(Phasor.ar(0, 4, 0, 72) + (in * 72)).wrap2(72),
+		(Phasor.ar(0, 1, 0, 72) + (in * 72)).wrap2(72),
+		72,
+		72
+	);
+
+	chain = Osc.ar(bufnum, wave.abs.linlin(0, 1, 0.1, 0.0001), [modX, modZ]) / 3 + in * env;
+
+	chain = [
+		FFT.new(LocalBuf(1024), chain[0]),
+		FFT.new(LocalBuf(1024), chain[1])
+	];
+
+	chain = [
+		PV_Freeze(chain[0], Trig.ar(wave[0])),
+		PV_Freeze(chain[1], Trig.ar(wave[1]))
+	];
+
+	wave = [IFFT(chain[0]), IFFT(chain[1])];
+
+	signal = LeakDC.ar(wave * amp * gateEnv);
+	signal = SanityCheck2.ar(signal);
+	Out.ar(50, Limiter.ar(signal * 0.9, 1, 0.001));
+	Out.ar(80 + (island * 2), OnePole.ar(signal, modY));
+
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
+);
+
+(
+SynthDef.new("PsySplice",{
+	|amp=0.3, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain;
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.1], -4), gate:t_trig, doneAction:0);
+	modY = y.linlin(-200, 200, 0, 0.999);
+	modX = x / 430;
+	modZ = y / 430;
+	in = InFeedback.ar(80 + (island * 2), 2);
+
+	wave = WaveTerrain.ar(
+		bufnum,
+		(Phasor.ar(0, [modX, modZ] * 72, 0, 72)).wrap2(72),
+		(Phasor.ar(0, modY, 0, 72)).wrap2(72),
+		72,
+		72
+	);
+
+	wave = chain = Osc.ar(bufnum, wave.abs.linexp(0, 1, 0.1, 1.0), [modX, modZ]);
+	chain = in * env;
+
+	chain = [
+		FFT.new(LocalBuf(1024), chain[0]),
+		FFT.new(LocalBuf(1024), chain[1])
+	];
+
+	chain = [
+		PV_MagGate(chain[0], wave[0]),
+		PV_MagGate(chain[1], wave[1])
+	];
+
+	chain = [
+		PV_Invert(chain[0]),
+		PV_Invert(chain[1])
+	];
+
+	wave = [IFFT(chain[0]), IFFT(chain[1])];
+
+	signal = LeakDC.ar(wave * amp * gateEnv * env);
+	signal = SanityCheck2.ar(signal);
+	Out.ar(50, Limiter.ar(signal * 0.9, 1, 0.001));
+	Out.ar(80 + (island * 2), BufDelayC.ar(LocalBuf(SampleRate.ir), signal, modY.linexp(0, 1, 1, 80).reciprocal));
+
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
+);
+
+(
+SynthDef.new("TheDayTheEarthStoodStill",{
+	|amp=0.3, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	var env, signal, modY, gateEnv, phase, feedIn, in, modX, modZ, wave, chain;
+	var scale, fund;
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.1], -4), gate:t_trig, doneAction:0);
+	modY = y.linlin(-200, 200, 0, 0.999);
+	modX = x / 430;
+	modZ = y / 430;
+	in = InFeedback.ar(80 + (island * 2), 2);
+
+	wave = WaveTerrain.ar(
+		bufnum,
+		(Phasor.ar(0, [modX, modZ] * 72, 0, 72)).wrap2(72),
+		(Phasor.ar(0, modY, 0, 72)).wrap2(72),
+		72,
+		72
+	);
+
+	wave = chain = Osc.ar(bufnum, wave.abs.linexp(0, 1, 0.1, 1.0), [modX, modZ]);
+	wave = Decay.ar(wave, modY * 5).wrap2(1);
+
+	chain = in * env;
+
+	chain = [
+		FFT.new(LocalBuf(1024), chain[0]),
+		FFT.new(LocalBuf(1024), chain[1])
+	];
+
+	chain = [
+		PV_BrickWall(chain[0], wave[0]),
+		PV_BrickWall(chain[1], wave[1])
+	];
+
+	wave = [IFFT(chain[0]), IFFT(chain[1])] * env;
+
+	fund = 51.midicps * 4;
+
+	//Just Intonated Minor
+	scale = [
+		/*fund / 4,
+		fund / 4 / 27/25,*/
+		fund / 2,
+		fund*27/25,
+		fund*6/5,
+		fund*4/3,
+		fund,
+		fund*2,
+		fund*2*27/25,
+		fund*2*6/5,
+		fund*2*4/3,
+		fund*2*27/20,
+		fund*2*8/5,
+		fund*2*9/5,
+		fund*4,
+		// fund*4*27/25,
+		// fund*4*6/5,
+		// fund*4*4/3,
+		fund*4*27/20,
+		fund*4*8/5,
+		fund*4*9/5,
+		fund * 8,
+		fund*8*9/5,
+	].cpsmidi-12;
+
+	scale = (scale-12)++scale;
+	scale = scale.midicps;
+
+	wave = Ringz.ar(wave, Select.kr(modY * scale.size, scale), TExpRand.kr(0.01, 0.5, t_trig));
+
+	signal = LeakDC.ar(wave * amp * gateEnv * env);
+	signal = SanityCheck2.ar(signal);
+	Out.ar(50, Limiter.ar(signal * 0.9, 1, 0.001));
+		Out.ar(80 + (island * 2), Integrator.ar(signal * 0.95, [modX, modY]).softclip);
 
 }).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
