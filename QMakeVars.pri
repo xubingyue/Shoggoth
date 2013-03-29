@@ -3,9 +3,9 @@
 ###########################################################################################################################
 LIBSCPP_INCLUDE = /home/octopian/Documents/source/QtDev/libscpp
 LIBSCPP_LIB = /home/octopian/Documents/source/QtDev/libscpp-build-desktop
-SUPERCOLLIDER_SOURCE = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/
-LIBSCSYNTH = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/NoQtBuild/server/scsynth
-LIBSCLANG = /home/octopian/Documents/source/SuperCollider/SuperCollider-3.6/SuperCollider-Source/NoQtBuild/lang
+SUPERCOLLIDER_SOURCE = /home/octopian/Documents/source/SuperCollider/SuperCollider-Source-3.6.3
+LIBSCSYNTH = /home/octopian/Documents/source/SuperCollider/SuperCollider-Source-3.6.3/NoQtBuild/server/scsynth
+LIBSCLANG = /home/octopian/Documents/source/SuperCollider/SuperCollider-Source-3.6.3/NoQtBuild/lang
 # Currently this MUST be boost 1.49
 BOOST = /usr/include
 BOOST_LIBS = /usr/lib
@@ -26,7 +26,7 @@ VORBIS = /usr/lib/x86_64-linux-gnu
 
 # Point to your cinder folder so that we know where everything is
 #CINDER_HOME = /Users/curtismckinney/Documents/Cinder/cinder_0.8.3_mac
-CINDER_HOME = /home/octopian/Documents/source/libraries/QtCinder/Cinder
+CINDER_HOME = /home/octopian/Documents/source/libraries/Cinder
 ############################################################################################################################
 
 
