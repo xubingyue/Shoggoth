@@ -104,7 +104,7 @@ public:
     void resize(ResizeEvent event);
 
     void update();
-    void initRender();
+    void initRender(bool renderLight);
     void finishRender();
     void renderIslands();
     void renderPicking();
@@ -237,7 +237,7 @@ void ShoggothApp::prepareSettings(Settings *settings)
 {
     float screenX = getDisplay().getWidth();
     float screenY = getDisplay().getHeight();
-    settings->setWindowSize(screenX, screenY);
+    // settings->setWindowSize(800, 800);
     mScreenCenter = Vec2f(screenX / 2, screenY / 2);
 
     //mScreenCenter = Vec2f(584, 365);
@@ -275,6 +275,7 @@ void ShoggothApp::setup()
     rootWindow = DefaultRootWindow(display);
     XWarpPointer(display, None, rootWindow, 0, 0, 0, 0, mScreenCenter.x, mScreenCenter.y);
     qApp->setOverrideCursor(QCursor(Qt::BlankCursor));
+
     // qApp->focusWidget();
     // XGrabKeyboard(display, rootWindow, 1, GrabModeAsync, GrabModeAsync, CurrentTime);
 #endif
@@ -1066,14 +1067,17 @@ void ShoggothApp::update()
         flock->seek(geometry::Vec3d(target.x, target.y, target.z));*/
 }
 
-void ShoggothApp::initRender()
+void ShoggothApp::initRender(bool renderLight)
 {
     gl::clear(ShGlobals::BACKGROUND_COLOR);
 
     gl::pushMatrices();
     gl::setMatrices(mCamera.getCam());
 
-    gl::Light light(gl::Light::SPOTLIGHT, 0);
+    if(renderLight)
+    {
+
+        gl::Light light(gl::Light::SPOTLIGHT, 0);
 #ifdef __APPLE__
     /*
     light.setAmbient(Color(0.9f, 0.9f, 0.9f));
@@ -1083,13 +1087,14 @@ void ShoggothApp::initRender()
     light.setDiffuse(Color(0.8, 0.8, 0.8));
     light.setSpecular(Color(0.9, 0.9, 0.9));
 #elif __LINUX__
-    light.setAmbient(Color(0.5, 0.5f, 0.5f));
-    light.setDiffuse(Color(0.8, 0.8, 0.8));
-    light.setSpecular(Color(0.9, 0.9, 0.9));
+        light.setAmbient(Color(0.5, 0.5f, 0.5f));
+        light.setDiffuse(Color(0.8, 0.8, 0.8));
+        light.setSpecular(Color(0.9, 0.9, 0.9));
 #endif
-    light.setPosition(mCamera.getCam().getEyePoint());
-    light.setDirection(mCamera.getCam().getViewDirection());
-    // light.setPosition(Vec3f(500.0f, 500.0f, 500.0f));
+        light.setPosition(mCamera.getCam().getEyePoint());
+        light.setDirection(mCamera.getCam().getViewDirection());
+        // light.setPosition(Vec3f(500.0f, 500.0f, 500.0f));
+    }
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
     gl::enableDepthRead();
@@ -1112,6 +1117,7 @@ void ShoggothApp::renderPicking()
     ShShaders::bindPicking();
 
     gl::clear(Color::black());
+    ShIsland::pickingMaterial.apply();
 
     if(editMode == IslandPicking)
         renderIslands();
@@ -1192,14 +1198,14 @@ void ShoggothApp::draw()
     if(mPickMode)
     {
         mFbo.bindFramebuffer();
-        initRender();
+        initRender(false);
         renderPicking();
         finishRender();
         mDrawPick = colorPicking(&mPickedPoint, &mPickedNormal, mPickedTri);
         mFbo.unbindFramebuffer();
     }
 
-    initRender();
+    initRender(true);
     renderScene();
     // cinder::gl::color(cinder::Color(0, 0, 255));
     // cinder::gl::drawSphere(mCamera.frustumSphere.getCenter(), mCamera.frustumSphere.getRadius());
@@ -1265,15 +1271,18 @@ bool ShoggothApp::colorPicking(Vec3f *pickedPoint, Vec3f *pickedNormal, SeqTri *
 
     GLubyte buffer[4];
     glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
-    glReadPixels(mScreenCenter.x, mScreenCenter.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, (void*)buffer);
+    glReadPixels(mScreenCenter.x, mScreenCenter.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &buffer[0]);
+    std::cout << "Glubyte buffer: (" << (int) buffer[0] << ", " << (int) buffer[1] << ", " << (int) buffer[2] << ", " << (int) buffer[3] << ")" << std::endl;
 
     mPickedIndex = shcolor::charToInt(buffer[0], buffer[1], buffer[2]);
+    //std::cout << "mPickedIndex: " << mPickedIndex << std::endl;
 
     if(editMode == IslandPicking)
     {
         mSelectedIsland = ShIsland::pickingIndexToIslandID(mPickedIndex);
+        // std::cout << "mSelectedIsland: " << (int) mSelectedIsland << std::endl;
 
-        return islands.getIsland(mSelectedIsland)->getTriCoord(
+        return islands.getIsland((int) mSelectedIsland)->getTriCoord(
                     mPickedIndex - (mSelectedIsland * ShIsland::kNumIndexes),
                     pickedTri
                     );

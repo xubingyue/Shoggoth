@@ -112,7 +112,6 @@ void ShCamera::mouseInput(Vec2f mouseVec)
 	else 
 		mPitch = 0;*/
 	
-    //std::cout << "Mouse Move: " << mouseVec << std::endl;
     mYaw = mRotationSpeed * mouseVec.x * -1;
     mPitch = mRotationSpeed * mouseVec.y * -1;
 

@@ -84,6 +84,7 @@ public:
     static uint32_t globalPickingIndex;
 	
 	static cinder::gl::Material material;
+    static cinder::gl::Material pickingMaterial;
 	
 	static uint16_t kTriGridWidth;
 	static uint16_t kTriGridHeight;
