@@ -1505,4 +1505,59 @@ SynthDef.new("TheDayTheEarthStoodStill",{
 }).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
+(
+SynthDef.new("ElkCloner",{
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	var env, signal, modY, gateEnv, phase, feedIn, step, offset, wave, in;
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	modY = y.linlin(-200, 200, 0, 0.999);
+	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+	// in = InFeedback.ar(80 + (island * 2), 2);
+	wave = WaveTerrain.ar(
+		bufnum,
+		env.linlin(0, 1, [x / 430 * 72, z / 430 * 72], modY * 72),
+		env.linlin(0, 1, [z / 430 * 72, x / 430 * 72], modY * 72),
+		72,
+		72
+	) * env;
+	signal = HPF.ar(wave * env, (env + 0.01).linexp(0.01, 1.01, 20, 20000));
+	signal = SanityCheck2.ar(signal);
+	Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+
+	signal = BufDelayC.ar(LocalBuf(SampleRate.ir / 4), Integrator.ar(signal, modY), x.linexp(0, 430, 4, 20000).reciprocal);
+	Out.ar(80 + ( island * 2), LeakDC.ar(signal.softclip));
+
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
+);
+
+(
+SynthDef.new("ElkCloner",{
+	|amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0|
+	var env, signal, modY, gateEnv, phase, feedIn, step, offset, wave, in;
+	gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+	modY = y.linlin(-200, 200, 0, 0.999);
+	env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+	// in = InFeedback.ar(80 + (island * 2), 2);
+	wave = WaveTerrain.ar(
+		bufnum,
+		env.linlin(0, 1, [x / 430 * 72, z / 430 * 72], modY * 72),
+		env.linlin(0, 1, [z / 430 * 72, x / 430 * 72], modY * 72),
+		72,
+		72
+	) * env;
+
+	// offset = (Pitch.kr(wave)[0] * 2).reciprocal;
+	// signal = LeakDC.ar(wave + DelayC.ar(wave.neg, 0.2, z / 430 * 0.2));
+	signal = HPF.ar(wave * env, (env + 0.01).linexp(0.01, 1.01, 20, 20000));
+	signal = SanityCheck2.ar(signal);
+	Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+
+	signal = BufDelayC.ar(LocalBuf(SampleRate.ir / 4), Integrator.ar(signal, modY), x.linexp(0, 430, 4, 20000).reciprocal);
+	Out.ar(80 + ( island * 2), LeakDC.ar(signal.softclip));
+
+}).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
+);
+
 )
