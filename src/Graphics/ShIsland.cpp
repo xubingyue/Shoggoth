@@ -189,7 +189,7 @@ void ShIsland::update()
         if(mAnimationQueue.size() == 1)
             resetCustomData();
 
-        // calculateNormals(mSurface, mPositions);
+        calculateNormals(mSurface, mPositions);
         bufferActivityColor();
         updateWaveTerrainBuffer(mTerrainHeightMap, mMinHeight, mMaxHeight);
         synchronizedAnimationQueuePop();
