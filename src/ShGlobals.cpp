@@ -29,9 +29,10 @@ namespace ShGlobals {
     TimeQuakeDisplay* TIME_QUAKE_DISPLAY = 0;
     LuaConsole* LUA_CONSOLE = 0;
     int SECTION_NUMBER = 0;
-    unsigned int NUM_SECTIONS = 2;
+    unsigned int NUM_SECTIONS = 3;
     cinder::ColorA BACKGROUND_COLOR = cinder::ColorA(1, 1, 1, 1);
     bool DRAW_WIREFRAMES = false;
+    bool DRAW_TRIANGLE_IDS = false;
 
     void updateSectionVars()
     {
@@ -40,11 +41,19 @@ namespace ShGlobals {
         case 0:
             BACKGROUND_COLOR = cinder::ColorA(1, 1, 1, 1);
             DRAW_WIREFRAMES = false;
+            DRAW_TRIANGLE_IDS = false;
             break;
 
         case 1:
             BACKGROUND_COLOR = cinder::ColorA(0.7, 0, 0, 1);
             DRAW_WIREFRAMES = true;
+            DRAW_TRIANGLE_IDS = false;
+            break;
+
+        case 2:
+            BACKGROUND_COLOR = cinder::ColorA(0.0, 0, 0.0, 1);
+            DRAW_WIREFRAMES = false;
+            DRAW_TRIANGLE_IDS = true;
             break;
 
         default:

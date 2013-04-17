@@ -87,7 +87,7 @@ public:
         mRecording(false), mPickedTri(0), mSelectedIsland(0), mCurrentSelectedStepValue(1),mRootTimeStream(0),
         timeStreamScheduler(0), timeStreamTimer(0, boost::chrono::milliseconds(100)), timeStreamDisplay(0),
         editSnakeRange(false), moveSnakeRange(false), synthMenu(0), editMode(IslandPicking), currentSynthName("ShoggothBassDrum"),
-        cursorPosition(0, 0), terrainSynths(0), masterOut(0), light(gl::Light(gl::Light::SPOTLIGHT, 0)) {}
+        cursorPosition(0, 0), terrainSynths(0), masterOut(0), light(gl::Light(gl::Light::SPOTLIGHT, 0)), drawTriangleIDs(false) {}
     // gameOfLife(200, 120)
     // flock(0)
 
@@ -174,6 +174,7 @@ public:
     std::string currentSynthName;
     cinder::Vec2i cursorPosition;
     TimeQuakeDisplay timeQuakeDisplay;
+    bool drawTriangleIDs;
 };
 
 ShoggothApp::~ShoggothApp()
@@ -516,6 +517,11 @@ void ShoggothApp::keyDown(KeyEvent event)
             mPickMode = !mPickMode;
             break;
 
+        case KeyEvent::KEY_SEMICOLON:
+            // drawTriangleIDs = !drawTriangleIDs;
+            islands.reset();
+            break;
+
         case KeyEvent::KEY_p: // Play the sequencer if it isn't playing, otherwise stop it
             if(!mSequencer.isPlaying)
                 play();
@@ -602,7 +608,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
             if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
-                std::cout << "SHIFT DOWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+                // std::cout << "SHIFT DOWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
 
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::DiamondSquare, shmath::randomRange(0, 255));
@@ -1205,32 +1211,41 @@ void ShoggothApp::draw()
     // render scene with individual colors for 3d picking
     if(mPickMode)
     {
-        mFbo.bindFramebuffer();
+        if(!ShGlobals::DRAW_TRIANGLE_IDS)
+            mFbo.bindFramebuffer();
+
         initRender(false);
         renderPicking();
         mDrawPick = colorPicking(&mPickedPoint, &mPickedNormal, mPickedTri);
         finishRender();
-        mFbo.unbindFramebuffer();
+
+        if(!ShGlobals::DRAW_TRIANGLE_IDS)
+            mFbo.unbindFramebuffer();
     }
 
-    initRender(true);
-    renderScene();
-    // cinder::gl::color(cinder::Color(0, 0, 255));
-    // cinder::gl::drawSphere(mCamera.frustumSphere.getCenter(), mCamera.frustumSphere.getRadius());
-
-    gl::color(cinder::ColorA(0, 0, 0, 1));
-
-
-    /*
-    const std::vector<alife::Boid*> boids = flock->getBoids();
-
-    for(int i = 0; i < boids.size(); ++i)
+    if(!ShGlobals::DRAW_TRIANGLE_IDS)
     {
-        geometry::Vec3d location = boids[i]->getLocation();
-        gl::drawSphere(cinder::Vec3f(location.x, location.y, location.z), 3);
-    }*/
+        initRender(true);
+        renderScene();
+        // cinder::gl::color(cinder::Color(0, 0, 255));
+        // cinder::gl::drawSphere(mCamera.frustumSphere.getCenter(), mCamera.frustumSphere.getRadius());
 
-    finishRender();
+        gl::color(cinder::ColorA(0, 0, 0, 1));
+
+
+        /*
+        const std::vector<alife::Boid*> boids = flock->getBoids();
+
+        for(int i = 0; i < boids.size(); ++i)
+        {
+            geometry::Vec3d location = boids[i]->getLocation();
+            gl::drawSphere(cinder::Vec3f(location.x, location.y, location.z), 3);
+        }*/
+
+        finishRender();
+    }
+
+
     cinder::gl::enableAlphaBlending();
     islands.drawSnakeRangNames();
     ShAvatar::avatarMap.drawName();

@@ -10,7 +10,106 @@
 ShSynthGen {
 
 	classvar  <>numGenerations, <>numPrototypes, <>numPrototypeVariations, <>generations, <>nilMacro, <>filePath, <>prototypeStrategy, <>variationStrategy, <>template;
-	classvar <>synthBeginCode, <>synthEndCode, <>tab;
+	classvar <>synthBeginCode, <>synthEndCode, <>tab, <nonCompileableVariableCharacters, <>validUGenMethods, <binaryOpUGens;
+
+	*initClass {
+
+		nonCompileableVariableCharacters = [
+			".", " ", "-", "[", "]", "!", "£", "$", "%", "^", "&", "*", "(", ")", "@", "#", "'", "?", ",", ";", ":"
+		];
+
+		validUGenMethods = Set[
+			"madd",
+			"range",
+			"exprange",
+			"unipolar",
+			"bipolar",
+			"clip",
+			"fold",
+			"wrap",
+			"blend",
+			"minNyquist",
+			"lag",
+			"lag2",
+			"lag3",
+			"lagud",
+			"lag2ud",
+			"lag3ud",
+			"slew",
+			"linlin",
+			"linexp",
+			"explin",
+			"expexp",
+			"lincurve",
+			"curvelin"
+		];
+
+		binaryOpUGens = [
+			"min",
+			"max",
+			"round",
+			"trunc",
+			"hypot",
+			"hypotApx",
+			"atan2",
+			"ring1",
+			"ring2",
+			"ring3",
+			"ring4",
+			"sumsqr",
+			"difsqr",
+			"sqrsum",
+			"sqrdif",
+			"absdif",
+			"thresh",
+			"amclip",
+			"scaleneg",
+			"clip2",
+			"wrap2",
+			"fold2",
+			"excess",
+			"biexp",
+			"excess",
+			"bilin",
+			"excess",
+			"wrap2",
+			"fold2",
+			"clip2",
+			"rightShift",
+			"unsignedRightShift",
+			"leftShift",
+			"gcd",
+			"lcm",
+			"round",
+			"roundUp",
+			"bitHammingDistance",
+			"bitXor",
+			"bitOr",
+			"bitAnd",
+			"max",
+			"min",
+			"pow",
+			"mod",
+			"div",
+			"dist",
+			"rotate",
+			"theta",
+			"rho"
+		];
+	}
+
+	// Removes characters from a string so it can be compiled as a variable or argument name
+	*removeNonCompileableCharacters {
+		arg string;
+		var newString = string.deepCopy;
+
+		nonCompileableVariableCharacters.do {
+			arg item, i;
+			newString = newString.replace(item, "");
+		}
+
+		^newString;
+	}
 
 	*generate { arg argNumPrototypes, argNumPrototypeVariations, argFilePath, argTemplate, argPrototypeStrategy, argVariationStrategy;
 		ShSynthGen.setup(argNumPrototypes, argNumPrototypeVariations, argFilePath, argTemplate, argPrototypeStrategy, argVariationStrategy);
@@ -56,12 +155,12 @@ ShSynthGen {
 		var writeCode = "/////////////////////////////////////////////////////////\n// " ++ name ++ "\n/////////////////////////////////////////////////////////\n\n" ++ code;
 		var appendString = "";
 
-		try({ writeCode.interpret; }, { "compile failed.".postln; ^nil });
-
 		if(ShSynthGen.filePath != nil, { appendString = ".store.writeDefFile(\"" ++ filePath ++ "\");\n"; }, { appendString = ";\n" });
 		appendString = appendString ++ "\n\n\n\n";
 		writeCode = writeCode ++ appendString;
-	    // writeCode.interpret;
+
+		try({ writeCode.interpret; }, { arg error; error.postln; "SynthDef compile failed.".postln; ^nil });
+		"SynthDef compile successful".postln;
 		^writeCode;
 	}
 
@@ -69,51 +168,59 @@ ShSynthGen {
 		var compilationName = "GeneratedSynthDefs--" ++ Date.localtime.asString.replace(" ", "-");
 		var commentBlock = "//////////////////////////////////////////////////////////////////////////////////////////////////////////\n";
 		var synthDefCompilationFileString = commentBlock ++ "// " ++ compilationName ++ "\n" ++ commentBlock ++ "\n\n\n";
-		var synthDefCompilationFile = File(ShSynthGen.filePath ++ "/" ++ compilationName ++ ".sc", "w");
-		var synthDefNameFile, synthDefNameFileString;
-		var successfulSynths = [];
+		var synthDefCompilationFileName = ShSynthGen.filePath ++ "/" ++ compilationName ++ ".scd";
+		var synthDefCompilationNameFileString = ShSynthGen.filePath ++ "/" ++ compilationName ++ "Names.txt";
+		var totalSynths, successfulSynths;
 
-		"ShSynthGen.finish".postln;
+		successfulSynths = 0;
+		totalSynths = ShSynthGen.generations.size;
+
+		"ShSynthGen.finish beginning".postln;
+		File(synthDefCompilationFileName, "a").write(synthDefCompilationFileString).close;
 
 		ShSynthGen.generations.do {
 			arg item, i;
 			var newSynth = ShSynthGen.writeSynth(item.name, item.code);
 
 			if(newSynth != nil, {
-				synthDefCompilationFileString = synthDefCompilationFileString ++ newSynth;
-				successfulSynths = successfulSynths.add(item.name);
+				File(synthDefCompilationFileName, "a").write(newSynth).close;
+				File(synthDefCompilationNameFileString,"a").write(item.name ++ "\n").close;
+				successfulSynths = successfulSynths + 1;
 			});
 		};
 
-		synthDefCompilationFile.write(synthDefCompilationFileString);
-		synthDefCompilationFile.close;
+		"\n\n///////////////////////////////////////".postln;
+		"// ShSynthGen: DONE GENERATING SYNTHS.".postln;
+		"///////////////////////////////////////\n".postln;
 
-		synthDefNameFile = File(ShSynthGen.filePath ++ "/" ++ compilationName ++ "Names.txt", "w");
-		synthDefNameFileString = "";
-
-		successfulSynths.do {
-			arg name, i;
-			synthDefNameFileString = synthDefNameFileString ++ name ++ "\n";
-		};
-
-		synthDefNameFile.write(synthDefNameFileString);
-		synthDefNameFile.close;
-
-		"ShSynthGen: done.".postln;
+		(totalSynths.asString ++ " SynthDefs generated.").postln;
+		(successfulSynths.asString ++ " SynthDefs successfully compiled.").postln;
+		((totalSynths - successfulSynths).asString ++ " Synthdefs failed to compile.").postln;
+		((successfulSynths / totalSynths * 100).asString ++ "% success rate.").postln;
 	}
 
 	*randomUGen {
-		var ugen = UGen.allSubclasses[UGen.allSubclasses.size.rand];
+		var ugen = UGen.allSubclasses.choose;
 		var pass = false;
 
 		while({
 			ugen.class.findRespondingMethodFor(\ar) == nil;
 		}, {
-			if(ugen.class.asString.contains("PV_") == false, { pass = true }); // Filter out PV UGens -> These will need special handling.}
+			if(ugen.class.asString.contains("PV_").not
+					&& ugen.class.asString.contains("FFT")
+					&& ugen.class.asString.contains("SOMRd").not
+					&& ugen.class.asString.contains("BFEncode").not
+					&& ugen.class.asString.contains("BFDecode").not
+					&& ugen.class.asString.contains("out").not
+					&& ugen.class.asString.contains("Out").not
+					&& ugen.class.asString.contains("VarLag").not,
+					{ pass = true }
+			); // Filter out certains UGens -> These will need special handling.}
+
 			if(ugen.class.findRespondingMethodFor(\ar) == nil, { pass = false; });
 
 			if(pass == false, {
-				ugen = UGen.allSubclasses[UGen.allSubclasses.size.rand];
+				ugen = UGen.allSubclasses.choose;
 			});
 		});
 
@@ -141,7 +248,7 @@ ShSynthGen {
 
 	// Special case argument generation
 	*generateFreqArgument {
-		arg inputs, variables, arguments;
+		arg inputs, variables, arguments, depth;
 		var code = "";
 		var prob = 1.0.rand;
 
@@ -152,8 +259,8 @@ ShSynthGen {
 
 		{
 			if(variables.indexOf("scale") != nil, {
-				code = "Select.kr(Latch.ar(" ++ ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ ", ";
-				code = code ++ ShSynthGen.generateTrigArgument(inputs, variables, arguments) ++ ") * scale.size, scale)";
+				code = "Select.kr(Latch.ar(" ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1) ++ ", ";
+				code = code ++ ShSynthGen.generateTrigArgument(inputs, variables, arguments, depth - 1) ++ ") * scale.size, scale)";
 				^code;
 			});
 
@@ -163,7 +270,7 @@ ShSynthGen {
 		}
 
 		{ prob >= 0.5 && prob < 0.75 } { code = variables.choose }
-		{ prob >= 0.75 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ ".exprange(1, SampleRate.ir)" };
+		{ prob >= 0.75 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1) ++ ".exprange(1, SampleRate.ir)" };
 
 		^code;
 	}
@@ -171,13 +278,13 @@ ShSynthGen {
 	*generateBufferArgument {
 		arg inputs, variables, arguments;
 		// var code = "LocalBuf(2.pow(" ++  ++ "))";
-		var code = "Array.fill(2.pow(" ++ rrand(10, 20) ++ "), { |i| rrand(-1, 1) }).as(LocalBuf)";
+		var code = "Array.fill(2.pow(" ++ rrand(10, 16) ++ "), { |i| rrand(-1, 1) }).as(LocalBuf)";
 		"Generating new Buffer argument".postln;
 		^code;
 	}
 
 	*generateEnveloperArgument {
-		arg inputs, variables, arguments;
+		arg inputs, variables, arguments, depth;
 		var code = "";
 		var prob = 1.0.rand;
 
@@ -193,13 +300,13 @@ ShSynthGen {
 		}
 
 		{ prob >= 0.75 && prob < 0.85 } { code = variables.choose; }
-		{ prob >= 0.85 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments) };
+		{ prob >= 0.85 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1) };
 
 		^code;
 	}
 
 	*generateTrigArgument {
-		arg inputs, variables, arguments;
+		arg inputs, variables, arguments, depth;
 		var code = "";
 		var prob = 1.0.rand;
 
@@ -215,45 +322,228 @@ ShSynthGen {
 		}
 
 		{ prob >= 0.75 && prob < 0.85 } { code = variables.choose; }
-		{ prob >= 0.85 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments) };
+		{ prob >= 0.85 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1) };
 
 		^code;
 	}
 
 	*generateMulArgument {
-		arg inputs, variables, arguments;
+		arg inputs, variables, arguments, depth;
 		var code = "";
 		var prob = 1.0.rand;
 
 		"Generating new Mul argument".postln;
 
 		case
-		{ prob < 0.5 } { code = (1 - exprand(0.00001, 1)).asString ++ " * " ++ ShSynthGen.generateEnveloperArgument(inputs, variables, arguments) }
+		{ prob < 0.5 } { code = (1 - exprand(0.00001, 1)).asString ++ " * " ++ ShSynthGen.generateEnveloperArgument(inputs, variables, arguments, depth - 1) }
 		{ prob >= 0.5 && prob < 0.75 } { code = variables.choose; }
-		{ prob >= 0.75 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments); };
+		{ prob >= 0.75 } { code = ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1); };
 
 		^code;
 	}
 
 	*generateArrayArgument {
-		arg inputs, variables, arguments;
-		var code = "[" ++ ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ ", " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ "]";
+		arg inputs, variables, arguments, depth;
+		var code = "[" ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1);
+		code = code ++ ", " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1) ++ "]";
 		^code;
 	}
 
 	*generateAddArgument {
-		arg inputs, variables, arguments;
+		arg inputs, variables, arguments, depth;
 		var code = "";
 
 		"Generating new Add argument".postln;
-		if(1.0.rand < 0.9, { code = "0"; }, { code = ShSynthGen.generateUGenCode(inputs, variables, arguments); });
+		if(1.0.rand < 0.9, { code = "Silent.ar()"; }, { code = ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1); });
+
+		^code;
+	}
+
+	*generateBinaryOpUGen {
+		arg inputs, variables, arguments, depth;
+		var method = ShSynthGen.binaryOpUGens.choose;
+		var code = "." ++ method ++ "(" ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1) ++ ")";
+		("Generating BinaryOpUGen: " ++ method).postln;
+		^code;
+	}
+
+	*generateUGenMethodArguments {
+		arg method;
+		var arguments = method.argNames.deepCopy;
+		var stringArguments = [];
+
+		"Generating UGen method arguments names.".postln;
+
+		if(arguments != nil, {
+
+			if(arguments.size > 0, { arguments = arguments.removeAll(\this); });
+
+			arguments.do {
+				arg argument, i;
+				stringArguments = stringArguments.add(argument.asString);
+			};
+
+			^stringArguments;
+		}, {
+			^[];
+		});
+	}
+
+	*generateUGenMethod {
+		arg inputs, variables, arguments, depth;
+		var code = ".";
+		var pass = false;
+		var method, methodName, methodArgs;
+
+		"Generating UGen method".postln;
+		// "Generating UGen methodName".postln;
+
+		while({ pass == false }, {
+			method = UGen.methods.choose;
+			methodName = method.name.asString;
+
+			if(ShSynthGen.validUGenMethods.includes(methodName), { pass = true });
+		});
+
+		code = code ++ methodName ++ "(";
+		methodArgs = ShSynthGen.generateUGenMethodArguments(method);
+
+		// "Generating UGen method arguments".postln;
+
+		methodArgs.do {
+			arg argument, i;
+
+			code = code ++ ShSynthGen.generateArgument(argument, inputs, variables, arguments, depth - 1);
+
+			// if(i < (ugenArgs.size - 1), { code = code ++ ", " });
+			code = code ++ ", ";
+		};
+
+		// "Finishing UGen method".postln;
+
+		while({ code.endsWith(",") || code.endsWith(" ") }, { code = code.subStr(0, code.size - 2) });
+		code = code ++ ")";
+
+		^code;
+	}
+
+	*generateArgument {
+		arg argument, inputs, variables, arguments, depth;
+		var code = "";
+		var furtherParse = true;
+
+		case
+		{ depth <= 0 } { code = code ++ inputs.choose ++ " * DC.ar(" ++ 1.0.rand ++ ")"; furtherParse = false }
+		{ argument.contains("buf") } {
+			if(argument.contains("sndbuf") || argument.contains("envbuf"), { code = code ++ "bufnum"; }, {
+				code = code ++ ShSynthGen.generateBufferArgument(inputs, variables, arguments, depth - 1);
+			});
+
+			furtherParse = false;
+		}
+
+		{ argument.contains("specificationsArray") && furtherParse } {
+			var arrayString = "`[";
+			var numFreqs = 20.rand;
+
+			arrayString = arrayString ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments, depth - 1);
+			arrayString = arrayString ++ ", " ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments, depth - 1);
+			arrayString = arrayString ++ ", " ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments, depth - 1);
+			/*
+			numFreqs.do { // Freqs
+				arg i;
+				arrayString = arrayString ++ ShSynthGen.generateFreqArgument(inputs, variables, arguments);
+				if(i < (numFreqs - 2), { arrayString = arrayString ++ ", "; }, { arrayString = arrayString ++ "], ["; })
+			};
+
+			numFreqs.do { // Amplitudes
+				arg i;
+				arrayString = arrayString ++ 1.0.rand;
+				if(i < (numFreqs - 2), { arrayString = arrayString ++ ", "; }, { arrayString = arrayString ++ "], ["; })
+			};
+
+			numFreqs.do { // Phases
+				arg i;
+				arrayString = arrayString ++ 2pi.rand;
+				if(i < (numFreqs - 2), { arrayString = arrayString ++ ", "; }, { arrayString = arrayString ++ "]"; })
+			};*/
+
+			arrayString = arrayString ++ "]";
+
+			code = code ++ arrayString;
+			furtherParse = false;
+		}
+
+		{ argument.contains("bus") && furtherParse } { code = code ++ "(80 + (island * 2))"; furtherParse = false }
+		{ argument.contains("env") && furtherParse } { code = code ++ ShSynthGen.generateEnveloperArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("trig") && furtherParse } { code = code ++ ShSynthGen.generateTrigArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("array") && furtherParse } { code = code ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("Array") && furtherParse } { code = code ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("channelsArray") && furtherParse } {
+			code = code ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments, depth - 1); furtherParse = false;
+		}
+		{ argument.contains("mul") && furtherParse } { code = code ++ ShSynthGen.generateMulArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("add") && furtherParse } { code = code ++ ShSynthGen.generateAddArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("freq") && furtherParse } { code = code ++ ShSynthGen.generateFreqArgument(inputs, variables, arguments, depth - 1); furtherParse = false; }
+		{ argument.contains("numChannels") && furtherParse } { code = code ++ "2"; furtherParse = false; }
+		{ argument.contains("nChans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
+		{ argument.contains("numChans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
+		{ argument.contains("Chans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
+		{ argument.contains("chans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
+		{ (argument.contains("channels") && argument.contains("Array").not) && furtherParse } { code = code ++ "2"; furtherParse = false; }
+		{ argument.contains("rect") && furtherParse } { code = code ++ "Rect.new(0, 0, " ++ 1.0.rand ++ ", " ++ 1.0.rand ++ ")"; furtherParse = false; }
+		{ argument.contains("clip") } { code = code ++ "\\minmax"; furtherParse = false; };
+
+		if(furtherParse, {
+			var prob = 1.0.rand;
+			var argumentString = "";
+
+			case
+			{ prob < 0.05 } // Create another ugen to fill the argument
+
+			{
+				code = code ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, depth - 1);
+			}
+
+			{ prob >= 0.025 && prob < 0.45 } // Pick an input
+
+			{
+				// code = code ++ inputs.choose;
+				code = code ++ variables.choose ++ " * " ++ variables.choose;
+			}
+
+			{ prob >= 0.45 && prob < 0.7 } // Pick a variable
+
+			{
+				code = code ++ variables.choose;
+			}
+
+			{ prob >= 0.7 && prob < 0.9 } // Pick an argument
+
+			{
+				argumentString = arguments.choose;
+				if(argumentString.contains("="), { argumentString = argumentString.subStr(0, argumentString.find("=") - 1); });
+				code = code ++ argumentString;
+			}
+
+			{ prob >= 0.9 } // Just pick a number and multiply by env
+
+			{
+				code = code ++ 1.0.rand.asString ++ " * " ++ ShSynthGen.generateEnveloperArgument(inputs, variables, arguments, depth - 1);
+			}
+		});
+
+		if(depth > 0, {
+			if(1.0.rand < 0.025, { code = code ++ ShSynthGen.generateUGenMethod(inputs, variables, arguments, depth - 1); });
+			if(1.0.rand < 0.0125, { code = code ++ ShSynthGen.generateBinaryOpUGen(inputs, variables, arguments, depth - 1); });
+		});
 
 		^code;
 	}
 
 	// Generic UGen code creation
 	*generateUGenCode {
-		arg inputs, variables, arguments;
+		arg inputs, variables, arguments, depth;
 
 		var code = "";
 		var ugen = ShSynthGen.randomUGen;
@@ -265,74 +555,14 @@ ShSynthGen {
 
 		ugenArgs.do {
 			arg argument, i;
-			var furtherParse = true;
 
-			case
-			{ argument.contains("buf") } {
-				if(argument.contains("sndbuf") || argument.contains("envbuf"), { code = code ++ "bufnum"; }, {
-					code = code ++ ShSynthGen.generateBufferArgument(inputs, variables, arguments);
-				});
-
-				furtherParse = false;
-			}
-
-			{ argument.contains("env") && furtherParse } { code = code ++ ShSynthGen.generateEnveloperArgument(inputs, variables, arguments); furtherParse = false; }
-			{ argument.contains("trig") && furtherParse } { code = code ++ ShSynthGen.generateTrigArgument(inputs, variables, arguments); furtherParse = false; }
-			{ argument.contains("array") && furtherParse } { code = code ++ ShSynthGen.generateArrayArgument(inputs, variables, arguments); furtherParse = false; }
-			{ argument.contains("mul") && furtherParse } { code = code ++ ShSynthGen.generateMulArgument(inputs, variables, arguments); furtherParse = false; }
-			{ argument.contains("add") && furtherParse } { code = code ++ ShSynthGen.generateAddArgument(inputs, variables, arguments); furtherParse = false; }
-			{ argument.contains("freq") && furtherParse } { code = code ++ ShSynthGen.generateFreqArgument(inputs, variables, arguments); furtherParse = false; }
-			{ argument.contains("numChannels") && furtherParse } { code = code ++ "2"; furtherParse = false; }
-			{ argument.contains("nChans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
-			{ argument.contains("numChans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
-			{ argument.contains("Chans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
-			{ argument.contains("chans") && furtherParse } { code = code ++ "2"; furtherParse = false; }
-			{ argument.contains("channels") && furtherParse } { code = code ++ "2"; furtherParse = false; };
-
-			if(furtherParse, {
-				var prob = 1.0.rand;
-				var argumentString = "";
-
-				case
-				{ prob < 0.1 } // Create another ugen to fill the argument
-
-				{
-					code = code ++ ShSynthGen.generateUGenCode(inputs, variables, arguments);
-				}
-
-				{ prob >= 0.1 && prob < 0.45 } // Pick an input
-
-				{
-					// code = code ++ inputs.choose;
-	    			code = code ++ variables.choose ++ " * " ++ variables.choose;
-				}
-
-				{ prob >= 0.45 && prob < 0.7 } // Pick a variable
-
-				{
-					code = code ++ variables.choose;
-				}
-
-				{ prob >= 0.7 && prob < 0.9 } // Pick an argument
-
-				{
-					argumentString = arguments.choose;
-					if(argumentString.contains("="), { argumentString = argumentString.subStr(0, argumentString.find("=") - 1); });
-					code = code ++ argumentString;
-				}
-
-				{ prob >= 0.9 } // Just pick a number and multiply by env
-
-				{
-					code = code ++ rrand(exprand(1, 666), exprand(1, 6666)).asString ++ " * " ++ ShSynthGen.generateEnveloperArgument(inputs, variables, arguments);
-				}
-			});
+			code = code ++ ShSynthGen.generateArgument(argument, inputs, variables, arguments, depth);
 
 			// if(i < (ugenArgs.size - 1), { code = code ++ ", " });
 			code = code ++ ", ";
 		};
 
-		while({ code.endsWith(",") || code.endsWith(" ") }, { code = code.subStr(0, code.size - 2) });
+		while({ code.endsWith(",") || code.endsWith(" ") || code.endsWith(".") }, { code = code.subStr(0, code.size - 2) });
 		code = code ++ ")";
 
 		^code;
@@ -447,7 +677,7 @@ ShSynthGeneration {
 
 		var newVariables = Array.fill(numberOfVariables, {
 			arg i;
-			"var" ++ name.replace(".", "").replace(" ", "").replace("-", "_").replace("[", "").replace("]", "").replace("!", "").replace("(", "").replace(")", "") ++ (i + variables.size + 1).asString;
+			"var" ++ ShSynthGen.removeNonCompileableCharacters(name) ++ (i + variables.size + 1).asString;
 		});
 
 		this.addVariables(newVariables);
@@ -571,12 +801,12 @@ Shoggoth {
 
 					newVariables.do {
 						arg variable, i;
-						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ ";\n";
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 4) ++ ";\n";
 					};
 
 					newVariables.do {
 						arg variable, i;
-						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ ";\n";
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 4) ++ ";\n";
 					};
 
 					outputs = newVariables;
@@ -602,6 +832,8 @@ Shoggoth {
 			newVariables = generatedSynth.generateVariables(rrand(1, 5)); // Create some new variables to work with
 
 			// Variation code here
+			// This variation just adds new variables. You can iterated through the current macros stored in generatedSynth.macros and test for if it is .editable
+			// If is editable than you can parse over it and make any changes you'd like.
 			generatedSynth.insertMacro(
 				generatedSynth.macros.size - 1,
 				ShSynthMacro.new({
@@ -611,7 +843,17 @@ Shoggoth {
 
 					newVariables.do {
 						arg variable, i;
-						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments) ++ ";\n";
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 2) ++ ";\n";
+					};
+
+					newVariables.do {
+						arg variable, i;
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 2) ++ ";\n";
+					};
+
+					newVariables.do {
+						arg variable, i;
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 2) ++ ";\n";
 					};
 
 					outputs = newVariables;
@@ -629,7 +871,7 @@ Shoggoth {
 		Shoggoth.nameSet = FileReader.read(workingDirectory ++ nameSetFile);
 
 		nameGenFunc = {
-			var name = Shoggoth.nameSet[Shoggoth.nameSet.size.rand][0].asString;
+			var name = Shoggoth.nameSet.choose[0].asString;
 			name.postln;
 			name;
 		};
@@ -689,9 +931,8 @@ Shoggoth {
 
 		"Done setting up Shoggoth.generateSynths. Generating now...".postln;
 
-		5.do {
-			ShSynthGen.generate(5, 1, workingDirectory, template, prototypeStrategy, variationStrategy);
-		}
+
+		ShSynthGen.generate(200, 1, workingDirectory, template, prototypeStrategy, variationStrategy);
 	}
 }
 

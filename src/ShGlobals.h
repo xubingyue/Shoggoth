@@ -56,6 +56,7 @@ namespace ShGlobals {
     extern int SECTION_NUMBER;
     extern unsigned int NUM_SECTIONS;
     extern bool DRAW_WIREFRAMES;
+    extern bool DRAW_TRIANGLE_IDS;
     extern cinder::ColorA BACKGROUND_COLOR;
     void setSectionNumber(int sectionNumber, bool setFromNetwork = false);
     void incrementSectionNumber();

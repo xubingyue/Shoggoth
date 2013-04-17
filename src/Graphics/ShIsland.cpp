@@ -185,7 +185,11 @@ void ShIsland::update()
         mBoundingBox = calcBoundingBox();
 
         mSurface.bufferPositions(mPositions);
-        calculateNormals(mSurface, mPositions);
+
+        if(mAnimationQueue.size() == 1)
+            resetCustomData();
+
+        // calculateNormals(mSurface, mPositions);
         bufferActivityColor();
         updateWaveTerrainBuffer(mTerrainHeightMap, mMinHeight, mMaxHeight);
         synchronizedAnimationQueuePop();
@@ -702,6 +706,11 @@ void ShIsland::buildTriangleMap()
 
 void ShIsland::buildTriangleGrid()
 {
+    if(triangleGrid[0][0] != NULL)
+    {
+        return rebuildTriangleGrid();
+    }
+
     int index = 0;
 
     for(int y = 0; y < kTriangleGridHeight; ++y)
@@ -1071,6 +1080,20 @@ void ShIsland::createCustomStaticData(gl::VboMesh::Layout* layout)
 	layout->mCustomStatic.push_back(std::make_pair(gl::VboMesh::Layout::CUSTOM_ATTR_FLOAT4, 0));
 	layout->mCustomStatic.push_back(std::make_pair(gl::VboMesh::Layout::CUSTOM_ATTR_FLOAT4, 0));
 	layout->mCustomStatic.push_back(std::make_pair(gl::VboMesh::Layout::CUSTOM_ATTR_FLOAT4, 0));
+}
+
+void ShIsland::resetCustomData()
+{
+    gl::VboMesh::VertexIter surfaceIter = mSurface.mapVertexBuffer();
+    for(int i = 0; i < mPositions.size(); i += 3)
+    {
+        surfaceIter.setCustomVec4f(0, shcolor::intToVec4f(initialPickingIndex + i));
+        ++surfaceIter;
+        surfaceIter.setCustomVec4f(0, shcolor::intToVec4f(initialPickingIndex + i));
+        ++surfaceIter;
+        surfaceIter.setCustomVec4f(0, shcolor::intToVec4f(initialPickingIndex + i));
+        ++surfaceIter;
+    }
 }
 
 void ShIsland::populateCustomData(cinder::gl::VboMesh& mesh, std::vector<cinder::Vec3f>& positionVector)

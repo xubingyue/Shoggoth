@@ -31,7 +31,8 @@ using namespace fractal;
 
 ShIslandGrid::ShIslandGrid() :
     snakeRangeIDCounter(0),
-    selectedSnakeRange(0)
+    selectedSnakeRange(0),
+    islands(0)
 {
 	createIslands();
 
@@ -44,6 +45,27 @@ ShIslandGrid::ShIslandGrid() :
 }
 
 ShIslandGrid::~ShIslandGrid()
+{
+    cleanup();
+}
+
+void ShIslandGrid::reset()
+{
+    // cleanup();
+    // createIslands();
+    //setup(ShGlobals::CAMERA->getEye());
+
+    /*
+    boost::upgrade_lock<boost::shared_mutex> lock(mutex);
+    boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
+
+    for(int i = 0; i < NUM_ISLANDS; ++i)
+    {
+        snakeRangeGrid[i] = std::vector<ShSnakeRange*>();
+    }*/
+}
+
+void ShIslandGrid::cleanup()
 {
     removeAllSnakeRanges();
 
@@ -68,6 +90,7 @@ ShIslandGrid::~ShIslandGrid()
     }
 
     delete[] islands;
+    islands = NULL;
 }
 
 void ShIslandGrid::drawIslands()
@@ -75,18 +98,21 @@ void ShIslandGrid::drawIslands()
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
 
-    glEnable(GL_CULL_FACE);
-    cinder::gl::disableAlphaBlending();
-
-	for(int i = 0; i < NUM_ISLANDS; ++i)
-	{
-		islands[i]->draw();
-	}
-
-    if(deleteSnakeQueue.size() > 0)
+    if(islands)
     {
-        delete deleteSnakeQueue.front();
-        deleteSnakeQueue.pop_front();
+        glEnable(GL_CULL_FACE);
+        cinder::gl::disableAlphaBlending();
+
+        for(int i = 0; i < NUM_ISLANDS; ++i)
+        {
+            islands[i]->draw();
+        }
+
+        if(deleteSnakeQueue.size() > 0)
+        {
+            delete deleteSnakeQueue.front();
+            deleteSnakeQueue.pop_front();
+        }
     }
 }
 
@@ -95,15 +121,18 @@ void ShIslandGrid::drawSnakeRanges(bool drawActive)
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
 
-    glDisable(GL_CULL_FACE);
-
-    cinder::gl::enableAlphaBlending();
-
-    for(int i = 0; i < NUM_ISLANDS; ++i)
+    if(islands)
     {
-        for(int j = 0; j < snakeRangeGrid[i].size(); ++j)
+        glDisable(GL_CULL_FACE);
+
+        cinder::gl::enableAlphaBlending();
+
+        for(int i = 0; i < NUM_ISLANDS; ++i)
         {
-            snakeRangeGrid[i][j]->draw(drawActive);
+            for(int j = 0; j < snakeRangeGrid[i].size(); ++j)
+            {
+                snakeRangeGrid[i][j]->draw(drawActive);
+            }
         }
     }
 }

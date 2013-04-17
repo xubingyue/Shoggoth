@@ -36,6 +36,8 @@ public:
 	ShIslandGrid();
 	~ShIslandGrid();
 	
+    void reset();
+    void cleanup();
     void drawIslands();
     void drawSnakeRanges(bool drawActive);
     void drawSnakeRangeHilight();

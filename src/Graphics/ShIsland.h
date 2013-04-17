@@ -118,6 +118,7 @@ public:
     void setTerrainGen(ShNetwork::algo_pair terrainGen);
     ShNetwork::algo_pair getStepGen();
     void setStepGen(ShNetwork::algo_pair stepGen);
+    void resetCustomData();
 
     //void updateGridColor(x, y); // Updates the grid color for a trianges
     //void updateGridColors(std::vector<int, )

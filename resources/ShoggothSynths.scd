@@ -11,9 +11,10 @@
 
 (
 SynthDef.new("ShoggothMasterOut", {
-	|amp=1.0, preAmp=1.0, in=50, out=0|
+	|amp=1.0, preAmp=4.0, in=50, out=0|
 	var inputSignal, limit;
 	inputSignal = In.ar(in, 2);
+	inputSignal = BLowShelf.ar(inputSignal, 80, 0.3, 6);
 	limit = Limiter.ar(LeakDC.ar(inputSignal * preAmp));
 	Out.ar(0, limit);
 }).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store;
