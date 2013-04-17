@@ -1561,4 +1561,589 @@ SynthDef.new("ElkCloner",{
 }).writeDefFile("/home/octopian/Documents/source/QtDev/Shoggoth-build-desktop/synthdefs").store.add;
 );
 
+/////////////////////////////////////////////////////////
+// Muha.4608
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Muha.4608", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varMuha46088;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varMuha46088 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varMuha46088 = DelayL.ar(y, bufnum, island, modY, Silent.ar());
+varMuha46088 = OSTrunc8.ar(env * signal, amp.ring2(Clip.ar(wave, gateEnv * varMuha46088, signal)));
+
+signal = varMuha46088;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Dialer.Livegirls
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Dialer.Livegirls", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varDialerLivegirls8, varDialerLivegirls9, varDialerLivegirls10;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varDialerLivegirls8 = varDialerLivegirls9 = varDialerLivegirls10 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varDialerLivegirls8 = BFEncode2.ar(modY, amp, modY, gateEnv, modY * varDialerLivegirls10, gateEnv);
+varDialerLivegirls9 = LinXFade2.ar(varDialerLivegirls9 * modX, modY * varDialerLivegirls8, varDialerLivegirls10, 25.837220948356 * modZ * modZ);
+varDialerLivegirls10 = LinCongC.ar(modZ, t_trig, x, varDialerLivegirls9, BAllPass.ar(signal, modZ * varDialerLivegirls10, env * varDialerLivegirls9, modZ, Silent.ar()), 0.91257899675156 * varDialerLivegirls8 * modY, Silent.ar());
+varDialerLivegirls8 = TRand.ar(y, z, wave * env);
+varDialerLivegirls9 = FoaDominateZ.ar(gateEnv * wave, env, signal, Silent.ar());
+varDialerLivegirls10 = FoaProximity.ar(814.20471938145 * signal * varDialerLivegirls10, wave, 0.99998021344838 * modZ * env, Silent.ar());
+
+signal = varDialerLivegirls10;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Marzia.2048.C
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Marzia.2048.C", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varMarzia2048C8;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varMarzia2048C8 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varMarzia2048C8 = APF.ar(gate, varMarzia2048C8 * signal, modX * modY, FMGrainI.ar(gateEnv * varMarzia2048C8, env, Crackle.ar(wave * DC.ar(0.0040748119354248), wave * DC.ar(0.24953091144562), wave * DC.ar(0.73893332481384)).exprange(1, SampleRate.ir), varMarzia2048C8 * signal, gateEnv * varMarzia2048C8, bufnum, bufnum, x, DoubleWell2.ar(wave * DC.ar(0.18203675746918), wave * DC.ar(0.59441447257996), wave * DC.ar(0.21811354160309), wave * DC.ar(0.28706240653992), wave * DC.ar(0.75139713287354), wave * DC.ar(0.95625674724579), wave * DC.ar(0.011800169944763), wave * DC.ar(0.23941135406494), wave * DC.ar(0.041837453842163), wave * DC.ar(0.77965462207794)), ScopeOut.ar(wave * DC.ar(0.64348709583282), wave * DC.ar(0.53317153453827))), Silent.ar());
+varMarzia2048C8 = AudioMSG.ar(gateEnv, modZ * wave.lagud(wave * modX, modZ.div(EnvDetect.ar(wave * DC.ar(0.49490988254547), wave * DC.ar(0.57147443294525), wave * DC.ar(0.94639527797699)))), modX, Silent.ar());
+
+signal = varMarzia2048C8;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Mayhem
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Mayhem", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varMayhem8, varMayhem9, varMayhem10, varMayhem11;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varMayhem8 = varMayhem9 = varMayhem10 = varMayhem11 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varMayhem8 = InRect.ar(env, island, Rect(0, 0, 0.63978576660156, 0.9258199930191));
+varMayhem9 = BPZ2.ar(varMayhem9, SOS.ar(varMayhem9 * varMayhem9, modZ * varMayhem9, varMayhem11 * varMayhem10, gateEnv * env, gateEnv * wave, bufnum, LTI.ar(wave * DC.ar(0.24194228649139), wave * DC.ar(0.95368313789368), wave * DC.ar(0.72494053840637), wave * DC.ar(0.73539423942566), wave * DC.ar(0.24995493888855)), Silent.ar().round(StandardL.ar(wave * DC.ar(0.44233083724976), wave * DC.ar(0.60011005401611), wave * DC.ar(0.18233370780945), wave * DC.ar(0.45098102092743), wave * DC.ar(0.17058289051056), wave * DC.ar(0.52024507522583)))), Silent.ar());
+varMayhem10 = LatoocarfianN.ar(gateEnv, wave, z, varMayhem11 * wave, varMayhem10 * signal, amp, modY * gateEnv, 0.3856787029628 * wave * modX, Silent.ar());
+varMayhem11 = SinTone.ar(env * wave, bufnum, gateEnv, VDiskIn.ar(2, Array.fill(2.pow(10), { |i| rrand(-1, 1) }).as(LocalBuf), Select.ar(varMayhem10 * signal, [HPZ2.ar(wave * DC.ar(0.089601635932922), wave * DC.ar(0.19423377513885), wave * DC.ar(0.79860973358154)), LFDNoise3.ar(wave * DC.ar(0.7325005531311), wave * DC.ar(0.51325440406799), wave * DC.ar(0.5639181137085))]), gateEnv * varMayhem10, 27.286191149202 * wave * varMayhem9));
+varMayhem8 = Duty.ar(107.99712486599 * modZ * signal, varMayhem11 * modY, env * modX, signal * varMayhem8);
+varMayhem9 = VOsc.ar(Array.fill(2.pow(15), { |i| rrand(-1, 1) }).as(LocalBuf), signal, gate, LinCongL.ar(varMayhem8 * env, bufnum, varMayhem11 * varMayhem9, env, modX * modY, 0.98733129457719 * env * modY, Silent.ar()), Silent.ar());
+varMayhem10 = Decimator.ar(t_trig, modY * modX, modY, Henon2DN.ar(signal, modZ * varMayhem11, env, varMayhem10 * modZ, gateEnv, gateEnv * varMayhem10, 0.99998694443798 * gateEnv * varMayhem11, Silent.ar()), Silent.ar());
+varMayhem11 = BufDelayL.ar(Array.fill(2.pow(10), { |i| rrand(-1, 1) }).as(LocalBuf), 216.90468294972 * Rotate2.ar(varMayhem9 * modY, x, z), wave * gateEnv, 0.99978389418176 * gateEnv * signal, Silent.ar());
+
+signal = varMayhem11;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Prot.B.720
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Prot.B.720", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varProtB7208;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varProtB7208 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varProtB7208 = FreeVerb2.ar(t_trig, y, env * modZ, env * modZ, gateEnv * env, 0.99993745871765 * modZ * gateEnv, Silent.ar());
+varProtB7208 = LatoocarfianN.ar(SOS.ar(gateEnv * gateEnv, t_trig, modY * gateEnv, gate, modX * env, modX * signal, 0.99965852883662 * wave * modX, Silent.ar()).exprange(1, SampleRate.ir), modZ * modY, modX * gateEnv, varProtB7208, env * wave, env, gateEnv * env, env, LinPan2.ar(wave, env * gateEnv, modZ));
+
+signal = varProtB7208;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Rideon
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Rideon", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varRideon8;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varRideon8 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varRideon8 = FMGrainI.ar(varRideon8 * signal, 253.38006102823 * signal, MonoGrainBF.ar(env * modY, t_trig, 77.365018075497 * varRideon8, island, gate, modZ * varRideon8, 314.55300488581 * signal * env, modZ * env, signal * modX, 0.99991469481942 * FoaZoomZ.ar(wave * DC.ar(0.42038178443909), wave * DC.ar(0.95616781711578), wave * DC.ar(0.31794142723083), wave * DC.ar(0.5752124786377)), CheckBadValues.ar(wave * DC.ar(0.11356401443481), wave * DC.ar(0.50741410255432), wave * DC.ar(0.93774843215942))).exprange(1, SampleRate.ir), varRideon8 * modX, 1726.1977985877 * varRideon8 * signal, bufnum, bufnum, y, 0.99976418754544 * modZ * modX, Silent.ar());
+varRideon8 = LatoocarfianN.ar(modY * modZ, signal * varRideon8.round(FoaDominateX.ar(env * modX, x, TTendency.ar(wave * DC.ar(0.39479160308838), wave * DC.ar(0.27166271209717), wave * DC.ar(0.67992448806763), wave * DC.ar(0.0610671043396), wave * DC.ar(0.010618448257446), wave * DC.ar(0.16097509860992)), Silent.ar())), wave, wave, env * modY, gateEnv * modY, signal * modX, 0.99955268737334 * modX * gateEnv, FoaPressY.ar(gateEnv * varRideon8, wave * modZ, 0.99942272485509 * modY * gateEnv, Silent.ar()));
+
+signal = varRideon8;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Trivial.ow.106
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Trivial.ow.106", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varTrivialow1068, varTrivialow1069;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varTrivialow1068 = varTrivialow1069 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varTrivialow1068 = BufWr.ar([LinCongL.ar(LFNoise0.ar(wave * DC.ar(0.81017541885376), wave * DC.ar(0.85068881511688), wave * DC.ar(0.50738573074341)).exprange(1, SampleRate.ir), 2181.2217732136 * modX * varTrivialow1068, modZ, 124.70019717011 * varTrivialow1068 * signal, modY * modX, Amplitude.ar(wave * DC.ar(0.821444272995), wave * DC.ar(0.052536249160767), wave * DC.ar(0.31951987743378), wave * DC.ar(0.86133754253387), wave * DC.ar(0.091158032417297)), Silent.ar()), FoaNFC.ar(env, t_trig, wave, Silent.ar())], Array.fill(2.pow(14), { |i| rrand(-1, 1) }).as(LocalBuf), modY * env, modX);
+varTrivialow1069 = BufCombL.ar(Array.fill(2.pow(14), { |i| rrand(-1, 1) }).as(LocalBuf), varTrivialow1068 * env, y, bufnum, env, Silent.ar());
+varTrivialow1068 = WeaklyNonlinear.ar(signal, bufnum, env * modZ, varTrivialow1069, modX, signal * modZ, 275.39907718648 * varTrivialow1068 * env, modZ * modX, env * varTrivialow1069, amp, signal, Standard2DL.ar(SinGrain.ar(wave * DC.ar(0.94473302364349), wave * DC.ar(0.48179364204407), wave * DC.ar(0.32100248336792), wave * DC.ar(0.045841813087463), wave * DC.ar(0.39793705940247)).exprange(1, SampleRate.ir), modX, x, gateEnv * modZ, gateEnv * gateEnv, signal, Silent.ar()), Silent.ar());
+varTrivialow1069 = GravityGrid.ar(modY * varTrivialow1069, signal * modX, island, 50.74047073139 * modZ * modX, Array.fill(2.pow(15), { |i| rrand(-1, 1) }).as(LocalBuf), 0.99473004916937 * env * wave, Silent.ar());
+
+signal = varTrivialow1069;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Vienna.583
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Vienna.583", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varVienna5838, varVienna5839;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varVienna5838 = varVienna5839 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varVienna5838 = InRange.ar(varVienna5839, y, gateEnv);
+varVienna5839 = Formant.ar(gateEnv, modX, env * varVienna5839, 0.99924215827212 * modX * modX, Silent.ar());
+varVienna5838 = OSWrap8.ar(signal * signal, amp, gateEnv * gateEnv);
+varVienna5839 = Convolution3.ar(varVienna5838 * modZ, z, gateEnv * modY, modY * varVienna5839, 0.99173906531849 * varVienna5838 * varVienna5839, Silent.ar());
+
+signal = varVienna5839;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// DEADMAN.548
+/////////////////////////////////////////////////////////
+
+SynthDef.new("DEADMAN.548", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varDEADMAN5488;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varDEADMAN5488 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varDEADMAN5488 = Formant.ar(wave * modX, gateEnv * modX, varDEADMAN5488 * gateEnv, 0.07736498197552 * modX * modX, Silent.ar());
+varDEADMAN5488 = BufGrainBF.ar(wave * gateEnv, env, bufnum, signal, wave * gateEnv, gateEnv * modX, island, varDEADMAN5488, modY * modZ, env * modY, 0.52992719148964 * modY * modX, Silent.ar());
+
+signal = varDEADMAN5488;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// HLLP.83081
+/////////////////////////////////////////////////////////
+
+SynthDef.new("HLLP.83081", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varHLLP83088, varHLLP830819, varHLLP8308110;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varHLLP83088 = varHLLP830819 = varHLLP8308110 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varHLLP83088 = FoaPsychoShelf.ar(modZ, varHLLP83088 * modZ, island, modX, 0.82609114385719 * modZ * modZ, Silent.ar());
+varHLLP83088 = FoaDirectZ.ar(x, modY * modX, ZeroCrossing.ar(0.45728051662445 * modY * varHLLP8308110), Henon2DN.ar(gateEnv * modZ, BLowPass.ar(wave * DC.ar(0.52002286911011), wave * DC.ar(0.29264414310455), wave * DC.ar(0.32239496707916), wave * DC.ar(0.56788206100464), wave * DC.ar(0.0048892498016357)).exprange(1, SampleRate.ir), wave * varHLLP8308110, gate, wave * varHLLP830819, varHLLP8308110 * modY, 0.91592956110661 * gateEnv * modZ, OSFold8.ar(wave * DC.ar(0.1066586971283), wave * DC.ar(0.97044348716736), wave * DC.ar(0.22676432132721))));
+// Variation test code
+varHLLP830819 = Fold.ar(gateEnv * varHLLP83088, varHLLP830819 * gateEnv, modY);
+varHLLP8308110 = LPF.ar(modY * signal, modZ, 0.99910927601823 * Gendy4.ar(varHLLP83088 * DC.ar(0.04048478603363), varHLLP83088 * DC.ar(0.28631186485291), varHLLP83088 * DC.ar(0.060926556587219), varHLLP83088 * DC.ar(0.6011518239975), varHLLP83088 * DC.ar(0.10169899463654), varHLLP83088 * DC.ar(0.38327980041504), varHLLP83088 * DC.ar(0.61779356002808), varHLLP83088 * DC.ar(0.88580250740051), varHLLP83088 * DC.ar(0.55032277107239), varHLLP83088 * DC.ar(0.2176616191864), varHLLP83088 * DC.ar(0.75999510288239), varHLLP83088 * DC.ar(0.73146855831146)), Silent.ar());
+varHLLP830819 = AtsFreq.ar(Array.fill(2.pow(11), { |i| rrand(-1, 1) }).as(LocalBuf), varHLLP83088 * gateEnv.lag3(varHLLP83088 * DC.ar(0.78079807758331), varHLLP83088 * DC.ar(0.16732859611511)), 0.34392714500427 * modY * modY, varHLLP830819, Silent.ar());
+varHLLP8308110 = Pluck.ar(gate, varHLLP83088 * env, SinGrainI.ar(varHLLP830819, gateEnv, modY * modY, bufnum, bufnum, x, 0.99824716766163 * modY * varHLLP830819, Silent.ar()), signal * wave, y, x, 0.97584818895818 * gateEnv * varHLLP8308110, Silent.ar());
+varHLLP830819 = DemandEnvGen.ar(amp, signal * varHLLP8308110, signal * gateEnv, y, gate, env * varHLLP830819, varHLLP83088, varHLLP8308110 * wave, z, z);
+varHLLP8308110 = InRect.ar(t_trig, 0.98728096485138 * wave * varHLLP83088, Rect.new(0, 0, 0.64293074607849, 0.031936645507812));
+
+signal = varHLLP8308110;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// Kysia.3072.a
+/////////////////////////////////////////////////////////
+
+SynthDef.new("Kysia.3072.a", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varKysia3072a8;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varKysia3072a8 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varKysia3072a8 = Slope.ar(env, 0.98842363526342 * wave, Silent.ar());
+varKysia3072a8 = MantissaMask.ar(wave, gateEnv * gateEnv, 0.88402347894039 * modY * signal, Silent.ar());
+
+signal = varKysia3072a8;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// MegaDevil.665
+/////////////////////////////////////////////////////////
+
+SynthDef.new("MegaDevil.665", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varMegaDevil6658;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varMegaDevil6658 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varMegaDevil6658 = FoaDirectO.ar(modY, signal * modX, FoaNFC.ar(modY.ring1(HPF.ar(wave * DC.ar(0.04008162021637), wave * DC.ar(0.47724175453186), wave * DC.ar(0.28542184829712), wave * DC.ar(0.93627369403839))), env * gateEnv, modZ, Silent.ar()), Silent.ar());
+varMegaDevil6658 = Median.ar(gateEnv, wave, env, Silent.ar());
+
+signal = varMegaDevil6658;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// W97M.Thus.BS
+/////////////////////////////////////////////////////////
+
+SynthDef.new("W97M.Thus.BS", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varW97MThusBS8;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varW97MThusBS8 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varW97MThusBS8 = TTendency.ar(wave * signal, signal, 0.9641444683075 * env * wave, modX, env.unipolar(0.99596785745523 * modZ * gateEnv), varW97MThusBS8 * gateEnv);
+varW97MThusBS8 = LFClipNoise.ar(gateEnv * modZ, SinGrain.ar(varW97MThusBS8 * wave, y, env * modY, 0.99156761698389 * env * wave, Silent.ar()), Silent.ar());
+
+signal = varW97MThusBS8;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
+/////////////////////////////////////////////////////////
+// OCX.FinalX
+/////////////////////////////////////////////////////////
+
+SynthDef.new("OCX.FinalX", {
+arg amp=0.25, x=0, y=0, z=0, island=0, gate=1, t_trig=0, bufnum=0;
+var env, signal, modX, modY, modZ, gateEnv, wave, varOCXFinalX8, varOCXFinalX9, varOCXFinalX10;
+
+amp= K2A.ar(amp);
+x= K2A.ar(x);
+y= K2A.ar(y);
+z= K2A.ar(z);
+island= K2A.ar(island);
+gate= K2A.ar(gate);
+t_trig= K2A.ar(t_trig);
+bufnum= K2A.ar(bufnum);
+env = signal = modX = modY = modZ = gateEnv = wave = varOCXFinalX8 = varOCXFinalX9 = varOCXFinalX10 = K2A.ar(t_trig).dup;
+gateEnv = EnvGen.ar(Env.asr(0, 1, 0.001, -4), gate:gate, doneAction:2);
+			modX = K2A.ar(x / 430);
+			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
+			modZ = K2A.ar(z / 430);
+			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+
+			// in = InFeedback.ar(80 + (island * 2), 2);
+			wave = WaveTerrain.ar(
+			    bufnum,
+			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
+			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
+			    72,
+			    72
+			) * env;
+// Generated prototype body code
+varOCXFinalX8 = AmpCompA.ar(varOCXFinalX10, signal * env, y, wave * varOCXFinalX9);
+varOCXFinalX9 = FoaPushX.ar(varOCXFinalX10 * modY, modY * wave, 0.40379584288092 * modX * modZ, Silent.ar());
+varOCXFinalX10 = Demand.ar(varOCXFinalX8 * modZ, gateEnv, gateEnv);
+varOCXFinalX8 = DiskOut.ar(Array.fill(2.pow(16), { |i| rrand(-1, 1) }).as(LocalBuf), [FMHEncode2.ar(amp, modZ * env, modZ * gateEnv, amp, OSFold4.ar(RedPhasor.ar(wave * DC.ar(0.51845216751099), wave * DC.ar(0.30371236801147), wave * DC.ar(0.11925184726715), wave * DC.ar(0.93580293655396), wave * DC.ar(0.9227876663208), wave * DC.ar(0.23851191997528), wave * DC.ar(0.7012779712677)), x, wave * env.linexp(wave * DC.ar(0.42103910446167), wave * DC.ar(0.52195835113525), wave * DC.ar(0.0043148994445801), wave * DC.ar(0.49424684047699), wave * DC.ar(0.49100744724274))), varOCXFinalX9 * modY), RedPhasor2.ar(signal * signal, varOCXFinalX8 * modX, modZ, x.leftShift(LFClipNoise.ar(wave * DC.ar(0.72703289985657), wave * DC.ar(0.33575618267059), wave * DC.ar(0.87109994888306))), gateEnv, varOCXFinalX8 * varOCXFinalX9, signal * modX)]);
+varOCXFinalX9 = Clipper4.ar(0.44191992282867 * modX * modZ, x, t_trig);
+varOCXFinalX10 = GlitchHPF.ar(modZ * modZ, varOCXFinalX10 * modX, InRange.ar(modX, gateEnv * varOCXFinalX8, 0.4704338312149 * modX * modX), Gendy4.ar(signal * varOCXFinalX10, modZ, signal * modZ, XFadeRotate.ar(modY * env, wave * signal), wave * modY, varOCXFinalX9, signal, modX * varOCXFinalX10, varOCXFinalX9, 0.22467410564423 * FoaPressZ.ar(wave * DC.ar(0.8598964214325), wave * DC.ar(0.69316840171814), wave * DC.ar(0.47205579280853), wave * DC.ar(0.33974730968475)), 0.99871082667421 * SoftClipAmp8.ar(wave * DC.ar(0.020733118057251), wave * DC.ar(0.51388156414032), wave * DC.ar(0.56076812744141), wave * DC.ar(0.43646168708801)), Silent.ar()));
+
+signal = varOCXFinalX10;
+signal = SanityCheck2.ar(signal);
+			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));
+}).store;
+
 )
