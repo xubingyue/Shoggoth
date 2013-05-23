@@ -12,10 +12,11 @@ mac {
     QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
 }
 
-linux-g++ {
+linux-g++* {
     TEMPLATE = app
     QT += core gui opengl
     CONFIG += qt
+    QMAKE_CXXFLAGS += -std=c++11
     #CONFIG -= qt
 }
 
@@ -160,7 +161,7 @@ DEPENDPATH += $${CINDER_HOME}/lib \
     #QMAKE_POST_LINK = ShoggothLibScript.sh
 }
 
-linux-g++ {
+linux-g++* {
     DEFINES += __LINUX__
     DEFINES += CINDER_LINUX
     DEFINES += linux
@@ -171,7 +172,7 @@ linux-g++ {
     # DEFINES += PURE_GL_SHADER_SETUP
 
     LIBS += -lpthread
-    LIBS += $${CINDER_HOME}/lib/libcinder.a
+    LIBS += $${CINDER_LIB}/libcinder.a
     #LIBS += $${CINDER_HOME}/scons/libcinder.a
     LIBS += /usr/lib/x86_64-linux-gnu/libz.a
     LIBS += /usr/lib/x86_64-linux-gnu/libpng.a
@@ -202,7 +203,7 @@ mac {
     QMAKE_BUNDLE_DATA += SCSYNTH_DYLIB
 }
 
-linux-g++ {
+linux-g++* {
     #libscsynth.a
     LIBS += $${LIBSCSYNTH}/libscsynth.a
     #PRE_TARGETDEPS += $${LIBSCSYNTH}/libscsynth.a
@@ -240,7 +241,7 @@ mac {
 #PRE_TARGETDEPS += $${JACK}/libjack.a
 }
 
-linux-g++ {
+linux-g++* {
     LIBS += $${JACK}/libjack.so
 }
 # FLAC
@@ -273,6 +274,15 @@ LIBS += $${LIBSCSYNTH}/../../external_libraries/libyaml.a
 
 # Bluetooth
 LIBS += /usr/lib/x86_64-linux-gnu/libbluetooth.a
+
+#rt
+LIBS += -lrt
+
+#dl
+LIBS += -ldl
+
+#xll
+LIBS += -lX11
 
 win32 {
     CONFIG += console
@@ -340,7 +350,7 @@ SOURCES += src/ShSnakePit.cpp \
     oscpack/osc/OscTypes.cpp \
     oscpack/ip/IpEndpointName.cpp \
     oscpack/ip/posix/UdpSocket.cpp \
-    oscpack/ip/posix/NetworkingUtils.cpp
+    oscpack/ip/posix/NetworkingUtils.cpp \
 
 
 HEADERS += oscpack/osc/OscException.h \
@@ -418,6 +428,7 @@ HEADERS += oscpack/osc/OscException.h \
     # libraries/jsoncpp/include/json/jsonvalue.h \
     # libraries/jsoncpp/include/json/jsonwriter.h \
     # libraries/jsoncpp/include/json/jsonreader.h
+    oscpack/osc/MessageMappingOscPacketListener.h
 
 RESOURCES += \
 

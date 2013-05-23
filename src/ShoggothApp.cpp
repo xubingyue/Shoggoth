@@ -239,6 +239,9 @@ void ShoggothApp::prepareSettings(Settings *settings)
 {
     float screenX = getDisplay().getWidth();
     float screenY = getDisplay().getHeight();
+    // screenX = 1920;
+    // screenY = 1080;
+    // settings->setWindowSize(screenX, screenY);
     // settings->setWindowSize(800, 800);
     mScreenCenter = Vec2f(screenX / 2, screenY / 2);
 

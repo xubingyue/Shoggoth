@@ -27,6 +27,7 @@ VORBIS = /usr/lib/x86_64-linux-gnu
 # Point to your cinder folder so that we know where everything is
 #CINDER_HOME = /Users/curtismckinney/Documents/Cinder/cinder_0.8.3_mac
 CINDER_HOME = /home/octopian/Documents/source/libraries/Cinder
+CINDER_LIB = /home/octopian/Documents/source/libraries/Cinder/Qt/CinderQt4-build
 ############################################################################################################################
 
 
