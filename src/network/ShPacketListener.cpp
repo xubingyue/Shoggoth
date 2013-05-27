@@ -63,11 +63,13 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
 
                 else if(strcmp(objectSubType, "Avatars") == 0)
                 {
+                    /*
                     int x = (arg++)->AsFloat();
                     int y = (arg++)->AsFloat();
                     int z = (arg++)->AsFloat();
 
-                    ShNetwork::receiveAddAvatar(objectName, x, y, z);
+                    ShNetwork::receiveAddAvatar(objectName, x, y, z);*/
+                    ShNetwork::receiveAddAvatar(objectName, (arg++)->AsInt32());
                 }
 
                 else if(strcmp(objectSubType, "ShGlobal") == 0)
@@ -132,7 +134,8 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
 
                 if(strcmp(objectSubType, "Avatars") == 0)
                 {
-                    float val = (arg++)->AsFloat();
+                    // float val = (arg++)->AsFloat();
+                    int val = (arg++)->AsInt32();
                     ShNetwork::receiveMoveAvatar(objectName, argNum, val);
                 }
 

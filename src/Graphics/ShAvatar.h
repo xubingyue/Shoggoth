@@ -77,10 +77,13 @@ public:
     std::string mUserName;
     bool nameTextureGenerated;
 
+    static const unsigned int NUM_SEGMENTS;
+
 private:
 
     void createNameTexture();
 
+    std::deque<cinder::Vec3f> mPositions;
     cinder::Vec3f mPos, mCubeSize;
     cinder::Vec4f mRotHolder;
     cinder::gl::Texture nameTexture;

@@ -50,17 +50,22 @@ void sendLogout()
 
 void sendMoveAvatar(cinder::Vec3f pos)
 {
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 0, pos.x, 1);
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 1, pos.y, 1);
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 2, pos.z, 1);
+    std::cout << "SEND MOVE AVATAR: " << pos << std::endl;
+    pos /= 4;
+    pos += cinder::Vec3i(512, 512, 512);
+    sendCthulhuSetIntArg(ShGlobals::USER_NAME.c_str(), 0, compressVec3(pos), 0);
+    // receiveMoveAvatar(ShGlobals::USER_NAME.c_str(), compressVec3(pos));
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 0, pos.x, 1);
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 1, pos.y, 1);
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 2, pos.z, 1);
 }
 
 void sendRotateAvatar(cinder::Quatf rot)
 {
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 3, rot.v.x, 1);
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 4, rot.v.y, 1);
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 5, rot.v.z, 1);
-    // sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 6, rot.w, 1);
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 3, rot.v.x, 1);
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 4, rot.v.y, 1);
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 5, rot.v.z, 1);
+    //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 6, rot.w, 1);
 }
 
 void sendSetRandomSeed()
@@ -398,20 +403,35 @@ void receiveRemovePeer(std::string userName)
 void receiveUserNameReply(std::string userName)
 {
     ShGlobals::USER_NAME = userName;
+
+    /*
     std::vector<float> dimensions;
 
     for(int i = 0; i < 7; ++i)
     {
         dimensions.push_back(0);
-    }
+    }*/
 
-    // sendCthulhuAddObject(ShGlobals::USER_NAME.c_str(), "Avatars", dimensions);
+    std::cout << "USER NAME: " << userName << std::endl;
+    sendCthulhuAddObject(ShGlobals::USER_NAME.c_str(), "Avatars", 0);
 }
 
 void receiveAddAvatar(const char* avatar, float x, float y, float z)
 {
     if(!ShAvatar::avatarMap.contains(avatar))
         ShAvatar::avatarMap.add(avatar, cinder::Vec3f(x, y, z));
+}
+
+void receiveAddAvatar(const char* avatar, int compressedPos)
+{
+    if(!ShAvatar::avatarMap.contains(avatar))
+    {
+        std::cout << "ADD AVATAR: " << avatar << std::endl;
+        cinder::Vec3i pos = decompressVec3(compressedPos);
+        pos -= cinder::Vec3i(512, 512, 512);
+        pos *= 4;
+        ShAvatar::avatarMap.add(avatar, pos);
+    }
 }
 
 void receiveMoveAvatar(const char* avatar, int dimensionIndex, float val)
@@ -449,6 +469,16 @@ void receiveMoveAvatar(const char* avatar, int dimensionIndex, float val)
             break;
         }
     }
+}
+
+void receiveMoveAvatar(const char* avatar, int compressedPos)
+{
+    cinder::Vec3i pos = decompressVec3(compressedPos);
+    pos -= cinder::Vec3i(512, 512, 512);
+    pos *= 4;
+    // std::cout << "Move Avatar" << pos << std::endl;
+
+    ShAvatar::avatarMap.move(avatar, pos);
 }
 
 void receiveRemoveAvatar(const char* avatar)

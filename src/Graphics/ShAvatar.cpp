@@ -10,6 +10,7 @@
 
 using namespace cinder;
 using namespace gl;
+bool redOn = false;
 
 ///////////////
 // ShAvatarMap
@@ -178,6 +179,8 @@ Material ShAvatar::material = Material(
             cinder::Color(20, 20, 20)
 );
 
+const unsigned int ShAvatar::NUM_SEGMENTS = 12;
+
 void ShAvatar::createMesh()
 {
     std::vector<cinder::Vec3f> positions;
@@ -268,12 +271,23 @@ ShAvatar::ShAvatar(std::string userName, cinder::Vec3f pos, int id) :
 {
     mCubeSize = cinder::Vec3f(25, 25, 25);
     nameTextureGenerated = false;
+
+    for(unsigned int i = 0; i < ShAvatar::NUM_SEGMENTS; ++i)
+    {
+        mPositions.push_back(cinder::Vec3f::zero());
+    }
 }
 
 void ShAvatar::setPos(cinder::Vec3f pos)
 {
     boost::shared_lock<boost::shared_mutex> lock(mMutex);
     mPos = pos;
+
+    if(pos != mPositions.back())
+    {
+        mPositions.pop_front();
+        mPositions.push_back(pos);
+    }
 }
 
 void ShAvatar::setPosX(float x)
@@ -335,11 +349,60 @@ void ShAvatar::update()
 void ShAvatar::draw()
 {
     boost::shared_lock<boost::shared_mutex> lock(mMutex);
-    glPushMatrix();
 
-    cinder::gl::translate(mPos);
-    cinder::gl::rotate(mRot);
-    cinder::gl::draw(ShAvatar::mesh);
+    /*
+    float random = rand() % RAND_MAX / (float) RAND_MAX;
+
+    if(random < 0.5)
+        glColor3f(0, 0, 0);
+    else
+        glColor3f(1, 0, 0);
+
+    unsigned int index =  0;*/
+    glBegin(GL_TRIANGLE_STRIP);
+
+    std::deque<cinder::Vec3f>::iterator iter = mPositions.begin();
+    while(iter != mPositions.end())
+    {
+        if(redOn)
+            glColor3f(1, 0, 0);
+        else
+            glColor3f(0, 0, 0);
+
+        glVertex3f(iter->x, iter->y, iter->z);
+        ++iter;
+        //++index;
+    }
+
+    redOn = !redOn;
+
+    // glEnd();
+
+    // glBegin(GL_TRIANGLE_FAN);
+
+    /*
+    for(unsigned int i = 0; i < 9; ++i)
+    {
+        cinder::Vec3i randomPos = cinder::Vec3i(
+                    (rand() % RAND_MAX / (float) RAND_MAX) * 10 - 5,
+                    (rand() % RAND_MAX / (float) RAND_MAX) * 10 - 5,
+                    (rand() % RAND_MAX / (float) RAND_MAX) * 10 - 5
+        );
+
+        // cinder::Vec3f randomSegment = mPositions.at((rand() % 3) + (NUM_SEGMENTS - 3));
+        glColor3f(random, 0, 0);
+        glVertex3f(mPositions.at(NUM_SEGMENTS - 2).x + randomPos.x, mPositions.at(NUM_SEGMENTS - 2).y + randomPos.y, mPositions.at(NUM_SEGMENTS - 2).z + randomPos.z);
+        // glVertex3f(randomSegment.x, randomSegment.y, randomSegment.z);
+        // glVertex3f(mPositions.back().x + randomPos.x, mPositions.back().y, mPositions.back().z);
+    }*/
+
+    glEnd();
+
+    // glPushMatrix();
+
+    // cinder::gl::translate(mPos);
+    // cinder::gl::rotate(mRot);
+    // cinder::gl::draw(ShAvatar::mesh);
 
     /*
     cinder::gl::Light light(cinder::gl::Light::POINT, 1 + mID);
@@ -348,7 +411,7 @@ void ShAvatar::draw()
     light.setSpecular(cinder::Color::white());
     light.setPosition(cinder::Vec3f::zero());*/
 
-    glPopMatrix();
+    // glPopMatrix();
 }
 
 void ShAvatar::drawName()

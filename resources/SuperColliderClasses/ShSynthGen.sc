@@ -120,6 +120,7 @@ ShSynthGen {
 	*setup { arg argNumPrototypes, argNumPrototypeVariations, argFilePath, argTemplate, argPrototypeStrategy, argVariationStrategy;
 
 		"ShSynthGen.setup".postln;
+
 		ShSynthGen.numPrototypes = argNumPrototypes;
 		ShSynthGen.numPrototypeVariations = argNumPrototypeVariations;
 		ShSynthGen.filePath = argFilePath ? "";
@@ -801,12 +802,12 @@ Shoggoth {
 
 					newVariables.do {
 						arg variable, i;
-						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 4) ++ ";\n";
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 3.rand + 1) ++ ";\n";
 					};
 
 					newVariables.do {
 						arg variable, i;
-						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 4) ++ ";\n";
+						code = code ++ variable ++ " = " ++ ShSynthGen.generateUGenCode(inputs, variables, arguments, 4.rand) ++ ";\n";
 					};
 
 					outputs = newVariables;
@@ -872,6 +873,7 @@ Shoggoth {
 
 		nameGenFunc = {
 			var name = Shoggoth.nameSet.choose[0].asString;
+			name = name ++ Date.getDate.secStamp;
 			name.postln;
 			name;
 		};
@@ -880,7 +882,7 @@ Shoggoth {
 		template = ShSynthTemplate.new(nameGenFunc);
 
 		template.addArguments(["amp=0.25", "x=0", "y=0", "z=0", "island=0", "gate=1", "t_trig=0", "bufnum=0"]);
-		template.addVariables(["env", "signal", "modX", "modY", "modZ", "gateEnv", "wave"]);
+		template.addVariables(["env", "signal", "modX", "modY", "modZ", "gateEnv", "wave", "in"]);
 
 		middleMacro = ShSynthMacro.new({
 			arg inputs, variables, arguments;
@@ -890,16 +892,20 @@ Shoggoth {
 			modX = K2A.ar(x / 430);
 			modY = K2A.ar(y.linlin(-200, 200, 0, 0.999));
 			modZ = K2A.ar(z / 430);
-			env = EnvGen.ar(Env.new([0, 1, 0],[0.0001, 0.05], -4), gate:t_trig, doneAction:0);
+			env = EnvGen.ar(Env.new([0, 1, 0],[ExpRand(0.00001, 0.1), ExpRand(0.05, 0.25)], -4), gate:t_trig, doneAction:0);
 
-			// in = InFeedback.ar(80 + (island * 2), 2);
+			in = InFeedback.ar(80 + (island * 2), 2);
 			wave = WaveTerrain.ar(
 			    bufnum,
 			    env.linlin(0, 1, [modX * 72, modZ * 72], modY * 72),
 			    env.linlin(0, 1, [modZ * 72, modX * 72], modY * 72),
 			    72,
 			    72
-			) * env;\n";
+			);
+
+			wave = in + wave * env;
+
+			\n";
 
 			outputs = ["wave"];
 
@@ -917,7 +923,10 @@ Shoggoth {
 			});
 
 			code = code ++ "\nsignal = SanityCheck2.ar(signal);
-			Out.ar(50, Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001));\n";
+			signal = Limiter.ar(LeakDC.ar(signal) * amp * gateEnv, 1, 0.001);
+			Out.ar(50, signal);
+			Out.ar(80 + (island * 2), signal * Rand(0.1, 1));
+			\n";
 
 			outputs = "signal";
 
@@ -930,7 +939,6 @@ Shoggoth {
 		template.push(endMacro);
 
 		"Done setting up Shoggoth.generateSynths. Generating now...".postln;
-
 
 		ShSynthGen.generate(200, 1, workingDirectory, template, prototypeStrategy, variationStrategy);
 	}

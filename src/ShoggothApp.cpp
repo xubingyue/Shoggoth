@@ -87,7 +87,8 @@ public:
         mRecording(false), mPickedTri(0), mSelectedIsland(0), mCurrentSelectedStepValue(1),mRootTimeStream(0),
         timeStreamScheduler(0), timeStreamTimer(0, boost::chrono::milliseconds(100)), timeStreamDisplay(0),
         editSnakeRange(false), moveSnakeRange(false), synthMenu(0), editMode(IslandPicking), currentSynthName("ShoggothBassDrum"),
-        cursorPosition(0, 0), terrainSynths(0), masterOut(0), light(gl::Light(gl::Light::SPOTLIGHT, 0)), drawTriangleIDs(false) {}
+        cursorPosition(0, 0), terrainSynths(0), masterOut(0), light(gl::Light(gl::Light::SPOTLIGHT, 0)), drawTriangleIDs(false),
+        avatarRotateCounter(0), avatarMoveCounter(0) {}
     // gameOfLife(200, 120)
     // flock(0)
 
@@ -175,6 +176,7 @@ public:
     cinder::Vec2i cursorPosition;
     TimeQuakeDisplay timeQuakeDisplay;
     bool drawTriangleIDs;
+    int avatarRotateCounter, avatarMoveCounter;
 };
 
 ShoggothApp::~ShoggothApp()
@@ -1032,8 +1034,22 @@ void ShoggothApp::mouseMove(MouseEvent event)
 #endif
         mMouseMove = true;
         //CFRelease(evsrc);
+
+        /*
         if(ShNetwork::ONLINE)
-            ShNetwork::sendRotateAvatar(mCamera.getCam().getOrientation());
+        {
+            if(avatarRotateCounter >= 5)
+            {
+                ShNetwork::sendRotateAvatar(mCamera.getCam().getOrientation());
+                avatarRotateCounter = 0;
+            }
+
+            else
+            {
+                ++avatarRotateCounter;
+            }
+
+        }*/
     }
 
     // mData.queueMouseMoveStore(event.getPos());
@@ -1052,8 +1068,18 @@ void ShoggothApp::update()
         Vec3f cameraPos = mCamera.getEye();
 
         if(ShNetwork::ONLINE)
-            ShNetwork::sendMoveAvatar(cameraPos);
+        {
+            if(avatarMoveCounter >= 10)
+            {
+                ShNetwork::sendMoveAvatar(cameraPos);
+                avatarMoveCounter = 0;
+            }
 
+            else
+            {
+                ++avatarMoveCounter;
+            }
+        }
     }
 
     if(qDown || eDown)

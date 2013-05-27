@@ -206,9 +206,11 @@ namespace ShNetwork {
 
     /** create a new avatar instance */
     void receiveAddAvatar(const char* avatar, float x, float y, float z);
+    void receiveAddAvatar(const char* avatar, int compressedPos);
 
     /** move the avatar */
     void receiveMoveAvatar(const char* avatar, int dimensionIndex, float val);
+    void receiveMoveAvatar(const char* avatar, int compressedPos);
 
     /** remove the avatar */
     void receiveRemoveAvatar(const char* avatar);
