@@ -55,6 +55,7 @@ void sendMoveAvatar(cinder::Vec3f pos)
     pos += cinder::Vec3i(512, 512, 512);
     sendCthulhuSetIntArg(ShGlobals::USER_NAME.c_str(), 0, compressVec3(pos), 0);
     // receiveMoveAvatar(ShGlobals::USER_NAME.c_str(), compressVec3(pos));
+
     //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 0, pos.x, 1);
     //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 1, pos.y, 1);
     //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 2, pos.z, 1);

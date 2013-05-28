@@ -134,6 +134,7 @@ void ShAvatarMap::draw()
     {
         if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
             iter->second->draw();
+
         ++iter;
     }
 }
@@ -172,11 +173,11 @@ void ShAvatarMap::clear()
 ShAvatarMap ShAvatar::avatarMap;
 cinder::gl::VboMesh ShAvatar::mesh;
 Material ShAvatar::material = Material(
-            cinder::Color(0.95, 0.95, 0.95),
-            cinder::Color(0.95, 0.95, 0.95),
-            cinder::Color(0.95, 0.95, 0.95),
-            20.0f,
-            cinder::Color(20, 20, 20)
+            cinder::Color(1, 1, 1),
+            cinder::Color(1, 1, 1),
+            cinder::Color(1, 1, 1),
+            60.0f,
+            cinder::Color(60, 60, 60)
 );
 
 const unsigned int ShAvatar::NUM_SEGMENTS = 12;
