@@ -132,7 +132,7 @@ void ShAvatarMap::draw()
 
     while(iter != mAvatarMap.end())
     {
-        if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
+        // if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
             iter->second->draw();
 
         ++iter;
@@ -146,7 +146,7 @@ void ShAvatarMap::drawName()
 
     while(iter != mAvatarMap.end())
     {
-        if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
+        // if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
             iter->second->drawName();
         ++iter;
     }

@@ -264,6 +264,7 @@ snake_range_id_t ShIslandGrid::addShSnakeRange(int islandID, string synthName, V
             selectedSnakeRange = snakeID.second;
             ++snakeRangeIDCounter;
 
+            /*
             if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -277,7 +278,7 @@ snake_range_id_t ShIslandGrid::addShSnakeRange(int islandID, string synthName, V
                                 ShGlobals::TIME_STREAM_TIMER->getTime()
                             )
                 );
-            }
+            }*/
 
             return snakeID;
         }
@@ -318,6 +319,7 @@ void ShIslandGrid::addShSnakeRange(snake_range_id_t snakeID, std::string synthNa
             selectedSnakeRange = snakeID.second;
             ++snakeRangeIDCounter;
 
+            /*
             if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -331,7 +333,7 @@ void ShIslandGrid::addShSnakeRange(snake_range_id_t snakeID, std::string synthNa
                                 ShGlobals::TIME_STREAM_TIMER->getTime()
                             )
                 );
-            }
+            }*/
         }
     }
 }
@@ -364,6 +366,7 @@ void ShIslandGrid::removeSnakeRange(snake_range_id_t snakeID, bool addTimeEvent,
                 }
             }
 
+            /*
             if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -377,7 +380,7 @@ void ShIslandGrid::removeSnakeRange(snake_range_id_t snakeID, bool addTimeEvent,
                                 ShGlobals::TIME_STREAM_TIMER->getTime()
                             )
                 );
-            }
+            }*/
 
             queueDeleteSnakeRange(snakeRange);
         }
@@ -431,6 +434,7 @@ void ShIslandGrid::setSnakeRangePosition(snake_range_id_t snakeID, cinder::Vec2i
         {
             snakeRange->move(corner, (!addTimeEvent) || ShNetwork::ONLINE);
 
+            /*
             if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -441,7 +445,7 @@ void ShIslandGrid::setSnakeRangePosition(snake_range_id_t snakeID, cinder::Vec2i
                                 ShGlobals::TIME_STREAM_TIMER->getTime()
                             )
                 );
-            }
+            }*/
         }
     }
 }
@@ -465,6 +469,7 @@ void ShIslandGrid::setSnakeRangeCorner(snake_range_id_t snakeID, cinder::Vec2i c
             cinder::Vec2i previousCorner = snakeRange->getCorner2();
             snakeRange->setCorner2(corner, (!addTimeEvent) || ShNetwork::ONLINE);
 
+            /*
             if(false)
             {
                 ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -475,7 +480,7 @@ void ShIslandGrid::setSnakeRangeCorner(snake_range_id_t snakeID, cinder::Vec2i c
                                 ShGlobals::TIME_STREAM_TIMER->getTime()
                             )
                 );
-            }
+            }*/
         }
     }
 }
@@ -613,6 +618,7 @@ void ShIslandGrid::emptySteps(int id, bool addTimeEvent) // Turn off all the ste
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -622,7 +628,7 @@ void ShIslandGrid::emptySteps(int id, bool addTimeEvent) // Turn off all the ste
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -677,6 +683,7 @@ void ShIslandGrid::diamondSquareSteps(int id, unsigned char seed, bool addTimeEv
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -686,7 +693,7 @@ void ShIslandGrid::diamondSquareSteps(int id, unsigned char seed, bool addTimeEv
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -741,6 +748,7 @@ void ShIslandGrid::wolframCASteps(int id, unsigned char ruleSet, bool addTimeEve
         delete ca;
         islands[id]->setStepGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -750,7 +758,7 @@ void ShIslandGrid::wolframCASteps(int id, unsigned char ruleSet, bool addTimeEve
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -816,6 +824,7 @@ void ShIslandGrid::strangeSteps(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -825,7 +834,7 @@ void ShIslandGrid::strangeSteps(int id, unsigned char seed, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1035,6 +1044,7 @@ void ShIslandGrid::lSystemSteps(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1044,7 +1054,7 @@ void ShIslandGrid::lSystemSteps(int id, unsigned char seed, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1128,6 +1138,7 @@ void ShIslandGrid::flockingSteps(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setScheduleBufferColors(true);
         islands[id]->setStepGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1137,7 +1148,7 @@ void ShIslandGrid::flockingSteps(int id, unsigned char seed, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1202,6 +1213,7 @@ void ShIslandGrid::emptyHeights(int id, bool addTimeEvent)
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1211,7 +1223,7 @@ void ShIslandGrid::emptyHeights(int id, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1253,6 +1265,7 @@ void ShIslandGrid::diamondSquareHeights(int id, unsigned char seed, bool addTime
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1262,7 +1275,7 @@ void ShIslandGrid::diamondSquareHeights(int id, unsigned char seed, bool addTime
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1334,6 +1347,7 @@ void ShIslandGrid::wolframHeights(int id, unsigned char seed, bool addTimeEvent)
         islands[id]->setTerrainGen(newGen);
         delete ca;
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1343,7 +1357,7 @@ void ShIslandGrid::wolframHeights(int id, unsigned char seed, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1423,6 +1437,7 @@ void ShIslandGrid::strangeHeights(int id, unsigned char seed, bool addTimeEvent)
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1432,7 +1447,7 @@ void ShIslandGrid::strangeHeights(int id, unsigned char seed, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1640,6 +1655,7 @@ void ShIslandGrid::lSystemHeights(int id, unsigned char seed, bool addTimeEvent)
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1649,7 +1665,7 @@ void ShIslandGrid::lSystemHeights(int id, unsigned char seed, bool addTimeEvent)
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 
@@ -1747,6 +1763,7 @@ void ShIslandGrid::flockingHeights(int id, unsigned char seed, bool addTimeEvent
         createIslandAnimation(id, heightMap, minHeight, maxHeight);
         islands[id]->setTerrainGen(newGen);
 
+        /*
         if(false)
         {
             ShGlobals::TIME_STREAM_SCHEDULER->addTimeEvent(
@@ -1756,7 +1773,7 @@ void ShIslandGrid::flockingHeights(int id, unsigned char seed, bool addTimeEvent
                             ShGlobals::TIME_STREAM_TIMER->getTime()
                         )
             );
-        }
+        }*/
     }
 }
 

@@ -1069,7 +1069,7 @@ void ShoggothApp::update()
 
         if(ShNetwork::ONLINE)
         {
-            if(avatarMoveCounter >= 10)
+            if(avatarMoveCounter >= 3)
             {
                 ShNetwork::sendMoveAvatar(cameraPos);
                 avatarMoveCounter = 0;
@@ -1084,8 +1084,8 @@ void ShoggothApp::update()
 
     if(qDown || eDown)
     {
-        if(ShNetwork::ONLINE)
-            ShNetwork::sendRotateAvatar(mCamera.getCam().getOrientation());
+        // if(ShNetwork::ONLINE)
+        //    ShNetwork::sendRotateAvatar(mCamera.getCam().getOrientation());
     }
 
     if(mPickMode)
@@ -1192,8 +1192,8 @@ void ShoggothApp::renderScene()
     if(editMode == SnakePicking)
         islands.drawSnakeRangeHilight();
 
-    if(ShNetwork::ONLINE)
-        ShAvatar::avatarMap.draw();
+    // if(ShNetwork::ONLINE)
+    //    ShAvatar::avatarMap.draw();
 
     stepMaterial.apply();
 
