@@ -5,7 +5,7 @@
 
 
 namespace script {
-
+/*
 //////////////////
 // Namespace Vars
 //////////////////
@@ -31,26 +31,26 @@ bool interpret(const char *luaCode)
 
 void loadScriptLibrary()
 {
-    /* FIGURE OUT NEW WAY TO GET SCRIPTS FROM FILE
-    StringVectorPtr names = ResourceGroupManager::getSingleton().listResourceNames("DefaultLuaScripts");
-    for(int i = 0; i < names->size(); ++i)
-    {
-        loadScript(names->at(i));
-    }
-    names.setNull();*/
+    // FIGURE OUT NEW WAY TO GET SCRIPTS FROM FILE
+    // StringVectorPtr names = ResourceGroupManager::getSingleton().listResourceNames("DefaultLuaScripts");
+    // for(int i = 0; i < names->size(); ++i)
+    // {
+    //    loadScript(names->at(i));
+    // }
+    // names.setNull();
 }
 
 void loadScript(std::string fileName)
 {
-    /* FIGURE OUT NEW WAY TO GET SCRIPTS FROM FILE
-    DataStreamPtr pStream = ResourceGroupManager::getSingleton().openResource(
-                fileName,
-                "LuaScripts");
+    // FIGURE OUT NEW WAY TO GET SCRIPTS FROM FILE
+    // DataStreamPtr pStream = ResourceGroupManager::getSingleton().openResource(
+    //            fileName,
+    //            "LuaScripts");
 
-    String data = pStream.getPointer()->getAsString();
-    interpret(data.c_str());
-    pStream.getPointer()->close();
-    pStream.setNull();*/
+    // String data = pStream.getPointer()->getAsString();
+    // interpret(data.c_str());
+    // pStream.getPointer()->close();
+    // pStream.setNull();
 }
 
 lua_State* luaState()
@@ -62,5 +62,5 @@ void setPrintCallback(SLB::ShoggothScript::PrintCallback printCallback)
 {
     interpreter.setPrintCallback(printCallback);
 }
-
+*/
 } // script namespace

@@ -20,7 +20,7 @@ LuaFunctor::~LuaFunctor()
 {
     if(notEmpty)
     {
-        luaL_unref(script::luaState(), LUA_REGISTRYINDEX, functionKey);
+        // luaL_unref(script::luaState(), LUA_REGISTRYINDEX, functionKey);
     }
 }
 
@@ -31,6 +31,7 @@ void LuaFunctor::operator()()
 
 void LuaFunctor::call()
 {
+    /*
     if(notEmpty)
     {
         lua_rawgeti(script::luaState(), LUA_REGISTRYINDEX, functionKey); // Push the function on to the stack
@@ -41,7 +42,7 @@ void LuaFunctor::call()
         {
             std::cout << "Lua functor error: " << errorNum << std::endl;
         }
-    }
+    }*/
 }
 
 int LuaFunctor::pushArguments() // Overload this from child if you need arguments for your function, return the number of arguments

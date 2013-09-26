@@ -63,6 +63,15 @@ void sendMoveAvatar(cinder::Vec3f pos)
 
 void sendRotateAvatar(cinder::Quatf rot)
 {
+    // std::cout << "Send Rotation(" << rot.v.x << ", " << rot.v.y << ", " << rot.v.z << ", " << rot.w << ")" << std::endl;
+    // std::cout << "Rotation(" << rot.v.x << ", " << rot.v.y << ", " << rot.v.z << ", " << rot.w << ")" << std::endl;
+
+    rot.v *= cinder::Vec3f(127.5, 127.5, 127.5);
+    rot.w *= 127.5;
+    rot.v += cinder::Vec3f(127.5, 127.5, 127.5);
+    rot.w += 127.5;
+
+    sendCthulhuSetIntArg(ShGlobals::USER_NAME.c_str(), 1, compressVec4(cinder::Vec4i(rot.v.x, rot.v.y, rot.v.z, rot.w)), 0);
     //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 3, rot.v.x, 1);
     //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 4, rot.v.y, 1);
     //sendCthulhuSetArg(ShGlobals::USER_NAME.c_str(), 5, rot.v.z, 1);
@@ -414,7 +423,10 @@ void receiveUserNameReply(std::string userName)
     }*/
 
     std::cout << "USER NAME: " << userName << std::endl;
-    sendCthulhuAddObject(ShGlobals::USER_NAME.c_str(), "Avatars", 0);
+    std::vector<int> arguments;
+    arguments.push_back(0); // Position
+    // arguments.push_back(0); // Rotation
+    sendCthulhuAddObject(ShGlobals::USER_NAME.c_str(), "Avatars", arguments);
 }
 
 void receiveAddAvatar(const char* avatar, float x, float y, float z)
@@ -480,6 +492,21 @@ void receiveMoveAvatar(const char* avatar, int compressedPos)
     // std::cout << "Move Avatar" << pos << std::endl;
 
     ShAvatar::avatarMap.move(avatar, pos);
+}
+
+void receiveRotateAvatar(const char* avatar, int compressedRot)
+{
+    cinder::Vec4i intRot = decompressVec4(compressedRot);
+    cinder::Quatf rot = cinder::Quatf(intRot.w, intRot.x, intRot.y, intRot.z);
+
+    rot.v -= cinder::Vec3f(127.5, 127.5, 127.5);
+    rot.w -= 127.5;
+
+    rot.v /= cinder::Vec3f(127.5, 127.5, 127.5);
+    rot.w /= 127.5;
+
+    std::cout << "Receive Rotation(" << rot.v.x << ", " << rot.v.y << ", " << rot.v.z << ", " << rot.w << ")" << std::endl;
+    ShAvatar::avatarMap.rotate(avatar, rot);
 }
 
 void receiveRemoveAvatar(const char* avatar)

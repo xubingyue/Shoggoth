@@ -211,6 +211,7 @@ namespace ShNetwork {
     /** move the avatar */
     void receiveMoveAvatar(const char* avatar, int dimensionIndex, float val);
     void receiveMoveAvatar(const char* avatar, int compressedPos);
+    void receiveRotateAvatar(const char* avatar, int compressedRot);
 
     /** remove the avatar */
     void receiveRemoveAvatar(const char* avatar);

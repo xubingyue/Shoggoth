@@ -420,7 +420,7 @@ void ShoggothApp::setup()
 
     luaConsole.updatePosition();
     ShGlobals::LUA_CONSOLE = &luaConsole;
-    script::initialize();
+    // script::initialize();
     ShGlobals::TIME_QUAKE_DISPLAY = &timeQuakeDisplay;
     mOscClient.start();
     mSequencer.play();
@@ -1038,7 +1038,7 @@ void ShoggothApp::mouseMove(MouseEvent event)
         /*
         if(ShNetwork::ONLINE)
         {
-            if(avatarRotateCounter >= 5)
+            if(avatarRotateCounter >= 200)
             {
                 ShNetwork::sendRotateAvatar(mCamera.getCam().getOrientation());
                 avatarRotateCounter = 0;
@@ -1069,6 +1069,8 @@ void ShoggothApp::update()
 
         if(ShNetwork::ONLINE)
         {
+            ShNetwork::sendMoveAvatar(cameraPos);
+            /*
             if(avatarMoveCounter >= 3)
             {
                 ShNetwork::sendMoveAvatar(cameraPos);
@@ -1078,7 +1080,7 @@ void ShoggothApp::update()
             else
             {
                 ++avatarMoveCounter;
-            }
+            }*/
         }
     }
 
@@ -1172,6 +1174,12 @@ void ShoggothApp::renderPicking()
 
 void ShoggothApp::renderScene()
 {
+    // ShShaders::bindWireframe();
+
+
+
+    // ShShaders::unbindWireframe();
+
     ShShaders::bindPhong();
     ShIsland::material.apply();
 
@@ -1182,6 +1190,9 @@ void ShoggothApp::renderScene()
 
     renderIslands();
 
+    if(ShNetwork::ONLINE)
+        ShAvatar::avatarMap.draw();
+
     if(ShGlobals::DRAW_WIREFRAMES)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -1191,9 +1202,6 @@ void ShoggothApp::renderScene()
 
     if(editMode == SnakePicking)
         islands.drawSnakeRangeHilight();
-
-    // if(ShNetwork::ONLINE)
-    //    ShAvatar::avatarMap.draw();
 
     stepMaterial.apply();
 

@@ -125,7 +125,7 @@ void LuaConsole::finishEditEntry()
 {
     boost::shared_lock<boost::shared_mutex> lock(consoleMutex);
     addMessage(consoleEntry);
-    script::interpret(consoleEntry.c_str());
+    // script::interpret(consoleEntry.c_str());
     setEditEntry(false);
 }
 
@@ -149,8 +149,9 @@ void LuaConsole::resetConsoleEntry()
 
 void LuaConsole::updatePosition()
 {
+    /*
     position = cinder::Vec2i(
                 ShGlobals::SCREEN_SIZE.x - (ShGlobals::SCREEN_SIZE.y / 2),
                 ShGlobals::SCREEN_SIZE.y - ((ShGlobals::SCREEN_SIZE.y / 2.0) * (2.0 / 3.0)) - 50
-    );
+    );*/
 }

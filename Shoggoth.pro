@@ -439,7 +439,9 @@ OTHER_FILES += \
     shaders/picking_frag.glsl \
     shaders/phong_vert.glsl \
     shaders/phong_frag.glsl \
-    QMakeVars.pri
+    QMakeVars.pri \
+    resources/glitch_vert.glsl \
+    resources/glitch_frag.glsl
 
 
 INCLUDEPATH += $${BOOST} \

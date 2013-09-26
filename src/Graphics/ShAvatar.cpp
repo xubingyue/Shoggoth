@@ -2,6 +2,7 @@
 #include "cinder/Quaternion.h"
 #include "cinder/gl/Vbo.h"
 #include "cinder/gl/Light.h"
+#include "cinder/BSpline.h"
 
 #include "src/Graphics/ShAvatar.h"
 #include "src/ShGlobals.h"
@@ -11,6 +12,7 @@
 using namespace cinder;
 using namespace gl;
 bool redOn = false;
+
 
 ///////////////
 // ShAvatarMap
@@ -37,6 +39,12 @@ void ShAvatarMap::move(std::string avatar, cinder::Vec3f pos)
 {
     boost::shared_lock<boost::shared_mutex> lock(mMutex);
     mAvatarMap[avatar]->setPos(pos);
+}
+
+void ShAvatarMap::rotate(std::string avatar, cinder::Quatf rot)
+{
+    boost::shared_lock<boost::shared_mutex> lock(mMutex);
+    mAvatarMap[avatar]->setRot(rot);
 }
 
 void ShAvatarMap::setPosX(std::string avatar, float x)
@@ -132,7 +140,7 @@ void ShAvatarMap::draw()
 
     while(iter != mAvatarMap.end())
     {
-        // if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
+        if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
             iter->second->draw();
 
         ++iter;
@@ -146,7 +154,7 @@ void ShAvatarMap::drawName()
 
     while(iter != mAvatarMap.end())
     {
-        // if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
+        if(iter->second->mUserName.compare(ShGlobals::USER_NAME) != 0)
             iter->second->drawName();
         ++iter;
     }
@@ -180,8 +188,98 @@ Material ShAvatar::material = Material(
             cinder::Color(60, 60, 60)
 );
 
-const unsigned int ShAvatar::NUM_SEGMENTS = 12;
+cinder::gl::VboMesh ShAvatar::MESH[ShAvatar::NUM_SEGMENTS];
+std::vector<cinder::Vec3f> ShAvatar::positions[ShAvatar::NUM_SEGMENTS];
+std::vector<cinder::Vec3f> ShAvatar::normals[ShAvatar::NUM_SEGMENTS];
+std::vector<cinder::ColorA> ShAvatar::colors[ShAvatar::NUM_SEGMENTS];
 
+void ShAvatar::createMesh()
+{
+    for(int i = 0; i < ShAvatar::NUM_SEGMENTS; ++i)
+    {
+        ShAvatar::positions[i] = std::vector<cinder::Vec3f>();
+        ShAvatar::normals[i] = std::vector<cinder::Vec3f>();
+        ShAvatar::colors[i] = std::vector<cinder::ColorA>();
+    }
+
+    Vec3f pyramid[18] = {
+        // Face 1
+        Vec3f(0, 1, 0),
+        Vec3f(-0.5, 0, 0.5),
+        Vec3f(0.5, 0, 0.5),
+        // Face 2
+        Vec3f(0, 1, 0),
+        Vec3f(0.5, 0, 0.5),
+        Vec3f(0.5, 0, -0.5),
+        // Face 3
+        Vec3f(0, 1, 0),
+        Vec3f(0.5, 0, -0.5),
+        Vec3f(-0.5, 0, -0.5),
+        // Face 4
+        Vec3f(0, 1, 0),
+        Vec3f(-0.5, 0, -0.5),
+        Vec3f(-0.5, 0, 0.5),
+        // Face 5
+        Vec3f(-0.5, 0, -0.5),
+        Vec3f(-0.5, 0, 0.5),
+        Vec3f(0.5, 0, -0.5),
+        // Face 6
+        Vec3f(-0.5, 0, 0.5),
+        Vec3f(0.5, 0, 0.5),
+        Vec3f(0.5, 0, -0.5)
+    };
+
+    for(unsigned int i = 0; i < ShAvatar::NUM_SEGMENTS; ++i)
+    {
+        uint16_t vertexCount = 18;
+        float segmentSize = i / 4.0;
+
+        VboMesh::Layout layout;
+        layout.setStaticIndices();
+        layout.setStaticColorsRGBA();
+        layout.setStaticPositions();
+        layout.setStaticNormals();
+
+        ShAvatar::MESH[i] = VboMesh(vertexCount, vertexCount, layout, GL_TRIANGLES);
+
+        for(int j = 0; j < vertexCount; ++j)
+        {
+            ShAvatar::positions[i].push_back(pyramid[j] * segmentSize);
+        }
+
+        ShAvatar::MESH[i].bufferPositions(ShAvatar::positions[i]);
+
+        for(int j = 0; j < vertexCount; ++j)
+        {
+            ShAvatar::colors[i].push_back(ColorA(1, 0, 0, 1));
+        }
+
+        ShAvatar::MESH[i].bufferColorsRGBA(ShAvatar::colors[i]);
+
+        ShTri tri;
+        for(int j = 0; j < vertexCount; j += 3)
+        {
+            tri.fill(ShAvatar::positions[i][j], ShAvatar::positions[i][j + 1], ShAvatar::positions[i][j + 2]);
+
+            ShAvatar::normals[i].push_back(tri.normal());
+            ShAvatar::normals[i].push_back(tri.normal());
+            ShAvatar::normals[i].push_back(tri.normal());
+        }
+
+        ShAvatar::MESH[i].bufferNormals(ShAvatar::normals[i]);
+
+        std::vector<uint32_t> surfaceIndices;
+
+        for(int j = 0; j < vertexCount; ++j)
+        {
+            surfaceIndices.push_back(j);
+        }
+
+        ShAvatar::MESH[i].bufferIndices(surfaceIndices);
+    }
+}
+
+/*
 void ShAvatar::createMesh()
 {
     std::vector<cinder::Vec3f> positions;
@@ -264,11 +362,13 @@ void ShAvatar::createMesh()
 
     ShAvatar::mesh.bufferIndices(indices);
 }
+*/
 
 ShAvatar::ShAvatar(std::string userName, cinder::Vec3f pos, int id) :
     mUserName(userName),
     mPos(pos),
-    mID(id)
+    mID(id),
+    colorMode(BLACK_AVATAR)
 {
     mCubeSize = cinder::Vec3f(25, 25, 25);
     nameTextureGenerated = false;
@@ -289,6 +389,13 @@ void ShAvatar::setPos(cinder::Vec3f pos)
         mPositions.pop_front();
         mPositions.push_back(pos);
     }
+}
+
+
+void ShAvatar::setRot(cinder::Quatf rot)
+{
+    boost::shared_lock<boost::shared_mutex> lock(mMutex);
+    mRot = rot;
 }
 
 void ShAvatar::setPosX(float x)
@@ -360,6 +467,80 @@ void ShAvatar::draw()
         glColor3f(1, 0, 0);
 
     unsigned int index =  0;*/
+
+    if(redOn)
+        cinder::gl::color(cinder::Color(1, 0, 0));
+    else
+        cinder::gl::color(cinder::Color(0, 0, 0));
+
+
+    /*
+    switch(rand() % 2)
+    {
+    case BLACK_AVATAR:
+        cinder::gl::color(cinder::Color(0, 0, 0));
+        colorMode = RED_AVATAR;
+        break;
+
+    case RED_AVATAR:
+        cinder::gl::color(cinder::Color(1, 0, 0));
+        colorMode = WHITE_AVATAR;
+        break;
+
+    case WHITE_AVATAR:
+        cinder::gl::color(cinder::Color(1, 1, 1));
+        colorMode = BLACK_AVATAR;
+        break;
+    }*/
+
+
+    for(unsigned int i = 0; i < ShAvatar::NUM_SEGMENTS ; ++i)
+    {
+        // cinder::Vec3f position = mPositions.at(i);
+        // glPushMatrix();
+        // glTranslatef(position.x, position.y, position.z);
+
+
+        /*
+        if(i > 0)
+        {
+            cinder::gl::drawLine(mPositions.at(i - 1), mPositions.at(i));
+
+        }*/
+
+        /*
+        cinder::Vec3f head = mPositions.at(ShAvatar::NUM_SEGMENTS - 1);
+        // cinder::Vec3f penultimate = mPositions.at(ShAvatar::NUM_SEGMENTS - 2);
+        cinder::gl::pushMatrices();
+        glTranslatef(head.x, head.y, head.z);
+        cinder::gl::rotate(mRot);
+        // cinder::gl::drawCube(cinder::Vec3f::zero(), cinder::Vec3f(9, 9, 9));
+        cinder::gl::draw(ShAvatar::MESH[ShAvatar::NUM_SEGMENTS - 1]);
+        cinder::gl::popMatrices();
+        */
+
+        cinder::Vec3f position = mPositions.at(i);
+        glPushMatrix();
+        glTranslatef(position.x, position.y, position.z);
+
+        cinder::gl::draw(ShAvatar::MESH[i]);
+        glPopMatrix();
+
+        /*
+        if(i > 0)
+        {
+            cinder::Vec3f rotation = mPositions.at(i).cross(mPositions.at(i - 1));
+            cinder::gl::rotate(rotation.normalized());
+        }*/
+
+        // unsigned int size = (i + 1) / 4.0;
+        // cinder::gl::drawStrokedCube(mPositions.at(i), cinder::Vec3f(size, size, size));
+        // glPopMatrix();
+    }
+
+    redOn = !redOn;
+
+    /*
     glBegin(GL_TRIANGLE_STRIP);
 
     std::deque<cinder::Vec3f>::iterator iter = mPositions.begin();
@@ -375,7 +556,7 @@ void ShAvatar::draw()
         //++index;
     }
 
-    redOn = !redOn;
+    redOn = !redOn;*/
 
     // glEnd();
 

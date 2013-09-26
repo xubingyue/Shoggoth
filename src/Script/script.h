@@ -16,6 +16,7 @@ namespace script {
 // Namespace Vars
 //////////////////
 
+/*
 extern SLB::Manager manager;
 extern SLB::ShoggothScript interpreter;
 
@@ -29,7 +30,7 @@ void loadScriptLibrary(); // Loads the script lua script library
 void loadScript(std::string fileName); // Relative to the LuaScripts folder!!!!!!!!!!
 lua_State* luaState();
 void setPrintCallback(SLB::ShoggothScript::PrintCallback printCallback); // Set the print callback from Lua
-
+*/
 } // script namespace
 
 #endif // SCRIPT_H

@@ -136,7 +136,12 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
                 {
                     // float val = (arg++)->AsFloat();
                     int val = (arg++)->AsInt32();
-                    ShNetwork::receiveMoveAvatar(objectName, argNum, val);
+
+                    if(argNum == 0)
+                        ShNetwork::receiveMoveAvatar(objectName, val);
+                    else
+                        ShNetwork::receiveRotateAvatar(objectName, val);
+                    // ShNetwork::receiveMoveAvatar(objectName, argNum, val);
                 }
 
                 else if(strcmp(objectSubType, "SnakeRange") == 0)

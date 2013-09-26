@@ -142,8 +142,8 @@ namespace SLB {
             if(lua_isfunction(L, pos))
             {
                 lua_pushvalue(L, pos); // Copy the function onto the top of the stack
-                int functionKey = luaL_ref(script::luaState(), LUA_REGISTRYINDEX); // Save the function to the registry
-                return script::lua_functor_t(new script::LuaFunctor(functionKey));
+                // int functionKey = luaL_ref(script::luaState(), LUA_REGISTRYINDEX); // Save the function to the registry
+                // return script::lua_functor_t(new script::LuaFunctor(functionKey));
             }
 
             else

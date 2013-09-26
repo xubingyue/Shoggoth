@@ -27,6 +27,7 @@ public:
 
     void add(std::string avatar, cinder::Vec3f pos);
     void move(std::string avatar, cinder::Vec3f pos);
+    void rotate(std::string avatar, cinder::Quatf rot);
     void setPosX(std::string avatar, float x);
     void setPosY(std::string avatar, float y);
     void setPosZ(std::string avatar, float z);
@@ -57,6 +58,7 @@ public:
     ShAvatar(std::string userName, cinder::Vec3f pos, int id);
 
     void setPos(cinder::Vec3f pos);
+    void setRot(cinder::Quatf rot);
     void setPosX(float x);
     void setPosY(float y);
     void setPosZ(float z);
@@ -77,11 +79,22 @@ public:
     std::string mUserName;
     bool nameTextureGenerated;
 
-    static const unsigned int NUM_SEGMENTS;
+    static const unsigned int NUM_SEGMENTS = 30;
+    static cinder::gl::VboMesh MESH[ShAvatar::NUM_SEGMENTS];
+    static std::vector<cinder::Vec3f> positions[ShAvatar::NUM_SEGMENTS];
+    static std::vector<cinder::Vec3f> normals[ShAvatar::NUM_SEGMENTS];
+    static std::vector<cinder::ColorA> colors[ShAvatar::NUM_SEGMENTS];
 
 private:
 
     void createNameTexture();
+
+    enum ColorMode
+    {
+        BLACK_AVATAR = 0,
+        RED_AVATAR,
+        WHITE_AVATAR
+    };
 
     std::deque<cinder::Vec3f> mPositions;
     cinder::Vec3f mPos, mCubeSize;
@@ -89,6 +102,7 @@ private:
     cinder::gl::Texture nameTexture;
     cinder::Quatf mRot;
     int mID;
+    ColorMode colorMode;
     boost::shared_mutex mMutex;
 };
 
