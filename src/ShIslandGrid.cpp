@@ -20,6 +20,7 @@
 #include "src/ArtificialLife/Flocking.h"
 #include "src/Time/ShTimer.h"
 #include "src/Time/ShTimeEvent.h"
+#include "src/shogtypes.h"
 
 using namespace ci;
 using namespace gl;
@@ -142,7 +143,7 @@ void ShIslandGrid::drawSnakeRangeHilight()
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
 
-    std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(selectedSnakeRange);
+    shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(selectedSnakeRange);
     if(find != snakeRangeMap.end())
     {
         find->second->drawHighlight();
@@ -246,7 +247,7 @@ snake_range_id_t ShIslandGrid::addShSnakeRange(int islandID, string synthName, V
     {
         std::cout << "Add Snake Range!" << std::endl;
 
-        std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
+        shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
         if(find == snakeRangeMap.end())
         {
             ShSnakeRange* snakeRange = new ShSnakeRange(
@@ -298,7 +299,7 @@ void ShIslandGrid::addShSnakeRange(snake_range_id_t snakeID, std::string synthNa
 
     else
     {
-        std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
+        shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
         if(find == snakeRangeMap.end())
         {
             std::cout << "TimeEvent Add Snake Range Island: " << snakeID.first << " ID: " << snakeID.second << std::endl;
@@ -350,7 +351,7 @@ void ShIslandGrid::removeSnakeRange(snake_range_id_t snakeID, bool addTimeEvent,
 
     else
     {
-        std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
+        shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
         if(find != snakeRangeMap.end())
         {
             ShSnakeRange* snakeRange = find->second;
@@ -391,7 +392,7 @@ void ShIslandGrid::removeCurrentlySelectedSnakeRange()
 {
     boost::shared_lock<boost::shared_mutex> lock(mutex);
 
-    std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(selectedSnakeRange);
+    shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(selectedSnakeRange);
     if(find != snakeRangeMap.end())
     {
         ShSnakeRange* snakeRange = find->second;
@@ -415,7 +416,7 @@ void ShIslandGrid::setSnakeRangePosition(snake_range_id_t snakeID, cinder::Vec2i
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
 
-    std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
+    shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
 
     if(find != snakeRangeMap.end())
     {
@@ -462,7 +463,7 @@ void ShIslandGrid::setSnakeRangeCorner(snake_range_id_t snakeID, cinder::Vec2i c
 
     else
     {
-        std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
+        shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(snakeID.second);
         if(find != snakeRangeMap.end())
         {
             ShSnakeRange* snakeRange = find->second;
@@ -489,7 +490,7 @@ snake_range_id_t ShIslandGrid::getCurrentlySelectedSnakeRangeID()
 {
     boost::shared_lock<boost::shared_mutex> lock(mutex);
 
-    std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(selectedSnakeRange);
+    shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(selectedSnakeRange);
 
     if(find != snakeRangeMap.end())
     {
@@ -508,7 +509,7 @@ void ShIslandGrid::setSelectedSnakeRange(unsigned int id)
     boost::upgrade_lock<boost::shared_mutex> lock(mutex);
     boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
 
-    std::tr1::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(id);
+    shog::unordered_map<unsigned int, ShSnakeRange*>::iterator find = snakeRangeMap.find(id);
     if(find != snakeRangeMap.end())
     {
         selectedSnakeRange = id;

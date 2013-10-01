@@ -30,6 +30,7 @@
 #ifndef INCLUDED_OSCTYPES_H
 #define INCLUDED_OSCTYPES_H
 
+#undef Nil
 
 namespace osc{
 

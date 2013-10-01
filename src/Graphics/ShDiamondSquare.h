@@ -101,7 +101,7 @@ private:
 
 	// sets the values in all tiles inside a rectangle
 	void setTileValue(ShCoord x1, ShCoord y1, ShCoord x2, ShCoord y2, ShHeight value);
-	ShHeight getSafeValue(ShCoordOffset x, ShCoordOffset y, ShHeight* horizontalOverflowBuffer, ShHeight* verticalOverflowBuffer);
+    ShHeight getSafeValue(ShCoordOffset x, ShCoordOffset y, ShHeight* horizontalOverflowBuffer, ShHeight* verticalOverflowBuffer) const;
 	// adds an integer to all values in the map
 	void add(ShHeight value);
 	// multiplies each value in the map

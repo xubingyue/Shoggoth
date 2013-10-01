@@ -2,13 +2,13 @@
 #define SCRIPT_H
 
 // SLB includes
-#include "SLB/SLB.hpp"
-#include "SLB/lua.hpp"
+// #include "SLB/SLB.hpp"
+// #include "SLB/lua.hpp"
 
 // local includes
-#include "src/Script/ShoggothScript.hpp"
-#include "scripttypes.h"
-#include "src/Script/luafunctor.h"
+// #include "src/Script/ShoggothScript.hpp"
+// #include "scripttypes.h"
+// #include "src/Script/luafunctor.h"
 
 namespace script {
 

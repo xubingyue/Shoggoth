@@ -1,3 +1,5 @@
+/*
+
 // system includes
 #include <iostream>
 #include <vector>
@@ -47,3 +49,4 @@ void compileWrappers(SLB::Manager* manager)
 }
 
 } // script namespace
+*/
