@@ -34,6 +34,7 @@ uint16_t ShIsland::kTriGridHeight = ShIsland::kGridDepth;
 Material ShIsland::material = Material(Color(0.6, 0.6, 0.6), Color(0.8f, 0.8f, 0.8f), Color(0.5, 0.5, 0.5), 0.75);
 Material ShIsland::pickingMaterial = Material(Color::black(), cinder::Color::black(), cinder::Color::black(), 0);
 uint32_t ShIsland::globalPickingIndex = 0;
+GridTri nullTri = GridTri();
 
 ShIsland::ShIsland(Vec3f pos, int id, Vec2i coord) :
 	mPos(pos),
@@ -186,7 +187,7 @@ void ShIsland::update()
 
         mSurface.bufferPositions(mPositions);
 
-        if(mAnimationQueue.size() == 1)
+        //if(mAnimationQueue.size() == 1)
             resetCustomData();
 
         calculateNormals(mSurface, mPositions);
@@ -832,11 +833,14 @@ GridTri ShIsland::getTri(int x, int y)
             return *triangleGrid[0][0];
     }
 
-    else
+    else if(triangleGrid[0][0])
     {
         std::cout << "Out of Bounds Triangle Grid Request: getTri(" << x << ", " << y << ");" << std::endl;
         return *triangleGrid[0][0];
     }
+
+    else
+        return nullTri;
 }
 
 GridTri* ShIsland::getTriPointer(int x, int y)
@@ -860,7 +864,7 @@ GridTri* ShIsland::getTriPointer(int x, int y)
     }
 
     else
-        return 0;
+        return &nullTri;
 }
 
 std::vector<unsigned char> ShIsland::getStepVector()
@@ -1006,15 +1010,18 @@ void ShIsland::updateWaveTerrainBuffer(std::vector< std::vector<float> >& height
     {
         std::vector<double> collection;
 
-        for(int x = 0; x < heightMap.size(); ++x)
+        for(int x = 0; x < heightMap.size() && x < ShIsland::kGridWidth; ++x)
         {
-            for(int y = 0; y < heightMap.at(x).size(); ++y)
+            for(int y = 0; y < heightMap.at(x).size() && y < ShIsland::kGridDepth; ++y)
             {
                 collection.push_back(shmath::linlin(heightMap[x][y], minHeight, maxHeight, -1, 1));
             }
         }
 
-        waveTerrainBuffer->sendCollection(collection);
+        if(collection.size() == (ShIsland::kGridWidth * ShIsland::kGridDepth))
+            waveTerrainBuffer->sendCollection(collection);
+        else
+            std::cerr << "ShIsland::updateWaveTerrainBuffer -> collection.size() != (ShIsland::kGridWidth * ShIsland::kGridDepth)" << std::endl;
     }
 }
 

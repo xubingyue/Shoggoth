@@ -11,7 +11,6 @@
 
 using namespace cinder;
 using namespace gl;
-bool redOn = false;
 
 
 ///////////////
@@ -135,6 +134,8 @@ void ShAvatarMap::update()
 void ShAvatarMap::draw()
 {
     boost::shared_lock<boost::shared_mutex> lock(mMutex);
+
+    // glDisable(GL_CULL_FACE);
     ShAvatar::material.apply();
     avatarIter iter = mAvatarMap.begin();
 
@@ -184,8 +185,8 @@ Material ShAvatar::material = Material(
             cinder::Color(1, 1, 1),
             cinder::Color(1, 1, 1),
             cinder::Color(1, 1, 1),
-            60.0f,
-            cinder::Color(60, 60, 60)
+            1.0f,
+            cinder::Color(1, 1, 1)
 );
 
 cinder::gl::VboMesh ShAvatar::MESH[ShAvatar::NUM_SEGMENTS];
@@ -202,28 +203,53 @@ void ShAvatar::createMesh()
         ShAvatar::colors[i] = std::vector<cinder::ColorA>();
     }
 
-    Vec3f pyramid[18] = {
+    Vec3f pyramid[36] = {
         // Face 1
-        Vec3f(0, 1, 0),
-        Vec3f(-0.5, 0, 0.5),
+        Vec3f(0, -1, 0),
         Vec3f(0.5, 0, 0.5),
+        Vec3f(-0.5, 0, 0.5),
         // Face 2
-        Vec3f(0, 1, 0),
+        Vec3f(0, -1, 0),
+        Vec3f(0.5, 0, -0.5),
         Vec3f(0.5, 0, 0.5),
-        Vec3f(0.5, 0, -0.5),
         // Face 3
-        Vec3f(0, 1, 0),
+        Vec3f(0, -1, 0),
+        Vec3f(-0.5, 0, -0.5),
         Vec3f(0.5, 0, -0.5),
-        Vec3f(-0.5, 0, -0.5),
         // Face 4
-        Vec3f(0, 1, 0),
-        Vec3f(-0.5, 0, -0.5),
+        Vec3f(0, -1, 0),
         Vec3f(-0.5, 0, 0.5),
+        Vec3f(-0.5, 0, -0.5),
         // Face 5
         Vec3f(-0.5, 0, -0.5),
+        Vec3f(0.5, 0, -0.5),
+        Vec3f(-0.5, 0, 0.5),
+        // Face 6
         Vec3f(-0.5, 0, 0.5),
         Vec3f(0.5, 0, -0.5),
-        // Face 6
+        Vec3f(0.5, 0, 0.5),
+
+        // Face 7
+        Vec3f(0, 1, 0),
+        Vec3f(-0.5, 0, 0.5),
+        Vec3f(0.5, 0, 0.5),
+        // Face 8
+        Vec3f(0, 1, 0),
+        Vec3f(0.5, 0, 0.5),
+        Vec3f(0.5, 0, -0.5),
+        // Face 9
+        Vec3f(0, 1, 0),
+        Vec3f(0.5, 0, -0.5),
+        Vec3f(-0.5, 0, -0.5),
+        // Face 10
+        Vec3f(0, 1, 0),
+        Vec3f(-0.5, 0, -0.5),
+        Vec3f(-0.5, 0, 0.5),
+        // Face 11
+        Vec3f(-0.5, 0, -0.5),
+        Vec3f(-0.5, 0, 0.5),
+        Vec3f(0.5, 0, -0.5),
+        // Face 12
         Vec3f(-0.5, 0, 0.5),
         Vec3f(0.5, 0, 0.5),
         Vec3f(0.5, 0, -0.5)
@@ -231,8 +257,8 @@ void ShAvatar::createMesh()
 
     for(unsigned int i = 0; i < ShAvatar::NUM_SEGMENTS; ++i)
     {
-        uint16_t vertexCount = 18;
-        float segmentSize = i / 4.0;
+        uint16_t vertexCount = 36;
+        float segmentSize = i / 8.0;
 
         VboMesh::Layout layout;
         layout.setStaticIndices();
@@ -244,7 +270,7 @@ void ShAvatar::createMesh()
 
         for(int j = 0; j < vertexCount; ++j)
         {
-            ShAvatar::positions[i].push_back(pyramid[j] * segmentSize);
+            ShAvatar::positions[i].push_back(pyramid[j] * segmentSize / 2);
         }
 
         ShAvatar::MESH[i].bufferPositions(ShAvatar::positions[i]);
@@ -468,12 +494,6 @@ void ShAvatar::draw()
 
     unsigned int index =  0;*/
 
-    if(redOn)
-        cinder::gl::color(cinder::Color(1, 0, 0));
-    else
-        cinder::gl::color(cinder::Color(0, 0, 0));
-
-
     /*
     switch(rand() % 2)
     {
@@ -501,12 +521,10 @@ void ShAvatar::draw()
         // glTranslatef(position.x, position.y, position.z);
 
 
-        /*
-        if(i > 0)
-        {
-            cinder::gl::drawLine(mPositions.at(i - 1), mPositions.at(i));
-
-        }*/
+        // if(i > 0)
+        // {
+            // cinder::gl::drawLine(mPositions.at(i - 1), mPositions.at(i));
+        // }
 
         /*
         cinder::Vec3f head = mPositions.at(ShAvatar::NUM_SEGMENTS - 1);
@@ -514,17 +532,18 @@ void ShAvatar::draw()
         cinder::gl::pushMatrices();
         glTranslatef(head.x, head.y, head.z);
         cinder::gl::rotate(mRot);
-        // cinder::gl::drawCube(cinder::Vec3f::zero(), cinder::Vec3f(9, 9, 9));
+        cinder::gl::drawCube(cinder::Vec3f::zero(), cinder::Vec3f(9, 9, 9));
         cinder::gl::draw(ShAvatar::MESH[ShAvatar::NUM_SEGMENTS - 1]);
         cinder::gl::popMatrices();
         */
 
+        /*
         cinder::Vec3f position = mPositions.at(i);
         glPushMatrix();
         glTranslatef(position.x, position.y, position.z);
 
         cinder::gl::draw(ShAvatar::MESH[i]);
-        glPopMatrix();
+        glPopMatrix();*/
 
         /*
         if(i > 0)
@@ -533,12 +552,13 @@ void ShAvatar::draw()
             cinder::gl::rotate(rotation.normalized());
         }*/
 
-        // unsigned int size = (i + 1) / 4.0;
-        // cinder::gl::drawStrokedCube(mPositions.at(i), cinder::Vec3f(size, size, size));
+        unsigned int size = (i + 1) / 8.0;
+        cinder::gl::drawCube(mPositions.at(i), cinder::Vec3f(size, size, size));
         // glPopMatrix();
     }
 
-    redOn = !redOn;
+
+    // cinder::gl::drawStrokedCube(mPositions.at(0), cinder::Vec3f(1, 1, 1));
 
     /*
     glBegin(GL_TRIANGLE_STRIP);
@@ -598,18 +618,21 @@ void ShAvatar::draw()
 
 void ShAvatar::drawName()
 {
-    boost::shared_lock<boost::shared_mutex> lock(mMutex);
-    if(nameTextureGenerated && ShGlobals::CAMERA->canView(mPos))
+    if(ShGlobals::redOn)
     {
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ONE_MINUS_SRC_COLOR);
+        boost::shared_lock<boost::shared_mutex> lock(mMutex);
+        if(nameTextureGenerated && ShGlobals::CAMERA->canView(mPos))
+        {
+            //glEnable(GL_BLEND);
+            //glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ONE_MINUS_SRC_COLOR);
 
-        cinder::gl::draw(nameTexture, ShGlobals::CAMERA->getCam().worldToScreen(
-                               mPos+cinder::Vec3f(0, 10, 0),
-                               ShGlobals::SCREEN_SIZE.x,
-                               ShGlobals::SCREEN_SIZE.y));
+            cinder::gl::draw(nameTexture, ShGlobals::CAMERA->getCam().worldToScreen(
+                                   mPos+cinder::Vec3f(0, 10, 0),
+                                   ShGlobals::SCREEN_SIZE.x,
+                                   ShGlobals::SCREEN_SIZE.y));
 
-        //glDisable(GL_BLEND);
+            //glDisable(GL_BLEND);
+        }
     }
 }
 

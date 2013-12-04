@@ -27,7 +27,7 @@ void sendLogin()
     sendCthulhu("/changePorts", 32244);
     sendCthulhu("/login", "Shoggoth");
     sendChatMessage("Shoggoth client logging into OSCthulhu");
-    sendCthulhuAddObject("Sequencing", "ShGlobal", 0);
+    sendCthulhuAddObject("Sequencing", "ShGlobal", 1);
     sendCthulhuAddObject("Tempo", "ShGlobal", 100);
     sendCthulhuAddObject("SectionNumber", "ShGlobal", 0);
 

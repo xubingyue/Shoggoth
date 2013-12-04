@@ -61,6 +61,7 @@ namespace ShGlobals {
     void setSectionNumber(int sectionNumber, bool setFromNetwork = false);
     void incrementSectionNumber();
     void decrementSectionNumber();
+    extern bool redOn;
 
     void addTimeStream(std::string key, ShTimeStream* timeStream);
     std::map<std::string, ShTimeStream*>& getTimeStreamMap();

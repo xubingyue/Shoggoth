@@ -181,6 +181,8 @@ public:
 
 ShoggothApp::~ShoggothApp()
 {
+    mSequencer.stop();
+
     if(ShNetwork::ONLINE)
     {
         endNetworking();
@@ -221,9 +223,9 @@ ShoggothApp::~ShoggothApp()
         delete mPickedTri;
 
 
-    delete timeStreamDisplay;
-    delete mRootTimeStream;
-    delete timeStreamScheduler;
+    // elete timeStreamDisplay;
+    // delete mRootTimeStream;
+    // delete timeStreamScheduler;
     delete synthMenu;
 
     islands.freeWaveTerrainBuffers();
@@ -408,13 +410,15 @@ void ShoggothApp::setup()
     //gl::clear(Color::white());
 
     // Time Stream Management
+
+    /* REMOVING TIME STREAM MANAGEMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     mRootTimeStream = new ShTimeStream("0", boost::chrono::steady_clock::time_point(boost::chrono::milliseconds(1000)));
     timeStreamScheduler = new TimeStreamScheduler(mRootTimeStream);
     ShGlobals::TIME_STREAM_SCHEDULER = timeStreamScheduler;
     timeStreamTimer.setScheduler(timeStreamScheduler);
     ShGlobals::TIME_STREAM_TIMER = &timeStreamTimer;
     //timeStreamTimer.start();
-    timeStreamDisplay = new ShTimeStreamDisplay();
+    timeStreamDisplay = new ShTimeStreamDisplay();*/
     targetSnakeRange = std::make_pair(0, 0);
     islands.setSelectedSnakeRange(targetSnakeRange.second);
 
@@ -491,10 +495,11 @@ void ShoggothApp::keyDown(KeyEvent event)
         case KeyEvent::KEY_q:
             qDown = true;
 
+                /*
             if(event.isControlDown() || event.isMetaDown())
             {
                 this->quit();
-            }
+            }*/
 
             break;
 
@@ -745,7 +750,7 @@ void ShoggothApp::keyDown(KeyEvent event)
 
         case KeyEvent::KEY_0:
 
-            if(event.isShiftDown() || event.isAltDown()) // If shift down, height map generation
+            if(event.isShiftDown() || event.isControlDown()) // If shift down, height map generation
             {
                 if(ShNetwork::ONLINE)
                     ShNetwork::sendTerrainHeights(mSelectedIsland, ShNetwork::Empty, 0);
@@ -900,6 +905,9 @@ void ShoggothApp::mouseDown(MouseEvent event)
 
                     editSnakeRange = true;
                     moveSnakeRange = false;
+
+                    if(currentSynthName.compare("Demipenteract") == 0)
+                        ShGlobals::setSectionNumber(1);
                 }
 
                 else if(editSnakeRange)
@@ -1162,7 +1170,7 @@ void ShoggothApp::renderPicking()
     ShShaders::bindPicking();
 
     gl::clear(Color::black());
-    ShIsland::pickingMaterial.apply();
+    // ShIsland::pickingMaterial.apply();
 
     if(editMode == IslandPicking)
         renderIslands();
@@ -1189,6 +1197,17 @@ void ShoggothApp::renderScene()
     }
 
     renderIslands();
+
+    if(ShGlobals::redOn)
+        if(ShGlobals::SECTION_NUMBER == 0)
+            cinder::gl::color(cinder::Color(0, 0, 0));
+        else
+            cinder::gl::color(cinder::Color(1, 0, 0));
+    else
+        if(ShGlobals::SECTION_NUMBER == 0)
+            cinder::gl::color(cinder::Color(1, 1, 1));
+        else
+            cinder::gl::color(cinder::Color(0, 0, 0));
 
     if(ShNetwork::ONLINE)
         ShAvatar::avatarMap.draw();
@@ -1239,6 +1258,7 @@ void ShoggothApp::renderScene()
     //    mPickedTri->draw();
 
     //ShShaders::unbindWireframe();
+    ShGlobals::redOn = !ShGlobals::redOn;
     ShShaders::unbindPhong();
 }
 

@@ -8,7 +8,7 @@ LIBSCSYNTH = /home/octopian/Documents/source/SuperCollider/SuperCollider-Source-
 LIBSCLANG = /home/octopian/Documents/source/SuperCollider/SuperCollider-Source-3.6.3/NoQtBuild/lang
 # Currently this MUST be boost 1.49
 BOOST = /usr/include
-BOOST_LIBS = /usr/lib
+BOOST_LIBS = /usr/lib/x86_64-linux-gnu
 LIBSNDFILE = /usr/lib/x86_64-linux-gnu
 AVAHI_COMMON = /usr/lib/x86_64-linux-gnu
 AVAHI_CLIENT = /usr/lib/x86_64-linux-gnu

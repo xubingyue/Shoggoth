@@ -61,16 +61,25 @@ void ShTimer::run()
         boost::this_thread::sleep(boost::posix_time::milliseconds(10));
     }
 
-    timerThread->join();
+    // timerThread->join();
 }
 
 void ShTimer::stop()
 {
-    boost::upgrade_lock<boost::shared_mutex> lock(timerMutex);
-    boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
+
     running = false;
     //std::cout << "ShTimer FINISHED JOIN" << std::endl;
     //std::cout << "ShTimer stopped" << std::endl;
+
+    boost::upgrade_lock<boost::shared_mutex> lock(timerMutex);
+    boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
+
+    if(timerThread)
+    {
+        timerThread->join();
+        delete timerThread;
+        timerThread = NULL;
+    }
 }
 
 void ShTimer::setScheduler(ShScheduler* _scheduler)
@@ -144,8 +153,8 @@ bool ShTimer::getRunning()
 
 void ShTimer::setRunning(bool _running)
 {
-    boost::upgrade_lock<boost::shared_mutex> lock(timerMutex);
-    boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
+    // boost::upgrade_lock<boost::shared_mutex> lock(timerMutex);
+    // boost::upgrade_to_unique_lock<boost::shared_mutex> writeLock(lock);
     running = _running;
 }
 

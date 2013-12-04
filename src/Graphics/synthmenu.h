@@ -31,7 +31,7 @@ public:
     std::string getCurrentlySelectedSynth();
 
     static const int kDimensions = 2;
-    static const int numSynthsInColumn = 10;
+    static const int numSynthsInColumn = 20;
     static const int itemWidth = 150;
     static const int itemHeight = 20;
 

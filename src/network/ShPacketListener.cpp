@@ -33,11 +33,11 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
             serverpanel::update(numUGens, numSynths, avgCPU, peakCPU);
 
             /*
-            std::cout << "Number Of Ugens: " << numUGens << " Number Of Synths: " << numSynths
-                      << " Number Of Groups: " <<  numGroups << " Number Of Synth Defs: " << numSynthDefs
-                      << " Avg CPU: " << avgCPU << " PeakCPU: " << peakCPU
-                      << " Nominal Sample Rate: " << nominalSR << " Actual Sample Rate: " << actualSR
-                      << std::endl;*/
+std::cout << "Number Of Ugens: " << numUGens << " Number Of Synths: " << numSynths
+<< " Number Of Groups: " << numGroups << " Number Of Synth Defs: " << numSynthDefs
+<< " Avg CPU: " << avgCPU << " PeakCPU: " << peakCPU
+<< " Nominal Sample Rate: " << nominalSR << " Actual Sample Rate: " << actualSR
+<< std::endl;*/
 
 
         }
@@ -64,11 +64,11 @@ void ShPacketListener::ProcessMessage(const osc::ReceivedMessage &message, const
                 else if(strcmp(objectSubType, "Avatars") == 0)
                 {
                     /*
-                    int x = (arg++)->AsFloat();
-                    int y = (arg++)->AsFloat();
-                    int z = (arg++)->AsFloat();
+int x = (arg++)->AsFloat();
+int y = (arg++)->AsFloat();
+int z = (arg++)->AsFloat();
 
-                    ShNetwork::receiveAddAvatar(objectName, x, y, z);*/
+ShNetwork::receiveAddAvatar(objectName, x, y, z);*/
                     ShNetwork::receiveAddAvatar(objectName, (arg++)->AsInt32());
                 }
 

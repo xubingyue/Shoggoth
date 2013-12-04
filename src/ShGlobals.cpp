@@ -33,6 +33,7 @@ namespace ShGlobals {
     cinder::ColorA BACKGROUND_COLOR = cinder::ColorA(1, 1, 1, 1);
     bool DRAW_WIREFRAMES = false;
     bool DRAW_TRIANGLE_IDS = false;
+    bool redOn = false;
 
     void updateSectionVars()
     {
