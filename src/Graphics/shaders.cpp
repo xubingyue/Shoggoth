@@ -18,7 +18,7 @@ GLint p1_attrib;   // Vertex attribute
 GLint p2_attrib;   // Vertex attribute
 GLint pickingAttrib; // Picking Vertex Attribute
 GLint color;   // Vertex color attribute
-#ifdef __LINUX__
+#ifndef __APPLE_NOTWORKING__
 std::string phongVertString, phongFragString;
 std::string singlePassVertString, singlePassFragString;
 std::string pickingVertString, pickingFragString;
@@ -68,7 +68,7 @@ void loadFile(std::string name, std::string* contents)
 void loadShaders(cinder::app::AppBasic* app)
 {
     std::cout << "LOADING SHADERS!!!!!!!!!!!!!!!!!!!!" << std::endl;
-#ifdef __APPLE__
+#ifdef __APPLE_NOTWORKING__
     detail::loadPhongShader(app->loadResource(RES_PHONG_VERT), app->loadResource(RES_PHONG_FRAG));
     detail::setupSinglePass(app->loadResource(RES_WIREFRAME_VERT), app->loadResource(RES_WIREFRAME_FRAG),
                              app->getWindowWidth(), app->getWindowHeight());
@@ -205,7 +205,7 @@ void loadShaderProgram(GLuint* program, GLuint* vertexShader, GLuint* fragmentSh
 
 #endif
 
-#ifdef __APPLE__
+#ifdef __APPLE_NORWORKING__
 void detail::loadPhongShader(cinder::DataSourceRef phongVert, cinder::DataSourceRef phongFrag)
 {
     std::cout << "Phong Vert file path: " << phongVert->getFilePath() << std::endl;
@@ -290,7 +290,7 @@ void detail::loadPicking()
     glBindAttribLocationARB(pickingProgram, 16, "pickingAttrib");
     pickingAttrib = 16;
 }
-#elif __LINUX__
+#else
 void detail::loadPhongShader()
 {
     std::cout << "Phong Vert file path: " << phongVertString << std::endl;

@@ -8,6 +8,12 @@
 #include "Script/ShoggothScript.hpp"
 
 namespace ShGlobals {
+
+    namespace detail
+    {
+        std::map<std::string, ShTimeStream*> TIME_STREAM_MAP;
+    } // detail namespace
+
     cinder::Font FONT;
     std::string USER_NAME = "DefaultUser";
     unsigned int RAND_SEED = 0;
@@ -87,7 +93,7 @@ namespace ShGlobals {
     void incrementSectionNumber()
     {
         int sectionNumber = (SECTION_NUMBER + 1) % NUM_SECTIONS;
-        setSectionNumber(sectionNumber);
+        setSectionNumber(sectionNumber, false);
     }
 
     void decrementSectionNumber()
@@ -99,14 +105,15 @@ namespace ShGlobals {
             sectionNumber = NUM_SECTIONS - 1;
         }
 
-        setSectionNumber(sectionNumber);
+        setSectionNumber(sectionNumber, false);
     }
 
+    /*
     void luaPrintCallback(SLB::ShoggothScript *s, const char *str, size_t length)
     {
         if(LUA_CONSOLE)
             LUA_CONSOLE->addMessage(str);
-    }
+    }*/
 
     boost::shared_mutex mutex;
 
@@ -121,10 +128,5 @@ namespace ShGlobals {
         boost::shared_lock<boost::shared_mutex> lock(mutex);
         return detail::TIME_STREAM_MAP;
     }
-
-    namespace detail
-    {
-        std::map<std::string, ShTimeStream*> TIME_STREAM_MAP;
-    } // detail namespace
 
 } // ShGlobals namespace

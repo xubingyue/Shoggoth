@@ -1,11 +1,10 @@
 #ifndef LUAFUNCTOR_H
 #define LUAFUNCTOR_H
 
-// System includes
-#include <tr1/unordered_map>
+#include "src/shogtypes.h"
 
 // SLB includes
-#include "SLB/lua.hpp"
+/*#include "libraries/slb/include/SLB/lua.hpp"
 
 namespace script {
 
@@ -28,5 +27,5 @@ protected:
 };
 
 }
-
+*/
 #endif // LUAFUNCTOR_H

@@ -1,3 +1,4 @@
+# SHOGGOTH
 ###########################################################################################################################
 # libsc++ vars. CHANGE THESE TO THE CORRECT PATHS AND VERSIONS
 ###########################################################################################################################
@@ -12,11 +13,12 @@ BOOST_LIBS = /usr/lib/x86_64-linux-gnu
 LIBSNDFILE = /usr/lib/x86_64-linux-gnu
 AVAHI_COMMON = /usr/lib/x86_64-linux-gnu
 AVAHI_CLIENT = /usr/lib/x86_64-linux-gnu
-FFTWF = /usr/lib/x86_64-linux-gnu
-JACK = /usr/lib/x86_64-linux-gnu
-FLAC = /usr/lib/x86_64-linux-gnu
-OGG = /usr/lib/x86_64-linux-gnu
-VORBIS = /usr/lib/x86_64-linux-gnu
+FFTWF = /usr/local/Cellar/fftw/3.3.3/lib
+#JACK = /usr/lib/x86_64-linux-gnu
+#FLAC = /usr/local/Cellar/flac/1.2.1/lib
+#OGG = /usr/local/Cellar/libogg/1.3.0/lib
+#VORBIS = /usr/local/Cellar/libvorbis/1.3.3/lib
+#PNG_INCLUDE = /usr/local/Cellar/libpng/1.5.14/include
 ###########################################################################################################################
 
 
@@ -25,7 +27,6 @@ VORBIS = /usr/lib/x86_64-linux-gnu
 ###########################################################################################################################
 
 # Point to your cinder folder so that we know where everything is
-#CINDER_HOME = /Users/curtismckinney/Documents/Cinder/cinder_0.8.3_mac
 CINDER_HOME = /home/octopian/Documents/source/libraries/Cinder
 CINDER_LIB = /home/octopian/Documents/source/libraries/Cinder/Qt/CinderQt4-build
 ############################################################################################################################
@@ -37,6 +38,6 @@ CINDER_LIB = /home/octopian/Documents/source/libraries/Cinder/Qt/CinderQt4-build
 
 #SLBINCLUDE = /Users/curtismckinney/Documents/source/SimpleLuaBind/slb/include
 #SLBLIBS = /Users/curtismckinney/Documents/source/SimpleLuaBind/slb/build/bin/static/
-SLBINCLUDE = /home/octopian/Documents/source/libraries/slb/include
-SLBLIBS = /home/octopian/Documents/source/libraries/slb/build/bin/static
+#SLBINCLUDE = /home/octopian/Dropbox/Public/slb/include
+#SLBLIBS = /home/octopian/Dropbox/Public/slb/build/bin/static
 ############################################################################################################################

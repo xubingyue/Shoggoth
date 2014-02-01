@@ -9,7 +9,8 @@
 // System includes
 #include <iostream>
 #include <deque>
-#include <tr1/unordered_map>
+//#include <tr1/shog::unordered_map>
+#include "shogtypes.h"
 #include <vector>
 
 // Cinder includes
@@ -125,9 +126,9 @@ private:
 	ShIsland** islands;
 	ShIsland* grid[GRID_WIDTH][GRID_HEIGHT];
     boost::shared_mutex mutex;
-    std::tr1::unordered_map<std::string, AnimationTimer*> animationTimers;
+    shog::unordered_map<std::string, AnimationTimer*> animationTimers;
     std::vector<ShSnakeRange*> snakeRangeGrid[NUM_ISLANDS];
-    std::tr1::unordered_map<unsigned int, ShSnakeRange*> snakeRangeMap; // For quick lookup
+    shog::unordered_map<unsigned int, ShSnakeRange*> snakeRangeMap; // For quick lookup
     std::deque<ShSnakeRange*> deleteSnakeQueue;
     unsigned int selectedSnakeRange;
 };

@@ -20,7 +20,8 @@ ShTimeStreamDisplay::ShTimeStreamDisplay()
                            ShGlobals::SCREEN_SIZE.x - 5, ShGlobals::SCREEN_SIZE.y - 5);
 
 #ifdef __APPLE__
-    mFont = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+    // mFont = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+    mFont = cinder::Font("Menlo", 12);
 #else
     //mFont = cinder::Font(cinder::app::loadResource("./resources/OCRAEXT.ttf", 134, "TTF"), 12);
     mFont = cinder::Font("Ubuntu", 12);

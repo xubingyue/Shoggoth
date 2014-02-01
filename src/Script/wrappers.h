@@ -1,6 +1,6 @@
 #ifndef WRAPPERS_H
 #define WRAPPERS_H
-
+/*
 #include <iostream>
 
 // Boost includes
@@ -161,5 +161,5 @@ namespace script {
 void compileWrappers(SLB::Manager* manager);
 
 } // script namespace
-
+*/
 #endif // WRAPPERS_H

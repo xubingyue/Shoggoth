@@ -129,7 +129,7 @@ void SynthMenu::draw()
 
 void SynthMenu::checkMouseCoordinates(cinder::Vec2i mouseCoord)
 {
-    double coordinate[2] = {mouseCoord.x, mouseCoord.y};
+    double coordinate[2] = {(double) mouseCoord.x, (double) mouseCoord.y};
     kdres* res = kd_nearest(synthItemTree, coordinate);
     currentlySelectedItem = (SynthMenuItem*) kd_res_item_data(res);
 }

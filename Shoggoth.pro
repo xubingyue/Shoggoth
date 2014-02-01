@@ -8,8 +8,21 @@
 
 mac {
     QT     -= core gui opengl
+    CMAKE_CXXFLAGS += -stdlib=libc++ -std=c++11
+    QMAKE_CXXFLAGS += -stdlib=libc++ -std=c++11
+    LIBS += -lc++
+    QMAKE_CXXFLAGS += -mmacosx-version-min=10.8
+    CXX_FLAGS += -mmacosx-version-min=10.8
+
     # Change to your OS version (and make sure its there!)
-    QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
+    MAC_SDK  = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
+    if( !exists( $$MAC_SDK) ) {
+      error("The led Mac OSX SDK does not exist at $$MAC_SDK!")
+    }
+
+    QMAKE_MAC_SDK = $$MAC_SDK
+    INCLUDEPATH += $$QMAKE_MAC_SDK/System/Library/Frameworks/CoreFoundation.framework/Versions/A/Headers
+    DEPENDPATH  += $$QMAKE_MAC_SDK/System/Library/Frameworks/CoreFoundation.framework/Versions/A/Headers
 }
 
 linux-g++* {
@@ -79,7 +92,7 @@ mac {
     #LIBS += $${CINDER_HOME}/lib/libcinder_d.a
     LIBS += $${CINDER_HOME}/lib/libcinder.a
     LIBS += $${CINDER_HOME}/lib/macosx/libz.a
-    LIBS += $${CINDER_HOME}/lib/macosx/libpng14.a
+    LIBS += $${CINDER_HOME}/lib/macosx/libpng.a
     LIBS += $${CINDER_HOME}/lib/macosx/libpixman-1.a
     LIBS += $${CINDER_HOME}/lib/macosx/libcairo.a
     #LIBS += $${CINDER_HOME}/lib/macosx/libboost_thread.a
@@ -93,7 +106,7 @@ PRE_TARGETDEPS += $${CINDER_HOME}/lib/libcinder.a \
     #$${CINDER_HOME}/lib/libcinder_d.a \
     #$${CINDER_HOME}/blocks/osc/lib/macosx/osc.a \
     $${CINDER_HOME}/lib/macosx/libz.a \
-    $${CINDER_HOME}/lib/macosx/libpng14.a \
+    $${CINDER_HOME}/lib/macosx/libpng.a \
     $${CINDER_HOME}/lib/macosx/libpixman-1.a \
     #$${CINDER_HOME}/lib/macosx/libcairo.a \
     #$${CINDER_HOME}/lib/macosx/libboost_thread.a \
@@ -141,9 +154,9 @@ DEPENDPATH += $${CINDER_HOME}/lib \
     SYNTH_LIST.path += Contents/Resources
     QMAKE_BUNDLE_DATA += SYNTH_LIST
 
-    LIBSC_DYLIB.files += $${LIBSCSYNTH}/libscsynth.dylib
-    LIBSC_DYLIB.path = Contents/Frameworks
-    QMAKE_BUNDLE_DATA += LIBSC_DYLIB
+    #LIBSC_DYLIB.files += $${LIBSCSYNTH}/libscsynth.dylib
+    #LIBSC_DYLIB.path = Contents/Frameworks
+    #QMAKE_BUNDLE_DATA += LIBSC_DYLIB
 
     TEXTURE_FILES.files += resources/OCRAEXT.ttf
     TEXTURE_FILES.files += resources/allusedup.ttf
@@ -195,12 +208,14 @@ LIBS += $${LIBSCLANG}/libsclang.a
 
 mac {
     #libscsynth.dylib
-    LIBS += $${LIBSCSYNTH}/libscsynth.dylib
+    LIBS += $${LIBSCSYNTH}/libscsynth.a
+    PRE_TARGETDEPS += $${LIBSCSYNTH}/libscsynth.a
+    #LIBS += $${LIBSCSYNTH}/libscsynth.dylib
     #PRE_TARGETDEPS += $${LIBSCSYNTH}/libscsynth.dylib
 
-    SCSYNTH_DYLIB.files = $${LIBSCSYNTH}/libscsynth.dylib
-    SCSYNTH_DYLIB.path = /Contents/Frameworks/
-    QMAKE_BUNDLE_DATA += SCSYNTH_DYLIB
+    #SCSYNTH_DYLIB.files = $${LIBSCSYNTH}/libscsynth.dylib
+    #SCSYNTH_DYLIB.path = /Contents/Frameworks/
+    #QMAKE_BUNDLE_DATA += SCSYNTH_DYLIB
 }
 
 linux-g++* {
@@ -219,7 +234,7 @@ linux-g++* {
 LIBS += $${BOOST_LIBS}/libboost_date_time.a
 #PRE_TARGETDEPS += $${BOOST_LIBS}/libboost_date_time.a
 #LIBS += $${BOOST_LIBS}/build/libboost_test.a
-LIBS += $${LIBSCSYNTH}/../../external_libraries/libtlsf.a
+#LIBS += $${LIBSCSYNTH}/../../external_libraries/libtlsf.a
 LIBS += $${BOOST_LIBS}/libboost_filesystem.a
 LIBS += $${BOOST_LIBS}/libboost_system.a
 #LIBS += $${SUPERCOLLIDER_SOURCE}/build/external_libraries/liboscpack.a
@@ -232,57 +247,60 @@ LIBS += $${LIBSNDFILE}/libsndfile.a
 #PRE_TARGETDEPS += $${LIBSNDFILE}/libsndfile.a
 
 # FFTWF
-LIBS += $${FFTWF}/libfftw3f.a
+LIBS += -lfftw3f
 #PRE_TARGETDEPS += $${FFTWF}/libfftw3f.a
 
 # Jack
 mac {
-    LIBS += $${JACK}/libjack.a
+    #LIBS += $${JACK}/libjack.a
 #PRE_TARGETDEPS += $${JACK}/libjack.a
 }
 
 linux-g++* {
-    LIBS += $${JACK}/libjack.so
+    LIBS += -ljack
+
+    # Bluetooth
+    LIBS += /usr/lib/x86_64-linux-gnu/libbluetooth.a
+
+    #rt
+    LIBS += -lrt
+
+    #dl
+    LIBS += -ldl
+
+    #xll
+    LIBS += -lX11
+
+    # cwiid
+    LIBS += -lcwiid
+
+    # alsa
+    LIBS += -lasound
+
 }
+
 # FLAC
-LIBS += $${FLAC}/libFLAC.a
+LIBS += -lFLAC
 #PRE_TARGETDEPS += $${FLAC}/libFLAC.a
 
 # Vorbis
-LIBS += $${VORBIS}/libvorbis.a
-LIBS += $${VORBIS}/libvorbisenc.a
+LIBS += -lvorbis
+LIBS += -lvorbisenc
 
 # OGG
-LIBS += $${OGG}/libogg.a
+LIBS += -logg
 #PRE_TARGETDEPS += $${OGG}/libogg.a
 
-# Simpla Lua Binder
-LIBS += $${SLBLIBS}/libSLB.a
 
-# cwiid
-LIBS += /usr/lib/libcwiid.a
+# Simpla Lua Binder
+#LIBS += $${SLBLIBS}/libSLB.a
 
 #Curl
 #LIBS += /usr/lib/x86_64-linux-gnu/libcurl.a
 LIBS += -lcurl
 
-# alsa
-LIBS += -lasound
-
 # yaml
 LIBS += $${LIBSCSYNTH}/../../external_libraries/libyaml.a
-
-# Bluetooth
-LIBS += /usr/lib/x86_64-linux-gnu/libbluetooth.a
-
-#rt
-LIBS += -lrt
-
-#dl
-LIBS += -ldl
-
-#xll
-LIBS += -lX11
 
 win32 {
     CONFIG += console
@@ -428,7 +446,8 @@ HEADERS += oscpack/osc/OscException.h \
     # libraries/jsoncpp/include/json/jsonvalue.h \
     # libraries/jsoncpp/include/json/jsonwriter.h \
     # libraries/jsoncpp/include/json/jsonreader.h
-    oscpack/osc/MessageMappingOscPacketListener.h
+    oscpack/osc/MessageMappingOscPacketListener.h \
+    src/shogtypes.h \
 
 RESOURCES += \
 

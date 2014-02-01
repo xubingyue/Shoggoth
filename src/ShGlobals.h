@@ -9,7 +9,7 @@
 
 // System includes
 #include <string>
-#include <tr1/unordered_map>
+#include "src/shogtypes.h"
 
 // Cinder includes
 #include "cinder/Vector.h"

@@ -24,18 +24,18 @@
   pplux@pplux.com
 */
 
-
-#include<SLB/Config.hpp>
-#include<SLB/Debug.hpp>
-#include<SLB/Error.hpp>
-#include<SLB/Allocator.hpp>
-#include<sstream>
+/*
+#include "libraries/slb/include/SLB/Config.hpp"
+#include "libraries/slb/include/SLB/Debug.hpp"
+#include "libraries/slb/include/SLB/Error.hpp"
+#include "libraries/slb/include/SLB/Allocator.hpp"
+#include <sstream>
 #include "src/Script/ShoggothScript.hpp"
 
 namespace SLB {
 
 #if SLB_DEBUG_LEVEL != 0
-  /* Debugging function, see TODO on Script::getState */
+
   void ScriptHook(lua_State *L, lua_Debug *ar)
   {
     lua_getinfo(L, "Sl",ar);
@@ -121,11 +121,9 @@ namespace SLB {
       //TODO: Promote that functionality to a higher interface to allow proper
       //      debugging
       //
-      /* if debug_level > 0 ........ */
       #if SLB_DEBUG_LEVEL != 0
       lua_sethook(_lua_state, ScriptHook, LUA_MASKLINE, 0);
       #endif
-      /* end debug */
 
       onNewState(_lua_state);
     }
@@ -239,7 +237,7 @@ namespace SLB {
     _errorHandler = e;
   }
 
-  void *ShoggothScript::allocator(void * /*ud*/, void *ptr, size_t osize, size_t nsize)
+  void *ShoggothScript::allocator(void * , void *ptr, size_t osize, size_t nsize)
   {
     if (nsize == 0)
     {
@@ -259,25 +257,25 @@ namespace SLB {
 
   int ShoggothScript::PrintHook(lua_State *L) {
     ShoggothScript *script = reinterpret_cast<ShoggothScript*>(lua_touserdata(L,lua_upvalueindex(1)));
-    int n = lua_gettop(L);  /* number of arguments */
+    int n = lua_gettop(L);
     int i;
     lua_getglobal(L, "tostring");
     for (i=1; i<=n; i++) {
       const char *s;
       size_t l;
-      lua_pushvalue(L, -1);  /* function to be called */
-      lua_pushvalue(L, i);   /* value to print */
+      lua_pushvalue(L, -1);
+      lua_pushvalue(L, i);
       lua_call(L, 1, 1);
-      s = lua_tolstring(L, -1, &l);  /* get result */
+      s = lua_tolstring(L, -1, &l);
       if (s == NULL)
         return luaL_error(L,
            LUA_QL("tostring") " must return a string to " LUA_QL("print"));
       if (i>1) script->_printCallback(script,"\t", 1);
       script->_printCallback(script,s, l);
-      lua_pop(L, 1);  /* pop result */
+      lua_pop(L, 1);
     }
     script->_printCallback(script,"\n",1);
     return 0;
   }
 
-} /* SLB */
+}  SLB */

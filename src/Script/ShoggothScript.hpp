@@ -29,13 +29,13 @@
 #ifndef __Shoggoth_SCRIPT__
 #define __Shoggoth_SCRIPT__
 
-#include "SLB/lua.hpp"
-#include "SLB/PushGet.hpp"
-#include "SLB/Type.hpp"
+//#include "libraries/slb/include/SLB/lua.hpp"
+//#include "libraries/slb/include/SLB/PushGet.hpp"
+//#include "libraries/slb/include/SLB/Type.hpp"
 #include<stdexcept>
 
 namespace SLB {
-
+/*
   class ErrorHandler; // #include <SLB/Error.hpp>
   
   class SLB_EXPORT ShoggothScript
@@ -98,12 +98,7 @@ namespace SLB {
     // getState() call.
     void resetState() { close(); }
 
-     /* ************************* WARNING *********************************
-      * Sometines you need to manually call Garbage Collector(GC), to be sure
-      * that all objects are destroyed. This is mandatory when using smartPointers
-      * ,be very carefull. GC operations are really expensive, avoid calling GC
-      * too frequently.
-      * ************************* WARNING *********************************/
+
     void callGC();
 
     /// Returns the number of Kb of memory used by the script
@@ -136,9 +131,9 @@ namespace SLB {
     lua_State* getState();
 
   protected:
-    virtual void onNewState(lua_State * /*L*/) {}
-    virtual void onCloseState(lua_State * /*L*/) {}
-    virtual void onGC(lua_State * /*L*/) {}
+    virtual void onNewState(lua_State * ) {}
+    virtual void onCloseState(lua_State * ) {}
+    virtual void onGC(lua_State * ) {}
     void setAllocator(lua_Alloc f, void *ud = 0);
 
     void close(); // will close lua_state
@@ -157,7 +152,8 @@ namespace SLB {
     ErrorHandler *_errorHandler;
     bool _loadDefaultLibs;
   };
-
+*/
 }
+
 
 #endif

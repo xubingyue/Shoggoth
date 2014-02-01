@@ -11,6 +11,7 @@
 #define GetCurrentDir getcwd
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
+#include <ciso646>
 #endif
 
 // Local includes
@@ -87,7 +88,7 @@ public:
         mRecording(false), mPickedTri(0), mSelectedIsland(0), mCurrentSelectedStepValue(1),mRootTimeStream(0),
         timeStreamScheduler(0), timeStreamTimer(0, boost::chrono::milliseconds(100)), timeStreamDisplay(0),
         editSnakeRange(false), moveSnakeRange(false), synthMenu(0), editMode(IslandPicking), currentSynthName("ShoggothBassDrum"),
-        cursorPosition(0, 0), terrainSynths(0), masterOut(0), light(gl::Light(gl::Light::SPOTLIGHT, 0)), drawTriangleIDs(false),
+        cursorPosition(0, 0), terrainSynths(0), masterOut(0), light(0), drawTriangleIDs(false),
         avatarRotateCounter(0), avatarMoveCounter(0) {}
     // gameOfLife(200, 120)
     // flock(0)
@@ -146,7 +147,7 @@ public:
     std::list<ShAudioSequence*> audioSequences;
 
     gl::Fbo mFbo; // main framebuffer (AA)
-    gl::Light light;
+    gl::Light* light;
 
     AxisAlignedBox3f mPickBox;
     Vec3f mPickedPoint, mPickedNormal;
@@ -263,7 +264,8 @@ void ShoggothApp::setup()
     ShGlobals::CAMERA = &mCamera;
     ShShaders::loadShaders(this);
 #ifdef __APPLE__
-    ShGlobals::FONT = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+    // ShGlobals::FONT = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+    ShGlobals::FONT = cinder::Font("Menlo", 12);
 #else
     // ShGlobals::FONT = cinder::Font(cinder::app::loadResource("./resources/OCRAEXT.ttf", 134, "TTF"), 12);
     ShGlobals::FONT = cinder::Font("Ubuntu", 12);
@@ -342,7 +344,7 @@ void ShoggothApp::setup()
 
     if (!CFURLGetFileSystemRepresentation(mainBundleURL, TRUE, (UInt8 *)cCurrentPath, PATH_MAX))
     {
-        std::cerr << pieceName << " ERROR"<< std::endl;
+        std::cerr << "Shoggoth ERROR"<< std::endl;
         std::cout << "CURRENT DIRECTORY NOT FOUND." << std::endl;
         return;
     }
@@ -429,19 +431,21 @@ void ShoggothApp::setup()
     mOscClient.start();
     mSequencer.play();
 
+    light = new gl::Light(gl::Light::SPOTLIGHT, 0);
+
 #ifdef __APPLE__
     /*
     light.setAmbient(Color(0.9f, 0.9f, 0.9f));
     light.setDiffuse(Color::white());
     light.setSpecular(Color::white());*/
-    light.setAmbient(Color(0.5f, 0.5f, 0.5f));
-    light.setDiffuse(Color(0.8, 0.8, 0.8));
-    light.setSpecular(Color(0.9, 0.9, 0.9));
+    light->setAmbient(Color(0.5f, 0.5f, 0.5f));
+    light->setDiffuse(Color(0.8, 0.8, 0.8));
+    light->setSpecular(Color(0.9, 0.9, 0.9));
 #elif __LINUX__
-    light.setAmbient(Color(0.5, 0.5f, 0.5f));
-    light.setDiffuse(Color(0.8, 0.8, 0.8));
-    light.setSpecular(Color(0.9, 0.9, 0.9));
-    light.setAttenuation(2.0, 1.0, 1.0);
+    light->setAmbient(Color(0.5, 0.5f, 0.5f));
+    light->setDiffuse(Color(0.8, 0.8, 0.8));
+    light->setSpecular(Color(0.9, 0.9, 0.9));
+    light->setAttenuation(2.0, 1.0, 1.0);
 #endif
     // std::cout << " COMPRESS/DECOMPRESS" << ShNetwork::decompressVec<cinder::Vec3i>(ShNetwork::compressVec<cinder::Vec3i>(cinder::Vec3i(1, 1, 1)), 3);
 }
@@ -876,7 +880,11 @@ void ShoggothApp::resize(ResizeEvent event)
         fmt.setCoverageSamples(0);
         fmt.enableMipmapping(false);
         fmt.enableDepthBuffer();
+#ifdef __LINUX__
         fmt.setColorInternalFormat(GL_RGBA32F);
+#else
+        fmt.setColorInternalFormat(GL_RGBA32F_ARB);
+#endif
         mFbo = gl::Fbo(event.getWidth(), event.getHeight(), fmt);
     }
 }
@@ -1138,15 +1146,15 @@ void ShoggothApp::initRender(bool renderLight)
 
     if(renderLight)
     {
-        light.setPosition(mCamera.getCam().getEyePoint());
-        light.setDirection(mCamera.getCam().getViewDirection());
-        // light.setPosition(Vec3f(500.0f, 500.0f, 500.0f));
-        light.enable();
+        light->setPosition(mCamera.getCam().getEyePoint());
+        light->setDirection(mCamera.getCam().getViewDirection());
+        // light->setPosition(Vec3f(500.0f, 500.0f, 500.0f));
+        light->enable();
     }
 
     else
     {
-        light.disable();
+        light->disable();
     }
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);

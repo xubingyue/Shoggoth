@@ -137,7 +137,8 @@ void ShChat::loadTexture(cinder::app::AppBasic *app)
 {
     boost::shared_lock<boost::shared_mutex> lock(chatMutex);
 #ifdef __APPLE__
-    mFont = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+    // mFont = cinder::Font(cinder::app::loadResource(TEXT_TEXTURE), 12);
+    mFont = cinder::Font("Menlo", 12);
 #else
     // mFont = cinder::Font(cinder::app::loadResource("./resources/OCRAEXT.ttf", 134, "TTF"), 12);
     mFont = cinder::Font("Ubuntu", 12);

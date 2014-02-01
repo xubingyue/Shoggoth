@@ -38,7 +38,7 @@ namespace ShShaders {
 	
 	namespace detail {
 		
-#ifdef __APPLE__
+#ifdef __APPLE_NOTWORKING__
 		void loadPhongShader(cinder::DataSourceRef phongVert, cinder::DataSourceRef phongFrag);
 	
 		/* Setup for single pass wireframe rendering. This function installs the 
@@ -48,7 +48,7 @@ namespace ShShaders {
                              int width, int height);
 		
 		void loadPicking(cinder::DataSourceRef pickingVert, cinder::DataSourceRef pickingFrag);
-#elif __LINUX__
+#else
         void loadPhongShader();
         void setupSinglePass(int width, int height);
         void loadPicking();

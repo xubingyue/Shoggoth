@@ -155,7 +155,7 @@ ShHeight ShDiamondSquare::getValue(ShCoord x, ShCoord y)
 }
 
 ShHeight ShDiamondSquare::getSafeValue(ShCoordOffset x, ShCoordOffset y, 
-									   ShHeight* horizontalOverflowBuffer, ShHeight* verticalOverflowBuffer)
+                                       ShHeight* horizontalOverflowBuffer, ShHeight* verticalOverflowBuffer) const
 {
 	if(x < 0)
 	{
@@ -355,28 +355,28 @@ void ShDiamondSquare::generateTerrain(ShSize minFeatureSize, ShSize maxFeatureSi
 				
 				double data[4][4] = {
 					{
-						getSafeValue(x0, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x1, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x2, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x0, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x1, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 					{
-						getSafeValue(x0, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x1, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x2, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x0, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x1, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 					{
-						getSafeValue(x0, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x1, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x2, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x0, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x1, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 					{
-						getSafeValue(x0, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x1, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x2, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x0, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x1, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 				};
 				
@@ -434,28 +434,28 @@ void ShDiamondSquare::generateTerrain(ShSize minFeatureSize, ShSize maxFeatureSi
 				
 				double data[4][4] = {
 					{
-						getSafeValue(x0, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x1, y4, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x2, y5, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y6, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x0, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x1, y4, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y5, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y6, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 					{
-						getSafeValue(x1, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x2, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y4, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x4, y5, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x1, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y4, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x4, y5, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 					{
-						getSafeValue(x2, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x3, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x4, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x5, y4, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x2, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x4, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x5, y4, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 					{
-						getSafeValue(x3, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x4, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x5, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
-						getSafeValue(x6, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x3, y0, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x4, y1, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x5, y2, verticalOverflowBuffer, horizontalOverflowBuffer),
+                        (double) getSafeValue(x6, y3, verticalOverflowBuffer, horizontalOverflowBuffer),
 					},
 				};
 				
