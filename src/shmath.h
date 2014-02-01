@@ -60,10 +60,10 @@ namespace shmath
 	// Map a number from a linear range to an exponential range
 	inline float linexp(float val, float inMin, float inMax, float outMin, float outMax)
 	{
-		if(val <= outMin)
-			return val;
-		else if(val >= outMax)
-			return val;
+		if(val <= inMin)
+			return outMin;
+		else if(val >= inMax)
+			return outMax;
 		else
 			return pow(outMax / outMin, (val - inMin) / (inMax - inMin)) * outMin;
 	}
